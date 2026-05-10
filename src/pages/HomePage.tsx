@@ -82,7 +82,7 @@ export default function HomePage() {
         {/* 背景图片 */}
         <div
           className="absolute inset-0 bg-cover bg-[center_30%] bg-no-repeat scale-105"
-          style={{ backgroundImage: 'url(./banner-bg.jpeg)' }}
+          style={{ backgroundImage: 'image-set(url(./banner-bg.webp) type("image/webp"), url(./banner-bg.jpeg) type("image/jpeg"))' }}
         />
 
         {/* 灰色渐变覆盖层 - 80%→35%→100%，实现灰色渐变 + 底部渐隐 */}
