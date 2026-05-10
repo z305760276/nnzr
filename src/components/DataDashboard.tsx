@@ -96,9 +96,9 @@ export default function DataDashboard({
                   <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-[var(--text-secondary)]">
                     <BookOpen className="w-12 h-12 opacity-30" />
                     <div className="text-center">
-                      <p className="text-sm font-medium">多维表视图待配置</p>
+                      <p className="text-sm font-medium">数据暂缺</p>
                       <p className="text-xs mt-1 opacity-60">
-                        请在钉钉创建多维表后，复制视图分享链接替换 iframeSrc
+                        暂无数据，请后续关注
                       </p>
                     </div>
                   </div>
