@@ -19,24 +19,24 @@ export const DEFAULT_TABS: DashboardTab[] = [
   },
   {
     id: 'safety',
-    label: '安检进度',
+    label: '数据暂缺',
     icon: ShieldAlert,
     iframeSrc: '',
-    description: '各片区安检完成情况',
+    description: '待确认展示内容',
   },
   {
     id: 'workflow',
-    label: '工单状态',
+    label: '数据暂缺',
     icon: ClipboardCheck,
     iframeSrc: '',
-    description: '工单处理实时状态',
+    description: '待确认展示内容',
   },
   {
     id: 'docs',
-    label: '资料下载',
+    label: '数据暂缺',
     icon: BookOpen,
     iframeSrc: '',
-    description: '制度文件目录索引',
+    description: '待确认展示内容',
   },
 ];
 
