@@ -41,6 +41,7 @@ const pdfDisplayOrder = [
   { file: '附件3.《客户服务部负面清单记分标准》.xlsx', category: '集团管理规范', section: 'standards' },
   // 南宁中燃管理规范
   { file: '附件：1.南宁中燃客户服务部管理组织架构及岗位职责.pdf', category: '南宁中燃管理规范', section: 'standards' },
+  { file: '附件：2.南宁中燃客户服务部管理制度.docx', category: '南宁中燃管理规范', section: 'standards' },
   { file: '附件：3.南宁中燃客户服务部安检管理制度.pdf', category: '南宁中燃管理规范', section: 'standards' },
   { file: '附件：4.南宁中燃客户服务部隐患管理制度.pdf', category: '南宁中燃管理规范', section: 'standards' },
 ];

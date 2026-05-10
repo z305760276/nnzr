@@ -339,6 +339,7 @@ export function buildSearchIndex(): SearchResult[] {
   // 21. 南宁中燃管理规范 (NNZRStandardsSection)
   const nnzrStandards = [
     { code: '1', name: '南宁中燃客户服务部管理组织架构及岗位职责', desc: '客户服务部组织架构、各部门职责及岗位说明书', tags: ['组织架构', '岗位职责'] },
+    { code: '2', name: '南宁中燃客户服务部管理制度', desc: '客户服务部综合管理制度，涵盖服务标准、工作流程及管理要求', tags: ['管理制度', '服务标准'] },
     { code: '3', name: '南宁中燃客户服务部安检管理制度', desc: '客户服务部安检工作管理制度、安检流程及检查标准', tags: ['安检', '管理制度'] },
     { code: '4', name: '南宁中燃客户服务部隐患管理制度', desc: '客户服务部隐患排查、分级、整改及闭环管理制度', tags: ['隐患', '管理制度'] },
   ];
