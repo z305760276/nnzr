@@ -14,7 +14,7 @@ export const DEFAULT_TABS: DashboardTab[] = [
     id: 'kpi',
     label: '财年指标',
     icon: Gauge,
-    iframeSrc: 'https://alidocs.dingtalk.com/i/nodes/14lgGw3P8vveaqQ0FQdNqbD385daZ90D?utm_scene=person_space',
+    iframeSrc: 'https://alidocs.dingtalk.com/aitable/share/app/DoeLbnjyQJvlaNY9?dd_full_screen=true',
     description: '财年核心指标完成进度',
   },
   {
