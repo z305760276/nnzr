@@ -35,10 +35,10 @@ const pdfDisplayOrder = [
   { file: '法规_消防法.pdf', category: '法律法规', section: 'scores' },
   { file: '法规_特种设备安全法.pdf', category: '法律法规', section: 'scores' },
   { file: '法规_刑法.pdf', category: '法律法规', section: 'scores' },
-  // 集团管理规范
-  { file: '附件1.《中燃集团客服业务红黄线及负面清单记分管理规定》.pdf', category: '集团管理规范', section: 'standards' },
-  { file: '附件2.《中燃集团客服条口红黄线考核细则》.xlsx', category: '集团管理规范', section: 'standards' },
-  { file: '附件3.《客户服务部负面清单记分标准》.xlsx', category: '集团管理规范', section: 'standards' },
+  // 中燃集团管理规范
+  { file: '附件1.《中燃集团客服业务红黄线及负面清单记分管理规定》.pdf', category: '中燃集团管理规范', section: 'standards' },
+  { file: '附件2.《中燃集团客服条口红黄线考核细则》.xlsx', category: '中燃集团管理规范', section: 'standards' },
+  { file: '附件3.《客户服务部负面清单记分标准》.xlsx', category: '中燃集团管理规范', section: 'standards' },
   // 南宁中燃管理规范
   { file: '附件：1.南宁中燃客户服务部管理组织架构及岗位职责.pdf', category: '南宁中燃管理规范', section: 'standards' },
   { file: '附件：2.南宁中燃客户服务部管理制度.docx', category: '南宁中燃管理规范', section: 'standards' },

@@ -19,7 +19,7 @@ const MODULE_META: Record<string, { title: string; subtitle: string; icon: React
   workflow: { title: 'AI 数智化工单流转', subtitle: '基于《客户服务部管理制度》工单管理规范', icon: Cpu },
   safety: { title: '安检与隐患分级管理', subtitle: '基于《安检管理制度》V2.0 与《隐患管理制度》V2.0', icon: ShieldAlert },
   kpi: { title: '财年指标', subtitle: '基于《客户服务部管理制度》考核指标', icon: Gauge },
-  standards: { title: '规范标准', subtitle: '国家标准 · 地方规范 · 行政法规 · 集团规范 · 公司制度', icon: BookOpen },
+  standards: { title: '规范标准', subtitle: '国家标准 · 地方规范 · 行政法规 · 中燃集团规范 · 公司制度', icon: BookOpen },
   scores: { title: '记分标准', subtitle: 'HSE安全记分 · 客服质量记分', icon: ClipboardCheck },
 };
 
@@ -44,7 +44,7 @@ function StandardsCombined() {
       </div>
       <div className="border-t border-[var(--border-light)] pt-8">
         <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-[#C8102E]" /> 集团管理规范
+          <BookOpen className="w-5 h-5 text-[#C8102E]" /> 中燃集团管理规范
         </h3>
         <p className="text-xs text-[var(--text-secondary)] mb-4">中燃集团客服业务红黄线管理及负面清单记分规定</p>
         <GroupStandardsSection />

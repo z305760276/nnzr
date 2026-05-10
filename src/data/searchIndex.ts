@@ -319,7 +319,7 @@ export function buildSearchIndex(): SearchResult[] {
     });
   });
 
-  // 20. 集团管理规范 (GroupStandardsSection)
+  // 20. 中燃集团管理规范 (GroupStandardsSection)
   const groupStandards = [
     { code: '1', name: '中燃集团客服业务红黄线及负面清单记分管理规定', desc: '中燃集团客服业务红线、黄线行为界定及负面清单记分管理要求', tags: ['集团', '红黄线', '记分管理'] },
     { code: '2', name: '中燃集团客服条口红黄线考核细则', desc: '中燃集团客服条线各岗位红黄线行为考核具体细则和记分标准', tags: ['集团', '红黄线', '考核细则'] },
@@ -330,7 +330,7 @@ export function buildSearchIndex(): SearchResult[] {
       id: `group-std-${i}`,
       title: `附件${s.code}.${s.name}`,
       content: `${s.desc} ${s.tags.join(' ')}`,
-      category: '集团管理规范',
+      category: '中燃集团管理规范',
       categoryColor: '#3B82F6',
       section: 'standards'
     });
@@ -426,7 +426,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   '规范标准': '#8B5CF6',
   '地方法规': '#F59E0B',
   '法律法规': '#EF4444',
-  '集团管理规范': '#3B82F6',
+  '中燃集团管理规范': '#3B82F6',
   '南宁中燃管理规范': '#10B981',
 };
 
