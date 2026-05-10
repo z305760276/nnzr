@@ -63,9 +63,9 @@ function PreviewCard({ result, query, onClose }: {
         <div className="flex-1 overflow-y-auto px-4 py-4">
           <div className="space-y-3">
             <div>
-              <span className="text-[10px] text-[var(--text-secondary)]/40 uppercase tracking-wider">匹配内容</span>
+              <span className="text-[10px] text-white/40 uppercase tracking-wider">匹配内容</span>
               <div className="mt-1.5 p-3 rounded-lg bg-[var(--accordion-panel-bg)] border border-[var(--border-light)]">
-                <p className="text-sm text-[var(--text-secondary)]/80 leading-relaxed whitespace-pre-wrap">
+                <p className="text-sm text-white/90 leading-relaxed whitespace-pre-wrap">
                   {highlightText(result.content, query)}
                 </p>
               </div>
