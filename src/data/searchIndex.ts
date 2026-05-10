@@ -372,3 +372,112 @@ export function search(query: string): SearchResult[] {
     .slice(0, 50)
     .map(s => s.item);
 }
+
+// ============================================
+// PDF 全文搜索
+// ============================================
+
+export interface PdfSearchResult {
+  id: string;
+  title: string;         // PDF 显示名称
+  content: string;        // 匹配文本片段
+  pdfLink: string;        // PDF 文件链接
+  category: string;       // 规范标准/地方法规/法律法规
+  categoryColor: string;
+  section: string;
+}
+
+const CATEGORY_COLORS: Record<string, string> = {
+  '规范标准': '#8B5CF6',
+  '地方法规': '#F59E0B',
+  '法律法规': '#EF4444',
+};
+
+let pdfIndexCache: { entries: any[] } | null = null;
+
+async function loadPdfIndex(): Promise<{ entries: any[] }> {
+  if (pdfIndexCache) return pdfIndexCache;
+  try {
+    const resp = await fetch('./pdf-search-index.json');
+    pdfIndexCache = await resp.json();
+    return pdfIndexCache!;
+  } catch {
+    return { entries: [] };
+  }
+}
+
+export async function searchPdf(query: string): Promise<PdfSearchResult[]> {
+  if (!query || query.length < 1) return [];
+
+  const data = await loadPdfIndex();
+  if (!data.entries || data.entries.length === 0) return [];
+
+  const q = query.toLowerCase().trim();
+  const qChars = q.split('');
+  const results: Array<{ result: PdfSearchResult; score: number }> = [];
+
+  // 搜索文件名
+  data.entries.forEach((entry, ei) => {
+    // 文件名也参与搜索
+    let titleMatchScore = 0;
+    const titleLower = entry.displayName.toLowerCase();
+    if (titleLower === q) titleMatchScore += 100;
+    else if (titleLower.startsWith(q)) titleMatchScore += 50;
+    else if (titleLower.includes(q)) titleMatchScore += 30;
+
+    // 搜索文本片段
+    entry.chunks.forEach((chunk: string, ci: number) => {
+      const chunkLower = chunk.toLowerCase();
+      let score = 0;
+
+      // 标题匹配
+      if (titleMatchScore > 0) score += titleMatchScore;
+
+      // 内容完全匹配
+      if (chunkLower.includes(q)) {
+        score += 30;
+      }
+
+      // 逐字模糊匹配
+      let charMatchCount = 0;
+      let lastIdx = 0;
+      for (const ch of qChars) {
+        const idx = chunkLower.indexOf(ch, lastIdx);
+        if (idx >= 0) {
+          charMatchCount++;
+          lastIdx = idx + 1;
+        }
+      }
+      if (charMatchCount === qChars.length) score += 5;
+      score += charMatchCount;
+
+      if (score >= 10) {
+        // 截取匹配位置前后约 80 字作为上下文
+        const matchIdx = chunkLower.indexOf(q[0]);
+        const start = Math.max(0, matchIdx - 80);
+        const end = Math.min(chunk.length, matchIdx + q.length + 80);
+        let snippet = chunk.slice(start, end);
+        if (start > 0) snippet = '...' + snippet;
+        if (end < chunk.length) snippet = snippet + '...';
+
+        results.push({
+          result: {
+            id: `pdf-${ei}-${ci}`,
+            title: entry.displayName,
+            content: snippet,
+            pdfLink: entry.pdfLink,
+            category: entry.category,
+            categoryColor: CATEGORY_COLORS[entry.category] || '#8B5CF6',
+            section: entry.section,
+          },
+          score,
+        });
+      }
+    });
+  });
+
+  return results
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 20)
+    .map(r => r.result);
+}
