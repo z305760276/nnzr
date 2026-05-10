@@ -8,6 +8,8 @@ import SafetyCheckSection from '../sections/SafetyCheckSection';
 import KpiDashboardSection from '../sections/KpiDashboardSection';
 import GBStandardsSection from '../sections/GBStandardsSection';
 import LocalStandardsSection from '../sections/LocalStandardsSection';
+import GroupStandardsSection from '../sections/GroupStandardsSection';
+import NNZRStandardsSection from '../sections/NNZRStandardsSection';
 import LawsSection from '../sections/LawsSection';
 import SafetyScoreSection from '../sections/SafetyScoreSection';
 import ServiceScoreSection from '../sections/ServiceScoreSection';
@@ -17,7 +19,7 @@ const MODULE_META: Record<string, { title: string; subtitle: string; icon: React
   workflow: { title: 'AI 数智化工单流转', subtitle: '基于《客户服务部管理制度》工单管理规范', icon: Cpu },
   safety: { title: '安检与隐患分级管理', subtitle: '基于《安检管理制度》V2.0 与《隐患管理制度》V2.0', icon: ShieldAlert },
   kpi: { title: '财年指标', subtitle: '基于《客户服务部管理制度》考核指标', icon: Gauge },
-  standards: { title: '规范标准', subtitle: '国家标准 · 地方规范 · 行政法规', icon: BookOpen },
+  standards: { title: '规范标准', subtitle: '国家标准 · 地方规范 · 行政法规 · 集团规范 · 公司制度', icon: BookOpen },
   scores: { title: '记分标准', subtitle: 'HSE安全记分 · 客服质量记分', icon: ClipboardCheck },
 };
 
@@ -39,6 +41,20 @@ function StandardsCombined() {
         </h3>
         <p className="text-xs text-[var(--text-secondary)] mb-4">客户服务部日常作业须遵循的国家标准清单</p>
         <GBStandardsSection />
+      </div>
+      <div className="border-t border-[var(--border-light)] pt-8">
+        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-[#C8102E]" /> 集团管理规范
+        </h3>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">中燃集团客服业务红黄线管理及负面清单记分规定</p>
+        <GroupStandardsSection />
+      </div>
+      <div className="border-t border-[var(--border-light)] pt-8">
+        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-[#C8102E]" /> 南宁中燃管理规范
+        </h3>
+        <p className="text-xs text-[var(--text-secondary)] mb-4">南宁中燃客户服务部内部管理制度汇编</p>
+        <NNZRStandardsSection />
       </div>
       <div className="border-t border-[var(--border-light)] pt-8">
         <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">

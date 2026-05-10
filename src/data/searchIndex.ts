@@ -319,6 +319,40 @@ export function buildSearchIndex(): SearchResult[] {
     });
   });
 
+  // 20. 集团管理规范 (GroupStandardsSection)
+  const groupStandards = [
+    { code: '1', name: '中燃集团客服业务红黄线及负面清单记分管理规定', desc: '中燃集团客服业务红线、黄线行为界定及负面清单记分管理要求', tags: ['集团', '红黄线', '记分管理'] },
+    { code: '2', name: '中燃集团客服条口红黄线考核细则', desc: '中燃集团客服条线各岗位红黄线行为考核具体细则和记分标准', tags: ['集团', '红黄线', '考核细则'] },
+    { code: '3', name: '客户服务部负面清单记分标准', desc: '客户服务部负面清单记分标准，明确各违规行为对应的扣分分值', tags: ['集团', '负面清单', '记分标准'] },
+  ];
+  groupStandards.forEach((s, i) => {
+    results.push({
+      id: `group-std-${i}`,
+      title: `附件${s.code}.${s.name}`,
+      content: `${s.desc} ${s.tags.join(' ')}`,
+      category: '集团管理规范',
+      categoryColor: '#3B82F6',
+      section: 'standards'
+    });
+  });
+
+  // 21. 南宁中燃管理规范 (NNZRStandardsSection)
+  const nnzrStandards = [
+    { code: '1', name: '南宁中燃客户服务部管理组织架构及岗位职责', desc: '客户服务部组织架构、各部门职责及岗位说明书', tags: ['组织架构', '岗位职责'] },
+    { code: '3', name: '南宁中燃客户服务部安检管理制度', desc: '客户服务部安检工作管理制度、安检流程及检查标准', tags: ['安检', '管理制度'] },
+    { code: '4', name: '南宁中燃客户服务部隐患管理制度', desc: '客户服务部隐患排查、分级、整改及闭环管理制度', tags: ['隐患', '管理制度'] },
+  ];
+  nnzrStandards.forEach((s, i) => {
+    results.push({
+      id: `nnzr-std-${i}`,
+      title: `附件：${s.code}.${s.name}`,
+      content: `${s.desc} ${s.tags.join(' ')}`,
+      category: '南宁中燃管理规范',
+      categoryColor: '#10B981',
+      section: 'standards'
+    });
+  });
+
   searchIndex = results;
   return results;
 }
@@ -391,6 +425,8 @@ const CATEGORY_COLORS: Record<string, string> = {
   '规范标准': '#8B5CF6',
   '地方法规': '#F59E0B',
   '法律法规': '#EF4444',
+  '集团管理规范': '#3B82F6',
+  '南宁中燃管理规范': '#10B981',
 };
 
 let pdfIndexCache: { entries: any[] } | null = null;
