@@ -12,7 +12,7 @@ export interface DashboardTab {
 export const DEFAULT_TABS: DashboardTab[] = [
   {
     id: 'kpi',
-    label: '财年指标',
+    label: '示例展示',
     icon: Gauge,
     iframeSrc: 'https://alidocs.dingtalk.com/aitable/share/app/DoeLbnjyQJvlaNY9?dd_full_screen=true',
     description: '财年核心指标完成进度',
