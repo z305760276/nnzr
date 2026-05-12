@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.625rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ========== 南宁中燃主题系统 ========== */
+:root {
+  /* 夜间模式（默认） */
+  --page-bg: #050A14;
+  --page-bg-rgb: 5, 10, 20;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --card-bg: rgba(13, 25, 48, 0.6);
+  --card-solid: #0D1A2D;
+  --card-glass: rgba(13, 25, 48, 0.8);
+  --nav-bg: rgba(5, 10, 20, 0.95);
+  --border-subtle: rgba(200, 16, 46, 0.2);
+  --border-light: rgba(200, 16, 46, 0.1);
+  --border-hover: rgba(200, 16, 46, 0.4);
+  --brand-bg: rgba(200, 16, 46, 0.08);
+  --brand-bg-hover: rgba(200, 16, 46, 0.15);
+  --hero-grid: rgba(255, 255, 255, 0.02);
+  --accent: #F8FAFC;
+  --glow-red: rgba(200, 16, 46, 0.08);
+  --glow-red-strong: rgba(200, 16, 46, 0.25);
+  --card-nvidia-bg: #0a0a12;
+  --card-nvidia-border: rgba(255, 255, 255, 0.06);
+  --card-nvidia-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  --card-nvidia-glow: rgba(99, 102, 241, 0.10);
+  --card-nvidia-cta-bg: rgba(99, 102, 241, 0.15);
+  --card-nvidia-cta-border: rgba(99, 102, 241, 0.25);
+  --card-nvidia-cta-text: #818cf8;
+  --card-nvidia-badge-bg: rgba(255, 255, 255, 0.06);
+  --card-nvidia-badge-text: rgba(255, 255, 255, 0.6);
+  --card-nvidia-text: #ffffff;
+  --card-nvidia-text-secondary: rgba(255, 255, 255, 0.7);
+  --card-nvidia-text-desc: rgba(255, 255, 255, 0.5);
+  --card-nvidia-icon-bg: rgba(99, 102, 241, 0.2);
+
+  /* 子页面手风琴卡片内嵌背景 */
+  --accordion-panel-bg: rgba(13, 25, 48, 0.5);
+  --sub-accordion-panel-bg: rgba(13, 25, 48, 0.4);
+  --card-inner-bg: rgba(13, 25, 48, 0.3);
+  --card-inner-bg-strong: rgba(13, 25, 48, 0.4);
+}
+
+[data-theme="light"] {
+  --page-bg: #F1F5F9;
+  --page-bg-rgb: 241, 245, 249;
+  --text-primary: #0F172A;
+  --text-secondary: #1E293B;
+  --text-muted: #475569;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-solid: #FFFFFF;
+  --card-glass: rgba(255, 255, 255, 0.95);
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --border-subtle: rgba(100, 116, 139, 0.3);
+  --border-light: rgba(100, 116, 139, 0.15);
+  --border-hover: rgba(99, 102, 241, 0.35);
+  --brand-bg: rgba(99, 102, 241, 0.06);
+  --brand-bg-hover: rgba(99, 102, 241, 0.12);
+  --hero-grid: rgba(0, 0, 0, 0.03);
+  --glow-red: rgba(99, 102, 241, 0.04);
+  --glow-red-strong: rgba(99, 102, 241, 0.1);
+  --accent: #0F172A;
+
+  /* 亮色 NVIDIA 风格卡片 */
+  --card-nvidia-bg: #ffffff;
+  --card-nvidia-border: rgba(0, 0, 0, 0.06);
+  --card-nvidia-shadow: 0 8px 32px rgba(99, 102, 241, 0.08);
+  --card-nvidia-glow: rgba(99, 102, 241, 0.04);
+  --card-nvidia-cta-bg: rgba(99, 102, 241, 0.08);
+  --card-nvidia-cta-border: rgba(99, 102, 241, 0.2);
+  --card-nvidia-cta-text: #4f46e5;
+  --card-nvidia-badge-bg: rgba(0, 0, 0, 0.05);
+  --card-nvidia-badge-text: rgba(0, 0, 0, 0.5);
+  --card-nvidia-text: rgba(0, 0, 0, 0.8);
+  --card-nvidia-text-secondary: rgba(0, 0, 0, 0.6);
+  --card-nvidia-text-desc: rgba(0, 0, 0, 0.45);
+  --card-nvidia-icon-bg: rgba(99, 102, 241, 0.12);
+
+  /* 子页面手风琴卡片内嵌背景（亮色模式加深，使白色文字可读） */
+  --accordion-panel-bg: rgba(30, 41, 59, 0.92);
+  --sub-accordion-panel-bg: rgba(30, 41, 59, 0.88);
+  --card-inner-bg: rgba(30, 41, 59, 0.85);
+  --card-inner-bg-strong: rgba(30, 41, 59, 0.9);
+}
+
+/* 亮色模式下深色背景卡片 → 纯白文字（全部统一，避免低对比度） */
+[data-theme="light"] .dark-card {
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFFFFF;
+  --accent: #FFFFFF;
+}
+
+.theme-transitioning,
+.theme-transitioning * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Hero Banner - 暗色模式下文字白色提高可读性 */
+[data-theme="dark"] .hero-tagline { color: rgba(255, 255, 255, 0.8) !important; }
+[data-theme="dark"] .hero-desc { color: rgba(255, 255, 255, 0.9) !important; }
