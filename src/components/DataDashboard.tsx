@@ -25,7 +25,6 @@ export const DEFAULT_TABS: DashboardTab[] = [
     description: '服务质量相关数据展示',
   },
   {
-  {
     id: 'workflow',
     label: '数据暂缺',
     icon: ClipboardCheck,
