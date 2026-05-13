@@ -53,12 +53,11 @@ export default function Navigation({ activeSection, onSearch, searchQuery }: Nav
           isActive
             ? 'bg-[var(--brand-bg-hover)] text-[var(--text-primary)] border-l-2 border-[#C8102E]'
             : 'text-[var(--text-secondary)] hover:bg-[var(--brand-bg)] hover:text-[var(--text-primary)]'
-        } ${isExtra ? 'opacity-70' : ''}`}
+        }`}
       >
         <Icon className={`w-4 h-4 ${isActive ? 'text-[#C8102E]' : 'text-[var(--text-secondary)]'}`} />
         <span>{sec.label}</span>
         {isActive && <ChevronRight className="w-3 h-3 ml-auto text-[#C8102E]" />}
-      </button>
       </button>
     );
   };
