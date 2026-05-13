@@ -14,8 +14,8 @@ const SECTION_ROUTE_MAP: Record<string, string> = {
   'gb-standards': 'standards',
   'local-standards': 'standards',
   'laws': 'standards',
-  'safety-score': 'scores',
-  'service-score': 'scores',
+  'safety-score': 'standards',
+  'service-score': 'standards',
 };
 
 // 搜索上下文：让子页面也能访问搜索状态

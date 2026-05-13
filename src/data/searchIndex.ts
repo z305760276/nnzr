@@ -279,7 +279,7 @@ export function buildSearchIndex(): SearchResult[] {
       content: `${l.level} ${l.desc} ${l.tags.join(' ')}`,
       category: '法律法规',
       categoryColor: '#EF4444',
-      section: 'scores'
+      section: 'standards'
     });
   });
 
@@ -297,7 +297,7 @@ export function buildSearchIndex(): SearchResult[] {
       content: `${s.score} ${s.desc} 示例：${s.examples.join('，')}`,
       category: '安全记分',
       categoryColor: '#EF4444',
-      section: 'scores'
+      section: 'standards'
     });
   });
 
@@ -315,7 +315,7 @@ export function buildSearchIndex(): SearchResult[] {
       content: `${s.score} ${s.desc} 示例：${s.examples.join('，')}`,
       category: '客服记分',
       categoryColor: '#F472B6',
-      section: 'scores'
+      section: 'standards'
     });
   });
 

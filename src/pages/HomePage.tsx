@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Users, Cpu, ShieldAlert, Gauge, BookOpen, ClipboardCheck, ArrowRight } from 'lucide-react';
+import { Users, Cpu, ShieldAlert, Gauge, BookOpen, ArrowRight } from 'lucide-react';
 import Footer from '../components/Footer';
 import DataDashboard, { DEFAULT_TABS } from '../components/DataDashboard';
 
@@ -56,19 +56,11 @@ const CARDS = [
   },
   {
     id: 'standards',
-    title: '规范标准',
-    subtitle: '国标 · 地方规范 · 法规',
-    desc: '与客户服务部作业直接相关的国家标准、广西及南宁市地方性规范、行政法规。了解规范标准是每位员工的必修课。',
+    title: '规范及记分执行标准',
+    subtitle: '国标 · 规范 · 法规 · 安全记分 · 客服记分',
+    desc: '国家标准、地方规范、行政法规、中燃集团规范，以及HSE安全记分与客服质量记分标准。规范和记分一体呈现，方便对照执行。',
     icon: BookOpen,
     stats: '6项国标+',
-  },
-  {
-    id: 'scores',
-    title: '记分标准',
-    subtitle: 'HSE安全记分 · 客服质量记分',
-    desc: '安全记分满12分暂停上岗资格，客服记分与绩效评优挂钩。了解记分规则，避免触碰红线。',
-    icon: ClipboardCheck,
-    stats: '2类记分',
   },
 ];
 
@@ -126,7 +118,7 @@ export default function HomePage() {
       <section className="relative py-12 bg-[var(--page-bg)]">
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">六大管理模块</h2>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">五大管理模块</h2>
             <p className="text-sm text-[var(--text-secondary)]">点击卡片进入详情页，查看全量内容</p>
           </div>
 

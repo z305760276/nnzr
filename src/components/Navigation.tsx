@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Menu, X, ChevronRight, Network, Cpu, ShieldAlert, BarChart3, BookOpen, Scale, Gavel, ClipboardCheck } from 'lucide-react';
+import { Search, Menu, X, ChevronRight, Network, Cpu, ShieldAlert, BarChart3, BookOpen } from 'lucide-react';
 
 export const navSections = [
   { id: 'org-hierarchy', label: '组织架构', icon: Network },
@@ -9,11 +9,7 @@ export const navSections = [
 ];
 
 export const extraSections = [
-  { id: 'gb-standards', label: '国标', icon: BookOpen },
-  { id: 'local-standards', label: '地方规范', icon: Scale },
-  { id: 'laws', label: '法规', icon: Gavel },
-  { id: 'safety-score', label: '安全记分标准', icon: ShieldAlert },
-  { id: 'service-score', label: '客服记分标准', icon: ClipboardCheck },
+  { id: 'standards', label: '规范及记分执行标准', icon: BookOpen },
 ];
 
 export const sectionLabels: Record<string, string> = {
@@ -21,11 +17,7 @@ export const sectionLabels: Record<string, string> = {
   'workflow': 'CRM工单流转',
   'safety-check': '安检与隐患',
   'kpi-dashboard': '财年指标',
-  'gb-standards': '国标',
-  'local-standards': '地方规范',
-  'laws': '法规',
-  'safety-score': '安全记分标准',
-  'service-score': '客服记分标准',
+  'standards': '规范及记分执行标准',
 };
 
 interface NavigationProps {
@@ -50,7 +42,7 @@ export default function Navigation({ activeSection, onSearch, searchQuery }: Nav
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const renderNavItem = (sec: typeof navSections[0], isExtra = false) => {
+  const renderNavItem = (sec: typeof navSections[0]) => {
     const Icon = sec.icon;
     const isActive = activeSection === sec.id;
     return (
@@ -66,7 +58,7 @@ export default function Navigation({ activeSection, onSearch, searchQuery }: Nav
         <Icon className={`w-4 h-4 ${isActive ? 'text-[#C8102E]' : 'text-[var(--text-secondary)]'}`} />
         <span>{sec.label}</span>
         {isActive && <ChevronRight className="w-3 h-3 ml-auto text-[#C8102E]" />}
-        {isExtra && <span className="ml-auto text-[10px] text-[var(--text-secondary)]/40">待补充</span>}
+      </button>
       </button>
     );
   };
@@ -124,12 +116,12 @@ export default function Navigation({ activeSection, onSearch, searchQuery }: Nav
 
           <p className="text-[var(--text-secondary)]/50 text-[10px] font-semibold uppercase tracking-wider px-3 mb-2">规范标准</p>
           <div className="space-y-1">
-            {extraSections.map(sec => renderNavItem(sec, true))}
+            {extraSections.map(sec => renderNavItem(sec))}
           </div>
 
           <div className="my-4 border-t border-[var(--border-light)]" />
           <p className="text-[var(--text-secondary)]/30 text-[10px] px-3 leading-relaxed">
-            标"待补充"的模块内容正在整理中，可先联系部门管理员获取纸质文件。
+            所有规范及记分标准均已整合完毕。
           </p>
         </div>
 
@@ -153,7 +145,7 @@ export default function Navigation({ activeSection, onSearch, searchQuery }: Nav
             </div>
             <p className="text-[var(--text-secondary)]/50 text-[10px] font-semibold uppercase tracking-wider mb-2">规范标准</p>
             <div className="space-y-1">
-              {extraSections.map(sec => renderNavItem(sec, true))}
+              {extraSections.map(sec => renderNavItem(sec))}
             </div>
           </div>
         </div>

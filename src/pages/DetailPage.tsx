@@ -19,8 +19,7 @@ const MODULE_META: Record<string, { title: string; subtitle: string; icon: React
   workflow: { title: 'CRM工单流转', subtitle: '基于《客户服务部管理制度》工单管理规范', icon: Cpu },
   safety: { title: '安检与隐患分级管理', subtitle: '基于《安检管理制度》V2.0 与《隐患管理制度》V2.0', icon: ShieldAlert },
   kpi: { title: '财年指标', subtitle: '基于《客户服务部管理制度》考核指标', icon: Gauge },
-  standards: { title: '规范标准', subtitle: '国家标准 · 地方规范 · 行政法规 · 中燃集团规范 · 公司制度', icon: BookOpen },
-  scores: { title: '记分标准', subtitle: 'HSE安全记分 · 客服质量记分', icon: ClipboardCheck },
+  standards: { title: '规范及记分执行标准', subtitle: '国标 · 地方规范 · 法规 · 安全记分 · 客服记分', icon: BookOpen },
 };
 
 const COMPONENT_MAP: Record<string, React.FC> = {
@@ -29,8 +28,9 @@ const COMPONENT_MAP: Record<string, React.FC> = {
   safety: SafetyCheckSection,
   kpi: KpiDashboardSection,
   standards: StandardsCombined,
-  scores: ScoresCombined,
 };
+
+export { StandardsCombined };
 
 function StandardsCombined() {
   return (
@@ -70,14 +70,7 @@ function StandardsCombined() {
         <p className="text-xs text-[var(--text-secondary)] mb-4">与客户服务部作业直接相关的国家法律和行政法规</p>
         <LawsSection />
       </div>
-    </div>
-  );
-}
-
-function ScoresCombined() {
-  return (
-    <div className="space-y-8">
-      <div>
+      <div className="border-t border-[var(--border-light)] pt-8">
         <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">
           <ShieldAlert className="w-5 h-5 text-[#C8102E]" /> HSE安全记分标准
         </h3>
