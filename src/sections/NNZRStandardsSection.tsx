@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { AccordionGroup, AccordionItem } from '../components/Accordion';
-import { BookOpen, ExternalLink, FileText } from 'lucide-react';
+import { BookOpen, Eye, ExternalLink, FileText } from 'lucide-react';
+import FilePreview from '../components/FilePreview';
 
 interface NNZRItem {
   code: string;
@@ -18,6 +20,8 @@ const items: NNZRItem[] = [
 ];
 
 export default function NNZRStandardsSection() {
+  const [preview, setPreview] = useState<{ filePath: string; fileName: string; fileType: 'pdf' | 'xlsx' } | null>(null);
+
   return (
     <div className="space-y-6">
       <AccordionGroup className="space-y-3">
@@ -44,7 +48,7 @@ export default function NNZRStandardsSection() {
                   ))}
                 </div>
               )}
-              {s.link ? (
+              {s.link && s.isDocx ? (
                 <a
                   href={s.link}
                   target="_blank"
@@ -52,8 +56,16 @@ export default function NNZRStandardsSection() {
                   className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
-                  {s.isDocx ? '下载查看文档 →' : '在线预览PDF →'}
+                  下载查看文档 →
                 </a>
+              ) : s.link ? (
+                <button
+                  onClick={() => setPreview({ filePath: s.link, fileName: `附件：${s.code}.${s.name}.pdf`, fileType: 'pdf' })}
+                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline cursor-pointer"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  在线预览PDF →
+                </button>
               ) : (
                 <div className="bg-[var(--card-inner-bg)] border border-dashed border-[var(--border-light)] rounded-lg p-4 flex items-center gap-3">
                   <BookOpen className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
@@ -66,6 +78,16 @@ export default function NNZRStandardsSection() {
           </AccordionItem>
         ))}
       </AccordionGroup>
+
+      {preview && (
+        <FilePreview
+          open={!!preview}
+          onClose={() => setPreview(null)}
+          fileName={preview.fileName}
+          filePath={preview.filePath}
+          fileType={preview.fileType}
+        />
+      )}
     </div>
   );
 }

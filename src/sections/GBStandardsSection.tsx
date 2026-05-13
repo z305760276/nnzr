@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { AccordionGroup, AccordionItem } from '../components/Accordion';
-import { BookOpen, ExternalLink, AlertTriangle } from 'lucide-react';
+import { BookOpen, Eye } from 'lucide-react';
+import FilePreview from '../components/FilePreview';
 
 interface StandardItem {
   code: string;
@@ -21,6 +23,8 @@ const standards: StandardItem[] = [
 ];
 
 export default function GBStandardsSection() {
+  const [preview, setPreview] = useState<{ filePath: string; fileName: string; fileType: 'pdf' | 'xlsx' } | null>(null);
+
   return (
     <div className="space-y-6">
       <AccordionGroup className="space-y-3">
@@ -38,7 +42,6 @@ export default function GBStandardsSection() {
             }
           >
             <div className="space-y-3">
-              {/* 标签 */}
               <div className="flex flex-wrap gap-1.5">
                 {s.tags.map((tag, ti) => (
                   <span key={ti} className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--card-inner-bg)] text-[var(--text-secondary)] border border-[var(--border-light)]">
@@ -47,17 +50,14 @@ export default function GBStandardsSection() {
                 ))}
               </div>
 
-              {/* 链接 */}
               {s.link ? (
-                <a
-                  href={s.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline"
+                <button
+                  onClick={() => setPreview({ filePath: s.link, fileName: `${s.code} ${s.name}.pdf`, fileType: 'pdf' })}
+                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline cursor-pointer"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <Eye className="w-3.5 h-3.5" />
                   在线预览PDF →
-                </a>
+                </button>
               ) : (
                 <div className="bg-[var(--card-inner-bg)] border border-dashed border-[var(--border-light)] rounded-lg p-4 flex items-center gap-3">
                   <BookOpen className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
@@ -73,14 +73,15 @@ export default function GBStandardsSection() {
         ))}
       </AccordionGroup>
 
-      <div className="mt-6 bg-[rgba(200,16,46,0.03)] border border-[rgba(200,16,46,0.08)] rounded-xl p-4">
-        <div className="flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-[#F59E0B]" />
-          <p className="text-xs text-[var(--text-secondary)]">
-            本模块收录与客户服务部作业直接相关的标准全文。点击「在线预览PDF」即可在浏览器直接查看。PDF 文件部署在应用目录下，离线可用。
-          </p>
-        </div>
-      </div>
+      {preview && (
+        <FilePreview
+          open={!!preview}
+          onClose={() => setPreview(null)}
+          fileName={preview.fileName}
+          filePath={preview.filePath}
+          fileType={preview.fileType}
+        />
+      )}
     </div>
   );
 }

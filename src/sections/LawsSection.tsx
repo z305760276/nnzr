@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { AccordionGroup, AccordionItem } from '../components/Accordion';
-import { Gavel, ExternalLink } from 'lucide-react';
+import { Gavel, Eye } from 'lucide-react';
+import FilePreview from '../components/FilePreview';
 
 interface LawItem {
   name: string;
@@ -54,6 +56,8 @@ const laws: LawItem[] = [
 ];
 
 export default function LawsSection() {
+  const [preview, setPreview] = useState<{ filePath: string; fileName: string; fileType: 'pdf' | 'xlsx' } | null>(null);
+
   return (
     <div className="space-y-6">
       <AccordionGroup className="space-y-3">
@@ -71,7 +75,6 @@ export default function LawsSection() {
             }
           >
             <div className="space-y-3">
-              {/* 标签 */}
               <div className="flex flex-wrap gap-1.5">
                 {l.tags.map((tag, ti) => (
                   <span key={ti} className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--card-inner-bg)] text-[var(--text-secondary)] border border-[var(--border-light)]">
@@ -80,17 +83,14 @@ export default function LawsSection() {
                 ))}
               </div>
 
-              {/* 链接 */}
               {l.link ? (
-                <a
-                  href={l.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline"
+                <button
+                  onClick={() => setPreview({ filePath: l.link, fileName: `${l.name}.pdf`, fileType: 'pdf' })}
+                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline cursor-pointer"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <Eye className="w-3.5 h-3.5" />
                   在线预览PDF →
-                </a>
+                </button>
               ) : (
                 <div className="bg-[var(--card-inner-bg)] border border-dashed border-[var(--border-light)] rounded-lg p-4 flex items-center gap-3">
                   <Gavel className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
@@ -105,6 +105,16 @@ export default function LawsSection() {
           </AccordionItem>
         ))}
       </AccordionGroup>
+
+      {preview && (
+        <FilePreview
+          open={!!preview}
+          onClose={() => setPreview(null)}
+          fileName={preview.fileName}
+          filePath={preview.filePath}
+          fileType={preview.fileType}
+        />
+      )}
     </div>
   );
 }

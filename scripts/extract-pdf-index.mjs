@@ -117,9 +117,26 @@ async function extractPdfText(filePath) {
   }
 }
 
-// 获取 PDF 文件显示名称（去掉序号前缀和扩展名）
+function extractXlsxText(filePath) {
+  try {
+    const XLSX = require('xlsx');
+    const workbook = XLSX.readFile(filePath);
+    const texts = [];
+    for (const sheetName of workbook.SheetNames) {
+      const sheet = workbook.Sheets[sheetName];
+      const csv = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
+      if (csv.trim()) texts.push(csv);
+    }
+    return cleanText(texts.join('\n'));
+  } catch (err) {
+    console.error(`  提取失败: ${err.message}`);
+    return '';
+  }
+}
+
+// 获取文件显示名称（去掉序号前缀和扩展名）
 function getDisplayName(filename) {
-  let name = filename.replace(/\.pdf$/i, '').replace(/\.doc$/i, '');
+  let name = filename.replace(/\.pdf$/i, '').replace(/\.doc$/i, '').replace(/\.xlsx$/i, '');
   // 去掉序号前缀如 "0." "1."
   name = name.replace(/^\d+\./, '').trim();
   // 去掉下划线变空格
@@ -143,10 +160,10 @@ async function main() {
   for (const item of pdfDisplayOrder) {
     const filePath = path.join(docsDir, item.file);
     const isDoc = item.file.toLowerCase().endsWith('.doc');
+    const isXlsx = item.file.toLowerCase().endsWith('.xlsx');
 
     if (!fs.existsSync(filePath)) {
       console.log(`⚠️ 文件不存在: ${item.file}`);
-      // 仍然添加条目，但文本为空
       entries.push({
         fileName: item.file,
         displayName: getDisplayName(item.file),
@@ -157,11 +174,9 @@ async function main() {
       });
       continue;
     }
-
-    console.log(`📖 ${isDoc ? '跳过.doc' : '提取'}: ${item.file}`);
 
     if (isDoc) {
-      // .doc 文件只保留文件名（无文本内容）
+      console.log(`📖 跳过.doc: ${item.file}`);
       entries.push({
         fileName: item.file,
         displayName: getDisplayName(item.file),
@@ -172,6 +187,36 @@ async function main() {
       });
       continue;
     }
+
+    if (isXlsx) {
+      console.log(`📊 提取: ${item.file}`);
+      const text = extractXlsxText(filePath);
+      if (!text) {
+        console.log(`  文本为空`);
+        entries.push({
+          fileName: item.file,
+          displayName: getDisplayName(item.file),
+          pdfLink: `./docs/${encodeURI(item.file)}`,
+          category: item.category,
+          section: item.section,
+          chunks: [],
+        });
+        continue;
+      }
+      const chunks = chunkText(text);
+      console.log(`  → ${text.length} 字符, ${chunks.length} 片段`);
+      entries.push({
+        fileName: item.file,
+        displayName: getDisplayName(item.file),
+        pdfLink: `./docs/${encodeURI(item.file)}`,
+        category: item.category,
+        section: item.section,
+        chunks,
+      });
+      continue;
+    }
+
+    console.log(`📖 提取: ${item.file}`);
 
     const text = await extractPdfText(filePath);
     if (!text) {

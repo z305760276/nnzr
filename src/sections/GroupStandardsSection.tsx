@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { AccordionGroup, AccordionItem } from '../components/Accordion';
-import { BookOpen, ExternalLink, FileSpreadsheet } from 'lucide-react';
+import { BookOpen, Eye, FileSpreadsheet } from 'lucide-react';
+import FilePreview from '../components/FilePreview';
 
 interface GroupItem {
   code: string;
@@ -17,6 +19,8 @@ const items: GroupItem[] = [
 ];
 
 export default function GroupStandardsSection() {
+  const [preview, setPreview] = useState<{ filePath: string; fileName: string; fileType: 'pdf' | 'xlsx' } | null>(null);
+
   return (
     <div className="space-y-6">
       <AccordionGroup className="space-y-3">
@@ -39,19 +43,27 @@ export default function GroupStandardsSection() {
                   </span>
                 ))}
               </div>
-              <a
-                href={s.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline"
+              <button
+                onClick={() => setPreview({ filePath: s.link, fileName: s.isExcel ? `附件${s.code}. ${s.name}.xlsx` : `附件${s.code}.《${s.name}》.pdf`, fileType: s.isExcel ? 'xlsx' : 'pdf' })}
+                className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline cursor-pointer"
               >
-                <ExternalLink className="w-3.5 h-3.5" />
-                {s.isExcel ? '在线查看表格 →' : '在线预览PDF →'}
-              </a>
+                <Eye className="w-3.5 h-3.5" />
+                {s.isExcel ? '在线预览表格 →' : '在线预览PDF →'}
+              </button>
             </div>
           </AccordionItem>
         ))}
       </AccordionGroup>
+
+      {preview && (
+        <FilePreview
+          open={!!preview}
+          onClose={() => setPreview(null)}
+          fileName={preview.fileName}
+          filePath={preview.filePath}
+          fileType={preview.fileType}
+        />
+      )}
     </div>
   );
 }
