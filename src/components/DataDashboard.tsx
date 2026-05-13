@@ -14,7 +14,7 @@ export const DEFAULT_TABS: DashboardTab[] = [
     id: 'kpi',
     label: '示例展示',
     icon: Gauge,
-    iframeSrc: 'https://alidocs.dingtalk.com/notable/share/dashboard/0ac0f085dbf4555b13aefb3676ce9e31_WgZOZA8Aa0BB8qLX',
+    iframeSrc: 'https://alidocs.dingtalk.com/notable/share/dashboard/cebe13b5fda7df0fc78ec57d6cc9cc4e_WgZOZA8Aa0BB8qLX',
     description: '示例数据展示',
   },
   {
