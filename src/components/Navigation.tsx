@@ -80,7 +80,7 @@ export default function Navigation({ activeSection, onSearch, searchQuery }: Nav
             </div>
             <div className="hidden sm:block">
               <span className="text-[var(--text-primary)] text-sm font-bold leading-tight">南宁中燃</span>
-              <span className="text-[#C8102E] text-xs ml-1.5">管理图谱 v3.0</span>
+              <span className="text-[#C8102E] text-xs ml-1.5">管理图谱 v3.2</span>
             </div>
           </div>
 
@@ -126,7 +126,7 @@ export default function Navigation({ activeSection, onSearch, searchQuery }: Nav
         </div>
 
         <div className="absolute bottom-4 left-4 right-4">
-          <p className="text-[var(--text-secondary)]/30 text-[10px] text-center">v3.0_20260502</p>
+          <p className="text-[var(--text-secondary)]/30 text-[10px] text-center">v3.2_20260513</p>
         </div>
       </aside>
 
@@ -136,7 +136,7 @@ export default function Navigation({ activeSection, onSearch, searchQuery }: Nav
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
           <div className="absolute left-0 top-0 bottom-0 w-64 bg-[var(--card-solid)] border-r border-[rgba(200,16,46,0.15)] p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <span className="text-[var(--text-primary)] font-bold">管理图谱 v3.0</span>
+              <span className="text-[var(--text-primary)] font-bold">管理图谱 v3.2</span>
               <button onClick={() => setMobileMenuOpen(false)}><X className="w-5 h-5 text-[var(--text-secondary)]" /></button>
             </div>
             <p className="text-[var(--text-secondary)]/50 text-[10px] font-semibold uppercase tracking-wider mb-2">核心业务</p>

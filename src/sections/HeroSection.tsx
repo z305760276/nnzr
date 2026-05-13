@@ -28,7 +28,7 @@ export default function HeroSection() {
 
           <h1 className="text-4xl md:text-6xl font-bold text-[var(--text-primary)] mb-4 leading-tight" style={{ textShadow: '0 0 30px var(--glow-red-strong)' }}>
             管理图谱
-            <span className="block text-2xl md:text-3xl font-light text-[var(--accent)] mt-2 tracking-wide">Management Graph v3.0</span>
+            <span className="block text-2xl md:text-3xl font-light text-[var(--accent)] mt-2 tracking-wide">Management Graph v3.2</span>
           </h1>
 
           <p className="text-[var(--text-secondary)] text-base md:text-lg mb-8 max-w-xl leading-relaxed">

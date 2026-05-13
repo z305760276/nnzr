@@ -11,7 +11,7 @@ export default function Footer() {
               <span className="text-[var(--text-primary)] text-sm font-bold">南宁中燃 客户服务部</span>
             </div>
             <p className="text-[var(--text-secondary)]/50 text-xs leading-relaxed">
-              南宁中燃客户服务部管理图谱 v3.0<br />
+              南宁中燃客户服务部管理图谱 v3.2<br />
               基于四份真实管理制度文件构建<br />
               目标：新人来了也能看懂、会用、能查<br />
             </p>
@@ -45,7 +45,7 @@ export default function Footer() {
         </div>
         <div className="pt-6 border-t border-[var(--border-subtle)] flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-[#C8102E] text-xs font-mono font-bold px-2 py-1 rounded bg-[var(--brand-bg)] border border-[var(--border-subtle)]">v3.0_20260502</span>
+            <span className="text-[#C8102E] text-xs font-mono font-bold px-2 py-1 rounded bg-[var(--brand-bg)] border border-[var(--border-subtle)]">v3.2_20260513</span>
             <span className="text-[var(--text-secondary)]/30 text-xs">南宁中燃城市燃气发展有限公司</span>
           </div>
           <p className="text-[var(--text-secondary)]/20 text-[10px]">
