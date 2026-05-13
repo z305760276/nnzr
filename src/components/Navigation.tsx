@@ -3,7 +3,7 @@ import { Search, Menu, X, ChevronRight, Network, Cpu, ShieldAlert, BarChart3, Bo
 
 export const navSections = [
   { id: 'org-hierarchy', label: '组织架构', icon: Network },
-  { id: 'workflow', label: 'AI数智化工单', icon: Cpu },
+  { id: 'workflow', label: 'CRM工单流转', icon: Cpu },
   { id: 'safety-check', label: '安检与隐患', icon: ShieldAlert },
   { id: 'kpi-dashboard', label: '财年指标', icon: BarChart3 },
 ];
@@ -18,7 +18,7 @@ export const extraSections = [
 
 export const sectionLabels: Record<string, string> = {
   'org-hierarchy': '组织架构',
-  'workflow': 'AI数智化工单',
+  'workflow': 'CRM工单流转',
   'safety-check': '安检与隐患',
   'kpi-dashboard': '财年指标',
   'gb-standards': '国标',

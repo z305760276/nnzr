@@ -16,7 +16,7 @@ import ServiceScoreSection from '../sections/ServiceScoreSection';
 
 const MODULE_META: Record<string, { title: string; subtitle: string; icon: React.FC<{className?: string}> }> = {
   org: { title: '组织架构全景图谱', subtitle: '基于《管理组织架构及岗位职责》V2.0', icon: Users },
-  workflow: { title: 'AI 数智化工单流转', subtitle: '基于《客户服务部管理制度》工单管理规范', icon: Cpu },
+  workflow: { title: 'CRM工单流转', subtitle: '基于《客户服务部管理制度》工单管理规范', icon: Cpu },
   safety: { title: '安检与隐患分级管理', subtitle: '基于《安检管理制度》V2.0 与《隐患管理制度》V2.0', icon: ShieldAlert },
   kpi: { title: '财年指标', subtitle: '基于《客户服务部管理制度》考核指标', icon: Gauge },
   standards: { title: '规范标准', subtitle: '国家标准 · 地方规范 · 行政法规 · 中燃集团规范 · 公司制度', icon: BookOpen },
