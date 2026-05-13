@@ -15,7 +15,7 @@ export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }
 
   const toggleTheme = () => {
     const html = document.documentElement;
-    const current = html.getAttribute('data-theme') || 'dark';
+    const current = html.getAttribute('data-theme') || 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     localStorage.setItem('app-theme', next);
@@ -24,8 +24,8 @@ export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }
   };
 
   const theme = typeof document !== 'undefined'
-    ? document.documentElement.getAttribute('data-theme') || 'dark'
-    : 'dark';
+    ? document.documentElement.getAttribute('data-theme') || 'light'
+    : 'light';
 
   const handleBack = () => {
     window.location.hash = '#/';

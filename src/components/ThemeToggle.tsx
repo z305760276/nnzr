@@ -2,12 +2,12 @@ import { Sun, Moon } from 'lucide-react';
 
 export default function ThemeToggle() {
   const theme = typeof document !== 'undefined'
-    ? document.documentElement.getAttribute('data-theme') || 'dark'
-    : 'dark';
+    ? document.documentElement.getAttribute('data-theme') || 'light'
+    : 'light';
 
   const toggle = () => {
     const html = document.documentElement;
-    const current = html.getAttribute('data-theme') || 'dark';
+    const current = html.getAttribute('data-theme') || 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     localStorage.setItem('app-theme', next);

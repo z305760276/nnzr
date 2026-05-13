@@ -41,13 +41,13 @@ function SearchWrapper({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const html = document.documentElement;
     const saved = localStorage.getItem('app-theme');
-    if (saved === 'light' || saved === 'dark') {
-      html.setAttribute('data-theme', saved);
-    }
+    const theme = saved === 'light' || saved === 'dark' ? saved : 'light';
+    html.setAttribute('data-theme', theme);
+    if (!saved) localStorage.setItem('app-theme', 'light');
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
       const updateMeta = () => {
-        const theme = html.getAttribute('data-theme') || 'dark';
+        const theme = html.getAttribute('data-theme') || 'light';
         meta.setAttribute('content', theme === 'dark' ? '#050A14' : '#F1F5F9');
       };
       updateMeta();
