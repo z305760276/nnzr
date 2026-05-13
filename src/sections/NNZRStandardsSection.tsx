@@ -60,7 +60,7 @@ export default function NNZRStandardsSection() {
                 </a>
               ) : s.link ? (
                 <button
-                  onClick={() => setPreview({ filePath: s.link, fileName: `附件：${s.code}.${s.name}.pdf`, fileType: 'pdf' })}
+                  onClick={() => setPreview({ filePath: s.link!, fileName: `附件：${s.code}.${s.name}.pdf`, fileType: 'pdf' })}
                   className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline cursor-pointer"
                 >
                   <Eye className="w-3.5 h-3.5" />
