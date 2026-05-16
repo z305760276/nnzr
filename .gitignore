@@ -23,6 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 .workbuddy/
+.env
+.vercel
 inline.js
 replace-colors.js
 info.md
