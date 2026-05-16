@@ -145,8 +145,8 @@ const QUICK_QUESTIONS = [
 // ============================================================
 
 const AI_API_URL = import.meta.env.PROD
-  ? 'https://nnzr-worker.z305760276.workers.dev/api/chat'
-  : '/api/chat';
+  ? 'https://nnzr-worker.z305760276.workers.dev/api/chat' // ← 部署 Cloudflare Worker 后替换
+  : '/api/chat'; // 开发环境用 Express 代理
 
 // ============================================================
 // 调用后端 AI API（支持上下文 + 知识注入）

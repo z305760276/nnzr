@@ -1,5 +1,5 @@
 import { Home, ChevronRight } from 'lucide-react';
-import { sectionLabels } from './Navigation';
+import { sectionLabels } from '@/data/sectionLabels';
 
 interface BreadcrumbProps {
   section: string;
