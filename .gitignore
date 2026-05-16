@@ -23,9 +23,13 @@ dist-ssr
 *.sln
 *.sw?
 .workbuddy/
+.trae/
+.codebuddy/
 .env
 .vercel
 inline.js
+# 原始设计文件
+AI助手形象.png
 replace-colors.js
 info.md
 依赖.md
