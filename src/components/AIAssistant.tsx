@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   MessageSquare,
   X,
@@ -10,7 +12,11 @@ import {
   Loader2,
   Plus,
   History,
+  Copy,
+  Check,
+  RefreshCw,
 } from 'lucide-react';
+import { search } from '@/data/searchIndex';
 
 // ============================================================
 // Types
@@ -135,15 +141,47 @@ const QUICK_QUESTIONS = [
 ];
 
 // ============================================================
-// 调用后端 AI API
+// AI API 配置
 // ============================================================
 
-async function fetchAIResponse(message: string): Promise<string> {
+const AI_API_URL = import.meta.env.PROD
+  ? 'https://nnzr-worker.z305760276.workers.dev/api/chat'
+  : '/api/chat';
+
+// ============================================================
+// 调用后端 AI API（支持上下文 + 知识注入）
+// ============================================================
+
+async function fetchAIResponse(
+  message: string,
+  history?: { role: 'user' | 'assistant'; content: string }[]
+): Promise<string> {
   try {
-    const res = await fetch('/api/chat', {
+    const localResults = search(message);
+    const knowledgeContext = localResults
+      .slice(0, 5)
+      .map(r => `[${r.category}] ${r.title}\n${r.content}`)
+      .join('\n\n');
+
+    const systemPrompt = `你是一个专业的燃气行业智能助手，名叫"燃气管家"。你为南宁中燃客户服务部提供支持。
+
+回答要求：
+1. 优先参考下方提供的"相关知识库内容"来回答
+2. 如果知识库中没有相关内容，请基于自身知识回答
+3. 回答要简洁专业，控制在 300 字以内
+4. 使用 Markdown 格式组织回答，善用列表、表格、加粗等格式
+5. 当涉及具体数据或标准时，务必引用来源
+
+## 相关知识库内容
+
+${knowledgeContext || '（当前问题无精确匹配的本地知识，请基于自身知识回答）'}
+
+请优先参考以上知识库内容。`;
+
+    const res = await fetch(AI_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message, history, systemPrompt }),
     });
     const data = await res.json();
     return data.reply || '抱歉，我没有理解您的问题，请换个方式描述。';
@@ -250,6 +288,8 @@ export default function AIAssistant() {
   const [input, setInput] = useState('');
   const [processing, setProcessing] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [retryMsgId, setRetryMsgId] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -318,7 +358,12 @@ export default function AIAssistant() {
     setInput('');
     setProcessing(true);
 
-    const reply = await fetchAIResponse(text);
+    const recentHistory = activeThread.messages
+      .slice(-6)
+      .filter(m => m.role === 'user' || m.role === 'assistant')
+      .map(m => ({ role: m.role, content: m.content }));
+
+    const reply = await fetchAIResponse(text, recentHistory);
     const assistantMsg: Message = {
       id: `msg-${Date.now()}-reply`,
       role: 'assistant',
@@ -330,6 +375,35 @@ export default function AIAssistant() {
       prev.map((t) => (t.id === activeThreadId ? { ...t, messages: [...t.messages, assistantMsg] } : t))
     );
     setProcessing(false);
+  };
+
+  const handleRetry = async (msgId: string) => {
+    const thread = threads.find(t => t.id === activeThreadId);
+    if (!thread || processing) return;
+    const lastUserMsg = [...thread.messages].reverse().find(m => m.role === 'user');
+    if (!lastUserMsg) return;
+
+    setRetryMsgId(msgId);
+    setProcessing(true);
+
+    const historyBefore = thread.messages
+      .slice(0, thread.messages.findIndex(m => m.id === msgId))
+      .slice(-6)
+      .map(m => ({ role: m.role, content: m.content }));
+
+    const reply = await fetchAIResponse(lastUserMsg.content, historyBefore);
+    const retryMsg: Message = {
+      id: `msg-${Date.now()}-retry`,
+      role: 'assistant',
+      content: reply,
+      timestamp: Date.now(),
+    };
+
+    setThreads((prev) =>
+      prev.map((t) => (t.id === activeThreadId ? { ...t, messages: [...t.messages, retryMsg] } : t))
+    );
+    setProcessing(false);
+    setRetryMsgId(null);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -426,7 +500,7 @@ export default function AIAssistant() {
                       <Sparkles className="w-3.5 h-3.5" style={{ color: '#F59E0B' }} />
                     </h2>
                     <p className="text-[10px] font-medium" style={{ color: c.subtitle }}>
-                      已连接 · 钉钉 AI 助手引擎
+                      已连接 · DeepSeek AI 引擎
                     </p>
                   </div>
                 </div>
@@ -587,33 +661,98 @@ export default function AIAssistant() {
                   {/* 气泡 */}
                   <div className={`max-w-[80%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                     <div
-                      className="px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap"
+                      className="px-4 py-3 rounded-2xl text-sm leading-relaxed"
                       style={
                         msg.role === 'user'
                           ? {
                               background: 'linear-gradient(135deg, #C8102E, #E31837)',
                               color: '#FFFFFF',
                               borderBottomRightRadius: '6px',
+                              whiteSpace: 'pre-wrap',
                             }
                           : {
                               backgroundColor: c.bubbleAiBg,
                               border: `1px solid ${c.bubbleAiBorder}`,
                               color: c.bubbleAi,
                               borderBottomLeftRadius: '6px',
+                              overflow: 'hidden',
                             }
                       }
                     >
-                      {msg.content}
+                      {msg.role === 'user' ? (
+                        msg.content
+                      ) : (
+                        <div className="prose prose-sm dark:prose-invert max-w-none"
+                          style={{
+                            '--tw-prose-body': c.bubbleAi,
+                            '--tw-prose-headings': c.bubbleAi,
+                            '--tw-prose-bold': c.bubbleAi,
+                            '--tw-prose-links': '#6366F1',
+                            '--tw-prose-code': c.bubbleAi,
+                            '--tw-prose-pre-bg': isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.08)',
+                            '--tw-prose-pre-color': c.bubbleAi,
+                          } as React.CSSProperties}
+                        >
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {msg.content}
+                          </ReactMarkdown>
+                        </div>
+                      )}
                     </div>
-                    <p
-                      className="text-[10px] mt-1 px-1"
+                    {/* 底部操作栏 */}
+                    <div
+                      className="flex items-center gap-2 mt-1 px-1"
                       style={{
-                        color: c.time,
-                        textAlign: msg.role === 'user' ? 'right' : 'left',
+                        flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
                       }}
                     >
-                      {formatTime(msg.timestamp)}
-                    </p>
+                      <span className="text-[10px]" style={{ color: c.time }}>
+                        {formatTime(msg.timestamp)}
+                      </span>
+                      {msg.role === 'assistant' && (
+                        <>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(msg.content);
+                              setCopiedId(msg.id);
+                              setTimeout(() => setCopiedId(null), 2000);
+                            }}
+                            className="text-[10px] transition-colors flex items-center gap-0.5"
+                            style={{ color: c.faint }}
+                            onMouseEnter={(e) => (e.currentTarget.style.color = c.iconBtnHover)}
+                            onMouseLeave={(e) => (e.currentTarget.style.color = c.faint)}
+                            title="复制回答"
+                          >
+                            {copiedId === msg.id ? (
+                              <Check className="w-3 h-3" style={{ color: '#10B981' }} />
+                            ) : (
+                              <Copy className="w-3 h-3" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleRetry(msg.id)}
+                            disabled={processing}
+                            className="text-[10px] transition-colors flex items-center gap-0.5"
+                            style={{
+                              color: processing && retryMsgId === msg.id ? c.faint : c.faint,
+                              opacity: processing && retryMsgId === msg.id ? 0.5 : 1,
+                              cursor: processing && retryMsgId === msg.id ? 'not-allowed' : 'pointer',
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!processing) e.currentTarget.style.color = c.iconBtnHover;
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!processing) e.currentTarget.style.color = c.faint;
+                            }}
+                            title="重新生成"
+                          >
+                            <RefreshCw
+                              className={`w-3 h-3 ${processing && retryMsgId === msg.id ? 'animate-spin' : ''}`}
+                            />
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -749,7 +888,7 @@ export default function AIAssistant() {
 
               {/* 页脚提示 */}
               <p className="text-[10px] text-center mt-2" style={{ color: c.footer }}>
-                使用 Thread → Message → Run 模式 · 钉钉 AI 驱动
+                Enter 发送 · Shift+Enter 换行 · DeepSeek AI 驱动
               </p>
             </div>
           </div>

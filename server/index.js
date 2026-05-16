@@ -11,27 +11,22 @@ app.use(express.json({ limit: '1mb' }));
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
-async function callDeepSeek(message) {
+async function callDeepSeek(message, history, systemPrompt) {
+  const messages = [
+    { role: 'system', content: systemPrompt },
+  ];
+  if (history && Array.isArray(history)) {
+    messages.push(...history);
+  }
+  messages.push({ role: 'user', content: message });
+
   const res = await axios.post(
     'https://api.deepseek.com/v1/chat/completions',
     {
       model: 'deepseek-chat',
-      messages: [
-        {
-          role: 'system',
-          content: `你是一个专业的燃气行业智能助手，名叫"燃气管家"。你为南宁中燃客户服务部提供支持。
-你的知识库包含以下内容：
-1. 组织架构：客户服务部下设多个科室，包括综合管理室、客户服务室、安检管理室、隐患管理室等
-2. 安全隐患分类：分为三级——一级隐患（立即危险）、二级隐患（需限期整改）、三级隐患（需关注）
-3. 服务指标：包括服务满意度、安检完成率、隐患整改率、工单处理时效等
-4. 业务流程：CRM工单流转、安检流程、隐患整改流程、客户服务流程等
-
-请基于以上知识回答用户问题。如果不清楚具体细节，请诚实说明，并建议用户查阅相关制度文档。回答要简洁专业，控制在200字以内。`,
-        },
-        { role: 'user', content: message },
-      ],
+      messages,
       temperature: 0.7,
-      max_tokens: 500,
+      max_tokens: 800,
     },
     {
       headers: {
@@ -45,12 +40,12 @@ async function callDeepSeek(message) {
 }
 
 app.post('/api/chat', async (req, res) => {
-  const { message } = req.body;
+  const { message, history, systemPrompt } = req.body;
   if (!message || !message.trim()) {
     return res.status(400).json({ error: '消息不能为空' });
   }
   try {
-    const reply = await callDeepSeek(message);
+    const reply = await callDeepSeek(message, history, systemPrompt);
     res.json({ reply });
   } catch (err) {
     const detail = err.response?.data || err.message;
