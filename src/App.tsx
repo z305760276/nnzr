@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import DetailPage from './pages/DetailPage';
 import GlobalSearchPanel from './components/GlobalSearch';
 import TopNav from './components/TopNav';
+import AIAssistant from './components/AIAssistant';
 import { createContext, useContext } from 'react';
 
 const SECTION_ROUTE_MAP: Record<string, string> = {
@@ -103,6 +104,7 @@ function App() {
             <Route path="/detail/:moduleId" element={<DetailPage />} />
           </Routes>
         </SearchWrapper>
+        <AIAssistant />
       </div>
     </HashRouter>
   );

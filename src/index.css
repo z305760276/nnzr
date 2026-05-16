@@ -173,3 +173,24 @@
 /* Hero Banner - 暗色模式下文字白色提高可读性 */
 [data-theme="dark"] .hero-tagline { color: rgba(255, 255, 255, 0.8) !important; }
 [data-theme="dark"] .hero-desc { color: rgba(255, 255, 255, 0.9) !important; }
+
+/* ========== AI Assistant 滚动条 ========== */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.3);
+}
+[data-theme="dark"] .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
