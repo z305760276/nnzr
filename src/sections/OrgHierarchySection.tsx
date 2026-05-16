@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { AccordionGroup, AccordionItem } from '../components/Accordion';
 import { orgHierarchy, getChildren, type OrgNode } from '../data/orgHierarchy';
-import { Users, ShieldAlert, FileText, ChevronRight, ChevronDown, Brain, X, BookOpen } from 'lucide-react';
+import { Users, ShieldAlert, FileText, ChevronRight, ChevronDown, Brain, X, BookOpen, Network } from 'lucide-react';
+import OrgGraphSection from './OrgGraphSection';
 
 const levelColors: Record<number, { dot: string }> = {
   1: { dot: '#C8102E' }, 2: { dot: '#E31837' }, 3: { dot: '#FF6B8A' }, 4: { dot: '#94A3B8' },
@@ -104,15 +105,38 @@ function DetailModal({ node, onClose }: { node: OrgNode; onClose: () => void }) 
 
 export default function OrgHierarchySection() {
   const [selectedNode, setSelectedNode] = useState<OrgNode | null>(null);
+  const [viewMode, setViewMode] = useState<'tree' | 'graph'>('graph');
   const rootNodes = orgHierarchy.filter(n => n.level === 1);
   const totalNodes = orgHierarchy.length;
   const aiNodes = orgHierarchy.filter(n => n.aiEnabled).length;
 
   return (
     <div className="space-y-6">
-        
+      {viewMode === 'graph' ? (
+        <>
+          <div className="flex items-center justify-end">
+            <button
+              onClick={() => setViewMode('tree')}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-accent"
+            >
+              <FileText className="size-3.5" />
+              切换到树状视图
+            </button>
+          </div>
+          <OrgGraphSection />
+        </>
+      ) : (
         <AccordionGroup className="space-y-3">
           <AccordionItem id="org-tree" title="岗位层级树" summary={`${totalNodes}个岗位 · 点击岗位名称查看职责详情`} icon={<Users className="w-5 h-5" />}>
+            <div className="flex items-center justify-end mb-2">
+              <button
+                onClick={() => setViewMode('graph')}
+                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-accent"
+              >
+                <Network className="size-3.5" />
+                切换到图谱视图
+              </button>
+            </div>
             <div className="dark-card bg-[var(--card-inner-bg)] border border-[rgba(200,16,46,0.06)] rounded-lg p-3 max-h-[400px] overflow-y-auto">
               {rootNodes.map(node => <TreeNode key={node.id} node={node} depth={0} onSelect={setSelectedNode} />)}
             </div>
@@ -167,6 +191,7 @@ export default function OrgHierarchySection() {
             </div>
           </AccordionItem>
         </AccordionGroup>
+      )}
 
         {selectedNode && <DetailModal node={selectedNode} onClose={() => setSelectedNode(null)} />}
       </div>
