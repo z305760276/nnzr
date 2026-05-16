@@ -40,6 +40,7 @@ export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }
             src="./logo.png"
             alt="中国燃气"
             className="h-7 w-auto object-contain"
+            fetchPriority="high"
           />
           <div className="hidden sm:block">
             <span className="text-[#C8102E] text-xs font-medium">客户服务部管理图谱</span>
