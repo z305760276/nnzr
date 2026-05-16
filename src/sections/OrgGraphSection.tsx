@@ -1,185 +1,83 @@
-import { useState, useCallback, useMemo } from 'react'
-import ReactECharts from 'echarts-for-react'
-import { X, Users, Brain, ChevronLeft, Maximize2, Minimize2, Shield, FileText } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { X, Users, Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Shield, FileText, BookOpen } from 'lucide-react'
 import {
   orgHierarchy,
-  orgRelations,
   getChildren,
   getReportLine,
   type OrgNode,
 } from '../data/orgHierarchy'
 
-interface LevelMeta {
-  color: string
-  name: string
-  symbolSize: number
+const LEVEL_COLORS: Record<number, { bg: string; border: string; text: string; badge: string; line: string }> = {
+  1: { bg: '#EBF5FF', border: '#60A5FA', text: '#1E40AF', badge: '#3B82F6', line: '#93C5FD' },
+  2: { bg: '#ECFDF5', border: '#6EE7B7', text: '#065F46', badge: '#10B981', line: '#A7F3D0' },
+  3: { bg: '#EEF2FF', border: '#A5B4FC', text: '#3730A3', badge: '#6366F1', line: '#C7D2FE' },
+  4: { bg: '#FFFBEB', border: '#FCD34D', text: '#92400E', badge: '#F59E0B', line: '#FDE68A' },
+  5: { bg: '#FDF2F8', border: '#F9A8D4', text: '#9D174D', badge: '#EC4899', line: '#FBCFE8' },
 }
 
-const LEVEL_META: Record<number, LevelMeta> = {
-  1: { color: '#C8102E', name: '部门负责人', symbolSize: 72 },
-  2: { color: '#B91C1C', name: '主管/站长', symbolSize: 56 },
-  3: { color: '#7C3AED', name: '班长/专员', symbolSize: 44 },
-  4: { color: '#1D4ED8', name: '执行岗', symbolSize: 36 },
+const LEVEL_NAMES: Record<number, string> = {
+  1: '部门负责人',
+  2: '部门副经理',
+  3: '主管/站长',
+  4: '班长/专员',
+  5: '一线岗',
 }
 
-const RING_RADII = [0, 140, 260, 380]
+const LEVEL_HEADCOUNT: Record<number, number> = {
+  1: 1,
+  2: 4,
+  3: 10,
+  4: 98,
+  5: 220,
+}
 
-function computeRadialPositions() {
-  const positions: Record<string, [number, number]> = {}
-  for (let level = 1; level <= 4; level++) {
-    const nodes = orgHierarchy.filter((n) => n.level === level)
-    const count = nodes.length
-    const radius = RING_RADII[level - 1]
-    if (count === 1) {
-      positions[nodes[0].id] = [0, 0]
-    } else {
-      nodes.forEach((n, i) => {
-        const angle = (2 * Math.PI * i) / count - Math.PI / 2
-        positions[n.id] = [radius * Math.cos(angle), radius * Math.sin(angle)]
-      })
-    }
+function buildTreeStructure(nodeId: string): any {
+  const node = orgHierarchy.find((n) => n.id === nodeId)
+  if (!node) return null
+  const children = getChildren(nodeId)
+  return {
+    node,
+    children: children.map((c) => buildTreeStructure(c.id)).filter(Boolean),
   }
-  return positions
 }
 
-const RADIAL_POSITIONS = computeRadialPositions()
+function OrgChartNode({ data, level, onNodeClick }: { data: any; level: number; onNodeClick: (node: OrgNode) => void }) {
+  const node = data.node as OrgNode
+  const colors = LEVEL_COLORS[level]
+  const parentColors = LEVEL_COLORS[level - 1] || colors
+  const titleParts = node.title.match(/^(.+?)（(.+)）$/)
+  const main = titleParts ? titleParts[1] : node.title
+  const sub = titleParts ? titleParts[2] : ''
+  const childCount = data.children.length
 
-function buildGraphData(focusNode?: OrgNode) {
-  const focusId = focusNode?.id
-
-  let visibleIds: Set<string>
-  if (focusId) {
-    visibleIds = new Set([focusId])
-    const children = getChildren(focusId)
-    children.forEach((c) => visibleIds.add(c.id))
-    children.flatMap((c) => getChildren(c.id)).forEach((c) => visibleIds.add(c.id))
-  } else {
-    visibleIds = new Set(orgHierarchy.map((n) => n.id))
-  }
-
-  const visibleNodes = orgHierarchy.filter((n) => visibleIds.has(n.id))
-
-  const nodePositions = computeRadialPositionsFromFocus(focusId)
-  const focusX = focusId ? (nodePositions[focusId]?.[0] ?? 0) : 0
-  const focusY = focusId ? (nodePositions[focusId]?.[1] ?? 0) : 0
-
-  const nodes = visibleNodes.map((n) => {
-    const meta = LEVEL_META[n.level]
-    const isFocus = n.id === focusId
-    const rawPos = nodePositions[n.id] ?? [0, 0]
-
-    if (n.level === 1 && !focusId) {
-      return {
-        id: n.id,
-        name: n.title,
-        fullName: n.title,
-        level: n.level,
-        category: 0,
-        aiEnabled: n.aiEnabled,
-        x: 0,
-        y: 0,
-        itemStyle: {
-          color: meta.color,
-          shadowBlur: 20,
-          shadowColor: 'rgba(200,16,46,0.45)',
-          borderColor: 'rgba(255,255,255,0.3)',
-          borderWidth: 2,
-        },
-        symbolSize: meta.symbolSize,
-        label: {
-          show: true,
-          position: 'bottom',
-          fontSize: 13,
-          fontWeight: 'bold',
-          color: '#ffffff',
-          textShadowBlur: 4,
-          textShadowColor: 'rgba(0,0,0,0.5)',
-          distance: 8,
-          formatter: (p: any) => p.data.fullName || p.data.name,
-        },
-      }
-    }
-
-    return {
-      id: n.id,
-      name: n.title.length > 10 ? n.title.slice(0, 10) + '...' : n.title,
-      fullName: n.title,
-      level: n.level,
-      category: n.level - 1,
-      aiEnabled: n.aiEnabled,
-      x: rawPos[0] - focusX,
-      y: rawPos[1] - focusY,
-      itemStyle: {
-        color: isFocus ? meta.color : meta.color,
-        shadowBlur: isFocus ? 16 : 4,
-        shadowColor: isFocus ? `rgba(200,16,46,0.35)` : 'rgba(0,0,0,0.12)',
-        borderColor: isFocus ? '#ffffff' : 'rgba(255,255,255,0.15)',
-        borderWidth: isFocus ? 3 : 1,
-        opacity: isFocus ? 1 : 0.85,
-      },
-      symbolSize: isFocus ? meta.symbolSize * 1.2 : meta.symbolSize * (1 - 0.08 * (n.level - 1)),
-      label: {
-        show: true,
-        position: 'bottom',
-        fontSize: isFocus ? 12 : n.level <= 2 ? 11 : 10,
-        fontWeight: isFocus ? 'bold' : 'normal',
-        color: '#ffffff',
-        textShadowBlur: 3,
-        textShadowColor: 'rgba(0,0,0,0.4)',
-        distance: 6,
-        formatter: (p: any) => {
-          const name = p.data.fullName || p.data.name
-          return name.length > 14 ? name.slice(0, 14) + '...' : name
-        },
-      },
-    }
-  })
-
-  const nodeIds = new Set(nodes.map((n) => n.id))
-
-  const links = orgRelations
-    .filter((r) => nodeIds.has(r.from) && nodeIds.has(r.to))
-    .map((r) => ({
-      source: r.from,
-      target: r.to,
-      lineStyle: {
-        color: r.type === 'collaborates' ? '#A855F7' : '#475569',
-        width: r.type === 'reports' ? 2 : 1.2,
-        curveness: r.type === 'collaborates' ? 0.3 : 0.1,
-        type: r.type === 'collaborates' ? 'dashed' : 'solid' as const,
-        opacity: 0.5,
-      },
-      label: {
-        show: r.type === 'collaborates',
-        formatter: '协作',
-        fontSize: 9,
-        color: '#A855F7',
-      },
-    }))
-
-  return { nodes, links }
-}
-
-function computeRadialPositionsFromFocus(focusId?: string) {
-  if (!focusId) return RADIAL_POSITIONS
-  const positions: Record<string, [number, number]> = {}
-  const focusNode = orgHierarchy.find((n) => n.id === focusId)
-  if (!focusNode) return RADIAL_POSITIONS
-
-  const focusLevel = focusNode.level
-
-  positions[focusId] = [0, 0]
-
-  for (let level = focusLevel; level <= Math.min(focusLevel + 2, 4); level++) {
-    const nodes = orgHierarchy.filter((n) => n.level === level && n.id !== focusId)
-    const radius = RING_RADII[level - focusLevel]
-    nodes.forEach((n, i) => {
-      const angle = (2 * Math.PI * i) / nodes.length - Math.PI / 2
-      positions[n.id] = [radius * Math.cos(angle), radius * Math.sin(angle)]
-    })
-  }
-
-  return positions
+  return (
+    <li>
+      <div
+        className="node-card"
+        onClick={(e) => { e.stopPropagation(); onNodeClick(node) }}
+        style={{
+          backgroundColor: colors.bg,
+          borderColor: colors.border,
+          color: colors.text,
+          minWidth: childCount > 2 ? 'auto' : '100px',
+          padding: childCount > 0 ? '6px 16px' : '4px 12px',
+        }}
+      >
+        <span className="level-badge" style={{ backgroundColor: colors.badge, color: '#fff' }}>
+          L{level}
+        </span>
+        <span className="main-text">{main}</span>
+        {sub && <span className="sub-text">{sub}</span>}
+      </div>
+      {childCount > 0 && (
+        <ul style={{ ['--line-color' as string]: parentColors.line }}>
+          {data.children.map((child: any) => (
+            <OrgChartNode key={child.node.id} data={child} level={level + 1} onNodeClick={onNodeClick} />
+          ))}
+        </ul>
+      )}
+    </li>
+  )
 }
 
 function OrgGraphSection() {
@@ -187,89 +85,15 @@ function OrgGraphSection() {
   const [selectedNode, setSelectedNode] = useState<OrgNode | undefined>(undefined)
   const [fullscreen, setFullscreen] = useState(false)
 
-  const breadcrumb = useMemo(() => {
-    if (!focusNode) return []
-    return getReportLine(focusNode.id)
-  }, [focusNode])
+  const breadcrumb = useMemo(() => (focusNode ? getReportLine(focusNode.id) : []), [focusNode])
 
-  const graphData = useMemo(() => buildGraphData(focusNode), [focusNode])
+  const treeData = useMemo(() => {
+    const rootId = focusNode?.id || orgHierarchy.find((n) => n.level === 1)?.id
+    return rootId ? buildTreeStructure(rootId) : null
+  }, [focusNode])
 
   const totalNodes = orgHierarchy.length
   const aiNodes = orgHierarchy.filter((n) => n.aiEnabled).length
-
-  const option = useMemo(
-    () => ({
-      backgroundColor: 'transparent',
-      tooltip: {
-        formatter: (params: any) => {
-          if (params.dataType === 'node') {
-            const d = params.data
-            const meta = LEVEL_META[d.level]
-            const levelName = meta?.name || ''
-            return `<div style="font-size:14px;font-weight:700;color:#1E293B;margin-bottom:6px">${d.fullName || d.name}</div>
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-                      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${meta?.color || '#64748B'}"></span>
-                      <span style="font-size:12px;color:#64748B">${levelName}</span>
-                    </div>
-                    ${d.aiEnabled ? '<div style="font-size:11px;color:#C8102E;margin-top:4px;display:flex;align-items:center;gap:4px">🧠 AI赋能岗位</div>' : ''}
-                    <div style="font-size:11px;color:#94A3B8;margin-top:4px">点击查看详情</div>`
-          }
-          return ''
-        },
-        backgroundColor: '#ffffff',
-        borderColor: '#E2E8F0',
-        borderWidth: 1,
-        borderRadius: 8,
-        padding: [12, 16],
-        textStyle: { color: '#1E293B', fontSize: 12 },
-        extraCssText: 'box-shadow: 0 4px 20px rgba(0,0,0,0.1)',
-      },
-      series: [
-        {
-          type: 'graph',
-          layout: 'none',
-          roam: true,
-          draggable: true,
-          data: graphData.nodes,
-          links: graphData.links,
-          categories: [
-            { name: '部门负责人', itemStyle: { color: LEVEL_META[1].color } },
-            { name: '主管/站长', itemStyle: { color: LEVEL_META[2].color } },
-            { name: '班长/专员', itemStyle: { color: LEVEL_META[3].color } },
-            { name: '执行岗', itemStyle: { color: LEVEL_META[4].color } },
-          ],
-          edgeSymbol: ['none', 'arrow'],
-          edgeSymbolSize: [0, 7],
-          lineStyle: { opacity: 0.5 },
-          emphasis: {
-            focus: 'adjacency',
-            lineStyle: { width: 3, opacity: 0.9 },
-            itemStyle: { shadowBlur: 20, shadowColor: 'rgba(0,0,0,0.2)' },
-          },
-          blur: { opacity: 0.12 },
-          animationDuration: 600,
-          animationEasingUpdate: 'cubicOut',
-          animationDelay: (idx: number) => idx * 30,
-        },
-      ],
-    }),
-    [graphData]
-  )
-
-  const onChartClick = useCallback(
-    (params: any) => {
-      if (params.dataType === 'node') {
-        const node = orgHierarchy.find((n) => n.id === params.data.id)
-        if (node) {
-          setSelectedNode(node === selectedNode ? undefined : node)
-          if (node.level < 4) {
-            setFocusNode(node)
-          }
-        }
-      }
-    },
-    [selectedNode]
-  )
 
   const resetView = () => {
     setFocusNode(undefined)
@@ -284,30 +108,36 @@ function OrgGraphSection() {
   const renderDetailPanel = () => {
     if (!selectedNode) return null
     const n = selectedNode
+    const children = getChildren(n.id)
+    const parent = n.parentId ? orgHierarchy.find(o => o.id === n.parentId) : undefined
+    const colors = LEVEL_COLORS[n.level] || LEVEL_COLORS[5]
+
     return (
       <div className="rounded-xl border border-border bg-card overflow-hidden shadow-lg">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
           <div className="flex items-center gap-3">
             <div
               className="size-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0"
-              style={{ background: LEVEL_META[n.level]?.color || '#64748B' }}
+              style={{ background: colors.border }}
             >
               {n.title.charAt(0)}
             </div>
             <div>
               <h3 className="text-sm font-semibold text-foreground">{n.title}</h3>
-              <div className="flex items-center gap-2 mt-0.5">
-                <div
-                  className="size-1.5 rounded-full shrink-0"
-                  style={{ background: LEVEL_META[n.level]?.color }}
-                />
-                <span className="text-xs text-muted-foreground">
-                  {LEVEL_META[n.level]?.name || `Level ${n.level}`}
+              <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                <span className="text-[10px] px-1.5 py-0.5 rounded font-medium text-white" style={{ background: colors.badge }}>
+                  {LEVEL_NAMES[n.level] || `L${n.level}`}
                 </span>
                 {n.aiEnabled && (
                   <span className="flex items-center gap-1 text-[10px] text-primary px-2 py-0.5 rounded-full bg-primary/10">
                     <Brain className="size-3" />
                     AI赋能
+                  </span>
+                )}
+                {n.chapter && (
+                  <span className="flex items-center gap-1 text-[10px] text-muted-foreground px-2 py-0.5 rounded-full bg-muted/50">
+                    <BookOpen className="size-3" />
+                    {n.chapter}
                   </span>
                 )}
               </div>
@@ -321,173 +151,258 @@ function OrgGraphSection() {
           </button>
         </div>
 
-        <div className="max-h-[280px] overflow-y-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border">
-            <div className="bg-card p-4 space-y-3">
-              <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
-                <FileText className="size-3.5" />
-                核心职责
-              </h4>
-              <ul className="space-y-2">
-                {n.responsibilities.slice(0, 6).map((r, i) => (
-                  <li
-                    key={i}
-                    className="text-xs text-muted-foreground leading-relaxed bg-muted/40 rounded-lg px-3 py-2"
-                  >
-                    {r}
-                  </li>
-                ))}
-                {n.responsibilities.length > 6 && (
-                  <li className="text-[10px] text-muted-foreground/60 text-center">
-                    +{n.responsibilities.length - 6} 条其余职责
-                  </li>
-                )}
-              </ul>
-            </div>
-            <div className="bg-card p-4 space-y-3">
-              <h4 className="text-xs font-semibold flex items-center gap-1.5" style={{ color: '#DC2626' }}>
-                <Shield className="size-3.5" />
-                安全职责
-              </h4>
-              <ul className="space-y-2">
-                {n.safetyDuties.slice(0, 4).map((d, i) => (
-                  <li
-                    key={i}
-                    className="text-xs text-muted-foreground leading-relaxed bg-red-50 dark:bg-red-950/20 rounded-lg px-3 py-2"
-                  >
-                    {d}
-                  </li>
-                ))}
-                {n.safetyDuties.length > 4 && (
-                  <li className="text-[10px] text-muted-foreground/60 text-center">
-                    +{n.safetyDuties.length - 4} 条其余职责
-                  </li>
-                )}
-              </ul>
-            </div>
+        {(parent || children.length > 0) && (
+          <div className="flex items-center gap-1.5 px-5 py-2 bg-muted/20 border-b border-border overflow-x-auto">
+            <span className="text-[10px] text-muted-foreground/60 shrink-0">穿透导航：</span>
+            {parent && (
+              <button
+                onClick={() => setSelectedNode(parent)}
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-accent shrink-0"
+              >
+                <ChevronLeft className="size-3" />
+                {parent.title.length > 10 ? parent.title.slice(0, 10) + '..' : parent.title}
+              </button>
+            )}
+            <span className="text-[10px] text-muted-foreground/40">|</span>
+            {children.map(child => (
+              <button
+                key={child.id}
+                onClick={() => setSelectedNode(child)}
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-accent shrink-0"
+              >
+                {child.title.length > 10 ? child.title.slice(0, 10) + '..' : child.title}
+                <ChevronRight className="size-3" />
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          <div className="p-5 space-y-3">
+            <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
+              <FileText className="size-3.5" />岗位职责
+              <span className="font-normal text-muted-foreground/60">（共{n.responsibilities.length}条）</span>
+            </h4>
+            <ol className="space-y-2 list-decimal list-inside">
+              {n.responsibilities.map((r, i) => (
+                <li key={i} className="text-xs text-muted-foreground leading-relaxed bg-muted/40 rounded-lg px-3 py-2 pl-2">
+                  <span className="ml-2">{r}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="p-5 space-y-3 border-l border-border">
+            <h4 className="text-xs font-semibold flex items-center gap-1.5" style={{ color: '#DC2626' }}>
+              <Shield className="size-3.5" />安全职责
+              <span className="font-normal text-muted-foreground/60">（共{n.safetyDuties.length}条）</span>
+            </h4>
+            <ol className="space-y-2 list-decimal list-inside">
+              {n.safetyDuties.map((d, i) => (
+                <li key={i} className="text-xs text-muted-foreground leading-relaxed bg-red-50 dark:bg-red-950/20 rounded-lg px-3 py-2 pl-2">
+                  <span className="ml-2">{d}</span>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
 
         <div className="px-5 py-3 border-t border-border flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-muted-foreground bg-muted/20">
-          {n.reportsTo && (
-            <span>
-              汇报对象：<span className="text-foreground font-medium">{n.reportsTo}</span>
-            </span>
-          )}
-          {n.manages && n.manages.length > 0 && (
-            <span>
-              直接管理：<span className="text-foreground font-medium">{n.manages.join('、')}</span>
-            </span>
-          )}
-          {n.staffCount && (
-            <span>
-              团队规模：<span className="text-foreground font-medium">{n.staffCount}人</span>
-            </span>
-          )}
+          {n.reportsTo && <span>汇报对象：<span className="text-foreground font-medium">{n.reportsTo}</span></span>}
+          {n.manages && n.manages.length > 0 && <span>直接管理：<span className="text-foreground font-medium">{n.manages.join('、')}</span></span>}
+          {n.staffCount && <span>团队规模：<span className="text-foreground font-medium">{n.staffCount}人</span></span>}
+          {n.chapter && <span>制度来源：<span className="text-foreground font-medium">{n.chapter}</span></span>}
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
-      <div className={fullscreen ? 'fixed inset-0 z-[90] bg-background p-4 flex flex-col' : ''}>
-        <div
-          className={`rounded-xl border border-border bg-card overflow-hidden ${
-            fullscreen ? 'flex-1 flex flex-col' : ''
-          }`}
-        >
-          <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-gradient-to-r from-primary/[0.03] to-transparent">
-            <div className="flex items-center gap-2.5">
-              <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Users className="size-4 text-primary" />
+    <>
+      <style>{`
+        .org-tree-wrapper {
+          width: 100%;
+          overflow: auto;
+          padding: 24px 0;
+        }
+        .org-tree {
+          display: inline-flex;
+          min-width: 100%;
+          justify-content: center;
+          padding: 0 40px;
+        }
+        .org-tree ul {
+          padding-top: 28px;
+          position: relative;
+          display: flex;
+          justify-content: center;
+          padding-left: 0;
+          margin: 0;
+          list-style: none;
+        }
+        .org-tree li {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: relative;
+          padding: 28px 10px 0 10px;
+          list-style: none;
+        }
+        .org-tree li::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 50%;
+          border-left: 2px solid var(--line-color, #A7F3D0);
+          width: 0;
+          height: 28px;
+          z-index: 0;
+        }
+        .org-tree ul::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 10px;
+          right: 10px;
+          border-top: 2px solid var(--line-color, #A7F3D0);
+          z-index: 0;
+        }
+        .org-tree > ul::before {
+          display: none;
+        }
+        .org-tree > ul > li::before {
+          display: none;
+        }
+        .org-tree li:only-child {
+          padding-top: 0;
+        }
+        .org-tree li:only-child::before {
+          display: none;
+        }
+        .org-tree li:first-child::before {
+          left: 50%;
+        }
+        .org-tree li:last-child::before {
+          left: 50%;
+        }
+        .node-card {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          border: 1.5px solid;
+          text-align: center;
+          min-height: 44px;
+          transition: transform 0.2s, box-shadow 0.2s;
+          cursor: pointer;
+        }
+        .node-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .level-badge {
+          display: inline-block;
+          font-size: 9px;
+          font-weight: 600;
+          padding: 1px 5px;
+          border-radius: 3px;
+          margin-bottom: 2px;
+          line-height: 1.4;
+        }
+        .main-text {
+          font-size: 12px;
+          font-weight: 500;
+          line-height: 1.3;
+          white-space: nowrap;
+        }
+        .sub-text {
+          font-size: 10px;
+          font-weight: 400;
+          opacity: 0.7;
+          white-space: nowrap;
+          margin-top: 1px;
+        }
+      `}</style>
+
+      <div className="space-y-4">
+        <div className={fullscreen ? 'fixed inset-0 z-[90] bg-background p-4 flex flex-col' : ''}>
+          <div className={`rounded-xl border border-border bg-card overflow-hidden ${fullscreen ? 'flex-1 flex flex-col' : ''}`}>
+            <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-gradient-to-r from-primary/[0.03] to-transparent">
+              <div className="flex items-center gap-2.5">
+                <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Users className="size-4 text-primary" />
+                </div>
+                <div>
+                  <span className="text-sm font-semibold text-foreground">
+                    {focusNode ? focusNode.title : '组织架构全景图谱'}
+                  </span>
+                  <p className="text-[10px] text-muted-foreground leading-none mt-0.5">
+                    {focusNode ? `${LEVEL_NAMES[focusNode.level] || ''} · 点击节点查看职责穿透` : '层级展开 · 点击节点查看岗位职责与安全职责'}
+                  </p>
+                </div>
               </div>
-              <div>
-                <span className="text-sm font-semibold text-foreground">
-                  {focusNode ? focusNode.title : '组织架构全景图谱'}
-                </span>
-                <p className="text-[10px] text-muted-foreground leading-none mt-0.5">
-                  {focusNode ? `${LEVEL_META[focusNode.level]?.name || ''} · 点击子节点继续穿透` : '经理居中 · 辐射式网状布局'}
-                </p>
+              <div className="flex items-center gap-1">
+                {breadcrumb.length > 0 && (
+                  <button onClick={resetView} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 rounded-lg hover:bg-accent">
+                    <ChevronLeft className="size-3.5" />返回全景
+                  </button>
+                )}
+                <button onClick={() => setFullscreen(!fullscreen)} className="p-1.5 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" title={fullscreen ? '退出全屏' : '全屏'}>
+                  {fullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
+                </button>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              {breadcrumb.length > 0 && (
-                <button
-                  onClick={resetView}
-                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 rounded-lg hover:bg-accent"
-                >
-                  <ChevronLeft className="size-3.5" />
-                  返回全景
-                </button>
+            {breadcrumb.length > 0 && (
+              <div className="flex items-center gap-1.5 px-5 py-2 bg-muted/20 border-b border-border overflow-x-auto">
+                <span className="text-[10px] text-muted-foreground/60 shrink-0">导航路径：</span>
+                {breadcrumb.map((n, i) => (
+                  <button
+                    key={n.id}
+                    onClick={() => goToBreadcrumb(n)}
+                    className={`text-xs shrink-0 px-2.5 py-0.5 rounded-full transition-all ${n.id === focusNode?.id ? 'text-white font-medium shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-accent'}`}
+                    style={n.id === focusNode?.id ? { background: LEVEL_COLORS[n.level]?.badge } : undefined}
+                  >
+                    {n.title.length > 8 ? n.title.slice(0, 8) + '..' : n.title}
+                    {i < breadcrumb.length - 1 && <ChevronLeft className="size-2.5 inline ml-1 -rotate-180 opacity-50" />}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="org-tree-wrapper" style={{ height: fullscreen ? '100%' : '560px', overflow: 'auto' }}>
+              {treeData && (
+                <div className="org-tree">
+                  <ul>
+                    <OrgChartNode data={treeData} level={1} onNodeClick={(node) => { setSelectedNode(node); setFocusNode(node) }} />
+                  </ul>
+                </div>
               )}
-              <button
-                onClick={() => setFullscreen(!fullscreen)}
-                className="p-1.5 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-                title={fullscreen ? '退出全屏' : '全屏'}
-              >
-                {fullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
-              </button>
             </div>
           </div>
-
-          {breadcrumb.length > 0 && (
-            <div className="flex items-center gap-1.5 px-5 py-2 bg-muted/20 border-b border-border overflow-x-auto">
-              <span className="text-[10px] text-muted-foreground/60 shrink-0">导航路径：</span>
-              {breadcrumb.map((n, i) => (
-                <button
-                  key={n.id}
-                  onClick={() => goToBreadcrumb(n)}
-                  className={`text-xs shrink-0 px-2.5 py-0.5 rounded-full transition-all ${
-                    n.id === focusNode?.id
-                      ? 'text-white font-medium shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                  }`}
-                  style={n.id === focusNode?.id ? { background: LEVEL_META[n.level]?.color } : undefined}
-                >
-                  {n.title.length > 8 ? n.title.slice(0, 8) + '..' : n.title}
-                  {i < breadcrumb.length - 1 && (
-                    <ChevronLeft className="size-2.5 inline ml-1 -rotate-180 opacity-50" />
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <div className="relative" style={{ height: fullscreen ? '100%' : '560px' }}>
-            <ReactECharts
-              option={option}
-              style={{ height: '100%', width: '100%' }}
-              onEvents={{ click: onChartClick }}
-            />
-          </div>
+          {renderDetailPanel()}
         </div>
 
-        {renderDetailPanel()}
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground px-1">
-        <div className="flex items-center gap-3 flex-wrap">
-          {([1, 2, 3, 4] as const).map((level) => {
-            const count = orgHierarchy.filter((n) => n.level === level).length
-            return (
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground px-1">
+          <div className="flex items-center gap-3 flex-wrap">
+            {([1, 2, 3, 4, 5] as const).map((level) => (
               <span key={level} className="flex items-center gap-1.5">
-                <span className="size-2 rounded-full shrink-0" style={{ background: LEVEL_META[level].color }} />
-                <span className="text-foreground/70">{LEVEL_META[level].name}</span>
-                <span className="font-medium text-foreground">{count}</span>
+                <span className="size-2 rounded-full shrink-0" style={{ background: LEVEL_COLORS[level].badge }} />
+                <span className="text-foreground/70">{LEVEL_NAMES[level]}</span>
+                <span className="font-medium text-foreground">{LEVEL_HEADCOUNT[level]}</span>
               </span>
-            )
-          })}
-        </div>
-        <div className="flex items-center gap-3">
-          <span>{totalNodes} 个节点 · {orgRelations.length} 条关联</span>
-          <span className="flex items-center gap-1">
-            <Brain className="size-3" />
-            AI赋能 {aiNodes} 个岗位
-          </span>
+            ))}
+          </div>
+          <div className="flex items-center gap-3">
+            <span>{totalNodes} 个节点</span>
+            <span className="flex items-center gap-1">
+              <Brain className="size-3" />AI赋能 {aiNodes} 个岗位
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
