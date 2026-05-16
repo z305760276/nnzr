@@ -114,7 +114,7 @@ export const orgHierarchy: OrgNode[] = [
     ],
     aiEnabled: true,
     reportsTo: "客户服务部经理",
-    manages: ["客户服务部管理岗（服务运营主管）"],
+    manages: ["客户服务部管理岗（服务运营主管）", "客户服务部管理岗（综合主管）"],
   },
   {
     id: "safety_supervisor",
@@ -145,7 +145,7 @@ export const orgHierarchy: OrgNode[] = [
     ],
     aiEnabled: true,
     reportsTo: "客户服务部经理",
-    manages: ["客户服务部管理岗（综合主管）", "稽查班长"],
+    manages: ["稽查班长"],
   },
 
   // ==================== Level 3 - 服务站 ====================
@@ -247,7 +247,7 @@ export const orgHierarchy: OrgNode[] = [
     title: "客户服务部管理岗（综合主管）",
     level: 3,
     category: "管理岗",
-    parentId: "safety_supervisor",
+    parentId: "mgr_comprehensive",
     chapter: "第五条",
     responsibilities: [
       "在部门领导的带领下，开展部门团队建设、制定员工培训及激励计划",
@@ -270,7 +270,7 @@ export const orgHierarchy: OrgNode[] = [
       "按时完成本部门经理及副经理布置的安全工作任务",
     ],
     aiEnabled: true,
-    reportsTo: "客户服务部管理岗（安全稽查主管）",
+    reportsTo: "客户服务部副经理（综合模块）",
     manages: ["客服AI数智化岗（数字化专员）", "表具及客服物资岗（综合管理员）"],
   },
   {
@@ -738,7 +738,7 @@ export const orgRelations: OrgRelation[] = [
   { from: "station_manager", to: "mgr_station", type: "reports" },
   { from: "accounting_supervisor", to: "mgr_station", type: "reports" },
   { from: "service_ops_supervisor", to: "mgr_comprehensive", type: "reports" },
-  { from: "comprehensive_supervisor", to: "safety_supervisor", type: "reports" },
+  { from: "comprehensive_supervisor", to: "mgr_comprehensive", type: "reports" },
   { from: "inspection_leader", to: "safety_supervisor", type: "reports" },
   { from: "grid_leader", to: "station_manager", type: "reports" },
   { from: "info_warehouse", to: "station_manager", type: "reports" },
