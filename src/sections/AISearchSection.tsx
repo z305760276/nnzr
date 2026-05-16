@@ -1,76 +1,8 @@
-import { useEffect, useRef } from 'react';
 import { Bot, Sparkles, ExternalLink } from 'lucide-react';
 
-const BOT_ID = '7640388142570684451';
-const TOKEN = 'cztei_q8DfPR6nMe9wXxsSdpt7FIBHHuEoomgjuaZhnC3NiNdBxsnOblC5homy6DPuiKXdp';
-const SDK_URL = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.10/libs/cn/index.js';
-
-let embeddedInstance: any = null;
-let sdkLoading = false;
-
-function initEmbeddedChat(container: HTMLElement) {
-  if (embeddedInstance) return;
-  if (!(window as any).CozeWebSDK) {
-    if (!sdkLoading) {
-      sdkLoading = true;
-      const script = document.createElement('script');
-      script.src = SDK_URL;
-      script.async = true;
-      script.onload = () => { sdkLoading = false; initEmbeddedChat(container); };
-      document.body.appendChild(script);
-    }
-    return;
-  }
-  embeddedInstance = new (window as any).CozeWebSDK.WebChatClient({
-    config: {
-      type: 'bot',
-      bot_id: BOT_ID,
-      isIframe: false,
-    },
-    auth: {
-      type: 'token',
-      token: TOKEN,
-      onRefreshToken: async () => TOKEN,
-    },
-    userInfo: {
-      id: 'user',
-      url: '/nnzr/mascot.png',
-      nickname: '客服部',
-    },
-    ui: {
-      base: {
-        icon: '/nnzr/mascot.png',
-        layout: 'pc',
-        lang: 'zh-CN',
-        zIndex: 1000,
-      },
-      header: {
-        isShow: false,
-      },
-      asstBtn: {
-        isNeed: false,
-      },
-      footer: {
-        isShow: false,
-      },
-      chatBot: {
-        title: '燃气管家',
-        uploadable: false,
-        el: container,
-      },
-    },
-  });
-}
+const COZE_EMBED_URL = 'https://57b23c58-9b3c-47b9-b1e0-ba129ce785fa.dev.coze.site/';
 
 export default function AISearchSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const initializedRef = useRef(false);
-
-  useEffect(() => {
-    if (initializedRef.current || !containerRef.current) return;
-    initializedRef.current = true;
-    initEmbeddedChat(containerRef.current);
-  }, []);
 
   const openAIAssistant = () => {
     const event = new CustomEvent('open-ai-assistant');
@@ -117,10 +49,15 @@ export default function AISearchSection() {
           </button>
         </div>
 
-        <div
-          ref={containerRef}
-          className="relative rounded-[20px] min-h-[620px] border border-[var(--card-nvidia-border)] bg-[var(--card-nvidia-bg)] shadow-[var(--card-nvidia-shadow)] overflow-hidden"
-        />
+        <div className="rounded-[20px] overflow-hidden border border-[var(--card-nvidia-border)] bg-[var(--card-nvidia-bg)] shadow-[var(--card-nvidia-shadow)]">
+          <iframe
+            src={COZE_EMBED_URL}
+            title="AI 检索助手"
+            className="w-full border-0"
+            style={{ height: '620px' }}
+            allow="clipboard-read; clipboard-write"
+          />
+        </div>
 
         <div className="mt-3 flex items-center justify-between px-1">
           <p className="text-xs text-[var(--text-muted)]">
