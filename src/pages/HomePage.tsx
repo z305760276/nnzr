@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Users, Cpu, ShieldAlert, Gauge, BookOpen, ArrowRight } from 'lucide-react';
 import Footer from '../components/Footer';
 import DataDashboard, { DEFAULT_TABS } from '../components/DataDashboard';
+import AISearchSection from '../sections/AISearchSection';
 
 // 卡片 3D 鼠标跟随倾斜效果
 function handleCardMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
@@ -176,6 +177,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <AISearchSection />
 
       <Footer />
     </div>
