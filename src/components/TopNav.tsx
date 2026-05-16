@@ -3,14 +3,11 @@ import { Search, X, ArrowLeft, Sun, Moon } from 'lucide-react';
 interface TopNavProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  /** 当前页面标题（详情页用） */
   title?: string;
-  /** 标题图标组件 */
   TitleIcon?: React.FC<{ className?: string }>;
 }
 
 export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }: TopNavProps) {
-  /** 判断当前是否为首页：HashRouter 下首页 hash 为 "#/" 或 "#" */
   const isHome = !window.location.hash || window.location.hash === '#/' || window.location.hash === '#';
 
   const toggleTheme = () => {
@@ -32,9 +29,17 @@ export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-14 bg-[var(--nav-bg)] backdrop-blur-md border-b border-[var(--border-light)]">
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 h-14"
+      style={{
+        background: 'var(--nav-bg)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        borderBottom: '1px solid var(--nav-border)',
+        boxShadow: 'var(--nav-shadow)',
+      }}
+    >
       <div className="h-full flex items-center px-4 md:px-6 gap-3 max-w-[1440px] mx-auto">
-        {/* Logo */}
         <a href="#/" className="flex items-center gap-3 shrink-0">
           <img
             src="./logo.png"
@@ -43,66 +48,102 @@ export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }
             fetchPriority="high"
           />
           <div className="hidden sm:block">
-            <span className="text-[#C8102E] text-xs font-medium">客户服务部管理图谱</span>
+            <span style={{ color: 'var(--brand-primary)', fontWeight: 500, fontSize: '0.75rem' }}>
+              客户服务部管理图谱
+            </span>
           </div>
         </a>
 
-        {/* 详情页的返回按钮 + 标题 */}
         {!isHome && (
           <>
-            <div className="w-px h-5 bg-[var(--border-light)]" />
+            <div className="w-px h-5" style={{ background: 'var(--border-light)' }} />
             <button
               onClick={handleBack}
-              className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[var(--brand-bg)] text-[var(--text-secondary)] transition-colors shrink-0"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors shrink-0"
+              style={{ color: 'var(--text-secondary)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--brand-bg)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
             >
               <ArrowLeft className="w-4 h-4" />
               <span className="text-sm hidden sm:inline">返回首页</span>
             </button>
             {title && (
               <>
-                <div className="w-px h-5 bg-[var(--border-light)] hidden sm:block" />
+                <div className="w-px h-5 hidden sm:block" style={{ background: 'var(--border-light)' }} />
                 <div className="items-center gap-2 hidden sm:flex">
-                  {TitleIcon && <TitleIcon className="w-4 h-4 text-[#C8102E]" />}
-                  <span className="text-sm font-medium text-[var(--text-primary)] truncate max-w-[200px]">{title}</span>
+                  {TitleIcon && <TitleIcon className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />}
+                  <span className="text-sm font-medium truncate max-w-[200px]" style={{ color: 'var(--text-primary)' }}>{title}</span>
                 </div>
               </>
             )}
           </>
         )}
 
-        {/* 搜索框 - 居中弹性 */}
         <div className="flex-1 max-w-lg mx-auto relative">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--card-glass)] border border-[var(--border-subtle)] rounded-lg focus-within:border-[var(--border-hover)] transition-colors">
-            <Search className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
+          <div
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-300"
+            style={{
+              background: 'var(--card-glass)',
+              border: '1px solid var(--border-subtle)',
+              backdropFilter: 'blur(12px)',
+            }}
+            onFocus={(e) => {
+              const parent = e.currentTarget;
+              parent.style.borderColor = 'var(--border-hover)';
+              parent.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.08)';
+            }}
+            onBlur={(e) => {
+              const parent = e.currentTarget;
+              parent.style.borderColor = 'var(--border-subtle)';
+              parent.style.boxShadow = 'none';
+            }}
+          >
+            <Search className="w-4 h-4 shrink-0" style={{ color: 'var(--text-secondary)' }} />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="搜索岗位、隐患标准、制度条款..."
-              className="flex-1 bg-transparent text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none min-w-0"
+              className="flex-1 bg-transparent text-sm outline-none min-w-0"
+              style={{ color: 'var(--text-primary)', placeholderColor: 'var(--text-muted)' }}
             />
             {searchQuery && (
               <button
                 onClick={() => onSearchChange('')}
-                className="p-0.5 rounded hover:bg-[var(--brand-bg)] shrink-0"
+                className="p-0.5 rounded transition-colors"
+                style={{ color: 'var(--text-secondary)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--brand-bg)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
               >
-                <X className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
         </div>
 
-        {/* 主题切换 */}
         <button
           onClick={toggleTheme}
-          className="p-1.5 rounded-lg hover:bg-[var(--brand-bg)] text-[var(--text-secondary)] hover:text-[#C8102E] transition-colors shrink-0"
+          className="p-1.5 rounded-lg transition-all duration-300 shrink-0 relative overflow-hidden"
+          style={{ color: 'var(--text-secondary)' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'var(--brand-bg)';
+            e.currentTarget.style.color = 'var(--brand-primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+          }}
           title={theme === 'dark' ? '切换白天模式' : '切换夜间模式'}
         >
-          {theme === 'dark' ? (
-            <Sun className="w-4 h-4" />
-          ) : (
-            <Moon className="w-4 h-4" />
-          )}
+          <div className="relative transition-transform duration-500" style={{
+            transform: theme === 'dark' ? 'rotate(0deg)' : 'rotate(90deg)',
+          }}>
+            {theme === 'dark' ? (
+              <Sun className="w-4 h-4" />
+            ) : (
+              <Moon className="w-4 h-4" />
+            )}
+          </div>
         </button>
       </div>
     </nav>

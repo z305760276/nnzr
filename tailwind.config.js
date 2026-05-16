@@ -72,11 +72,41 @@ module.exports = {
           "0%,70%,100%": { opacity: "1" },
           "20%,50%": { opacity: "0" },
         },
+        "glass-fade-in-up": {
+          from: { opacity: "0", transform: "translateY(24px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "glass-fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "glass-scale-in": {
+          from: { opacity: "0", transform: "scale(0.95)" },
+          to: { opacity: "1", transform: "scale(1)" },
+        },
+        "glass-float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        "glass-shimmer": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(200%)" },
+        },
+        "glass-gradient-shift": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
+        "glass-fade-in-up": "glass-fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "glass-fade-in": "glass-fade-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "glass-scale-in": "glass-scale-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "glass-float": "glass-float 3s ease-in-out infinite",
+        "glass-gradient-shift": "glass-gradient-shift 8s ease infinite",
       },
     },
   },

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM工单流转全景图 | 客户服务部管理制度 V2.0</title>
+<style>
+:root {
+  --bg: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-hover: #161e2e;
+  --border: rgba(255,255,255,.07);
+  --border-active: rgba(255,255,255,.14);
+  --text: #e2e8f0;
+  --text-dim: #8892a8;
+  --text-muted: #55607a;
+  --accent: #00b4d8;
+  --accent-dim: rgba(0,180,216,.12);
+  --blue: #3b82f6;
+  --blue-dim: rgba(59,130,246,.12);
+  --green: #10b981;
+  --green-dim: rgba(16,185,129,.12);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,.12);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,.12);
+  --purple: #8b5cf6;
+  --purple-dim: rgba(139,92,246,.12);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --step-accent: #00b4d8;
+  --font-display: 'Georgia', 'Noto Serif SC', 'STSong', serif;
+  --font-body: -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* 背景纹理 */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 10%, rgba(59,130,246,.04), transparent),
+    radial-gradient(ellipse 600px 500px at 80% 40%, rgba(0,180,216,.03), transparent),
+    radial-gradient(ellipse 700px 500px at 50% 80%, rgba(139,92,246,.03), transparent);
+  pointer-events: none; z-index: 0;
+}
+
+/* 页面容器 */
+.page {
+  position: relative; z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+}
+
+/* ====== 头部 ====== */
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.header-tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  border: 1px solid rgba(0,180,216,.25);
+  border-radius: 20px;
+  padding: 4px 16px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.header .subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+.header .meta-row {
+  display: flex; justify-content: center; gap: 24px;
+  margin-top: 16px; font-size: 12px; color: var(--text-muted);
+}
+
+.meta-item { display: flex; align-items: center; gap: 6px; }
+.meta-dot { width: 6px; height: 6px; border-radius: 50%; }
+.meta-dot.cyan { background: var(--accent); }
+.meta-dot.blue { background: var(--blue); }
+
+/* ====== 流程主线 ====== */
+.flow-main {
+  position: relative;
+}
+
+/* 流程竖线 */
+.flow-main::before {
+  content: '';
+  position: absolute;
+  left: 52px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    var(--blue) 0%,
+    var(--accent) 25%,
+    var(--green) 50%,
+    var(--amber) 68%,
+    var(--purple) 85%,
+    transparent 100%
+  );
+  z-index: 0;
+}
+
+/* ====== 单个流程步骤 ====== */
+.step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 24px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.step:last-child { margin-bottom: 0; }
+
+/* 左侧节点圆 */
+.step-node {
+  flex-shrink: 0;
+  width: 106px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding-top: 20px;
+}
+
+.step-badge {
+  width: 50px; height: 50px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700;
+  color: #fff;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  box-shadow: 0 0 30px rgba(0,0,0,.3);
+}
+
+.step-badge.s1 { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.step-badge.s2 { background: linear-gradient(135deg, #00b4d8, #0077b6); }
+.step-badge.s3 { background: linear-gradient(135deg, #10b981, #059669); }
+.step-badge.s4 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.step-badge.s5 { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+.step-card-title {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 700;
+  color: #fff; letter-spacing: 1px;
+}
+
+.step-title-deadline {
+  font-size: 14px; font-weight: 600;
+  color: var(--step-accent, var(--accent));
+  letter-spacing: 0.5px;
+}
+
+/* 右侧内容卡片 */
+.step-body {
+  flex: 1; min-width: 0;
+  padding-top: 12px;
+  padding-bottom: 36px;
+}
+
+.step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 36px;
+  transition: border-color .25s, box-shadow .25s;
+}
+
+.step-card:hover {
+  border-color: var(--border-active);
+  box-shadow: 0 4px 24px rgba(0,0,0,.3);
+}
+
+/* 色卡系统：5步各自主色 */
+.step-card[data-step="1"] { --step-accent: #3b82f6; border-color: rgba(59,130,246,.15); }
+.step-card[data-step="2"] { --step-accent: #06b6d4; border-color: rgba(6,182,212,.15); }
+.step-card[data-step="3"] { --step-accent: #10b981; border-color: rgba(16,185,129,.15); }
+.step-card[data-step="4"] { --step-accent: #f59e0b; border-color: rgba(245,158,11,.15); }
+.step-card[data-step="5"] { --step-accent: #8b5cf6; border-color: rgba(139,92,246,.15); }
+
+.step-card-header {
+  display: flex; align-items: baseline; gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.step-card-num {
+  font-family: var(--font-display);
+  font-size: 13px; color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.step-card-summary {
+  font-size: 16px; color: var(--text-dim);
+  margin-bottom: 20px; line-height: 1.7;
+}
+
+.step-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.step-card-section { }
+
+.section-label {
+  font-size: 12px; text-transform: uppercase;
+  letter-spacing: 2px; color: var(--step-accent, var(--text-dim)); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 600;
+}
+
+.section-label::before {
+  content: ''; width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+}
+
+.role-list {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+
+.role-tag {
+  font-size: 14px; padding: 6px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: rgba(255,255,255,.04);
+}
+
+.ops-list {
+  list-style: none;
+}
+
+.ops-list li {
+  font-size: 14px; color: var(--text-dim);
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.8;
+}
+
+.ops-list li::before {
+  content: ''; position: absolute; left: 0; top: 11px;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--step-accent, var(--text-muted));
+}
+
+.source-ref {
+  margin-top: 16px;
+  font-size: 12px; color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ====== Step 4 隐患分支 ====== */
+.hazard-branches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.hazard-branch {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+}
+
+.hazard-level {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1px; margin-bottom: 8px;
+}
+
+.hazard-level.l1 { color: var(--red); }
+.hazard-level.l2 { color: var(--amber); }
+.hazard-level.l3 { color: var(--blue); }
+
+.hazard-desc { font-size: 14px; color: var(--text-dim); line-height: 1.7; margin-bottom: 10px; }
+.hazard-time { font-size: 13px; font-weight: 600; color: var(--text-dim); }
+
+/* ====== 连接箭头 ====== */
+.flow-arrow {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 4px 106px;
+  position: relative; z-index: 1;
+}
+
+.flow-arrow-svg {
+  width: 40px; height: 32px;
+  opacity: .35;
+}
+
+/* ====== 专家经验区 ====== */
+.expert-section {
+  margin-top: 56px;
+}
+
+.expert-header {
+  text-align: center; margin-bottom: 32px;
+}
+
+.expert-header h2 {
+  font-family: var(--font-display);
+  font-size: 24px; letter-spacing: 2px;
+  color: #fff; margin-bottom: 6px;
+}
+
+.expert-header .expert-sub {
+  font-size: 13px; color: var(--text-dim);
+}
+
+.expert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.expert-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: border-color .25s;
+}
+
+.expert-card:hover { border-color: var(--border-active); }
+
+.expert-card-num {
+  font-family: var(--font-display);
+  font-size: 36px; color: rgba(0,180,216,.15);
+  margin-bottom: 8px; line-height: 1;
+}
+
+.expert-card-title {
+  font-size: 16px; font-weight: 700;
+  color: #fff; margin-bottom: 12px;
+}
+
+.expert-field {
+  margin-bottom: 12px;
+}
+
+.expert-field-label {
+  font-size: 12px; letter-spacing: 1px;
+  color: var(--text-dim); text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.expert-field-value {
+  font-size: 14px; color: var(--text-dim); line-height: 1.7;
+}
+
+.expert-field-value.warn {
+  color: var(--amber);
+}
+
+/* ====== 页脚 ====== */
+.footer {
+  text-align: center; margin-top: 64px;
+  padding-top: 32px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+}
+
+/* ====== 响应式 ====== */
+@media (max-width: 900px) {
+  .step { flex-direction: column; gap: 8px; }
+  .step-node { width: auto; flex-direction: row; gap: 12px; padding-top: 8px; }
+  .flow-main::before { left: 25px; }
+  .flow-arrow { padding-left: 0; justify-content: flex-start; padding-left: 25px; }
+  .step-card-grid { grid-template-columns: 1fr; }
+  .hazard-branches { grid-template-columns: 1fr; }
+  .expert-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- 头部 -->
+  <header class="header">
+    <div class="header-tag">CUSTOMER SERVICE · WORKFLOW</div>
+    <h1>CRM工单流转全景图</h1>
+    <p class="subtitle">基于《客户服务部管理制度》V2.0 第三章 工单管理制度</p>
+    <div class="meta-row">
+      <span class="meta-item"><span class="meta-dot cyan"></span>5大流转阶段</span>
+      <span class="meta-item"><span class="meta-dot blue"></span>5个责任岗位</span>
+      <span class="meta-item">3级隐患处理</span>
+      <span class="meta-item">3条专家经验</span>
+    </div>
+  </header>
+
+  <!-- 流程主线 -->
+  <div class="flow-main">
+
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-node">
+        <div class="step-badge s1">01</div>
+      </div>
+      <div class="step-body">
+        <div class="step-card" data-step="1">
+          <div class="step-card-header">
+            <span class="step-card-num">STEP 01</span>
+            <span class="step-card-title">工单发起</span>
+            <span class="step-title-deadline">（即时生成≤3分钟）</span>
+          </div>
+          <p class="step-card-summary">用户通过95007热线、微信公众号、营业厅、全国联络中心等渠道提交服务请求，系统自动生成CRM工单并记录诉求详情。</p>
+          <div class="step-card-grid">
+            <div class="step-card-section">
+              <div class="section-label">责任岗位</div>
+              <div class="role-list">
+                <span class="role-tag">全国联络中心接线员</span>
+                <span class="role-tag">网厅运营专员</span>
+                <span class="role-tag">营业厅前台</span>
+              </div>
+            </div>
+            <div class="step-card-section">
+              <div class="section-label">系统操作要点</div>
+              <ol class="ops-list">
+                <li>CRM系统自动建单</li>
+                <li>诉求分类标记（维修/安检/通气/投诉）</li>
+                <li>关联用户档案调取历史记录</li>
+                <li>生成工单编号并短信通知用户</li>
+              </ol>
+            </div>
+          </div>
+          <div class="source-ref">来源：《客户服务部管理制度》V2.0 第三章 第1条</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 箭头 -->
+    <div class="flow-arrow">
+      <svg class="flow-arrow-svg" viewBox="0 0 40 32"><path d="M20 0 L20 22 M12 14 L20 24 L28 14" stroke="#8892a8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-node">
+        <div class="step-badge s2">02</div>
+      </div>
+      <div class="step-body">
+        <div class="step-card" data-step="2">
+          <div class="step-card-header">
+            <span class="step-card-num">STEP 02</span>
+            <span class="step-card-title">工单派发</span>
+            <span class="step-title-deadline">（普通24h内 / 抢险即时）</span>
+          </div>
+          <p class="step-card-summary">服务运营监督组审核工单信息完整性，根据服务类型和地理位置匹配最近服务站或网格员。派发前需确认网格员当日负荷，避免超负荷派单。</p>
+          <div class="step-card-grid">
+            <div class="step-card-section">
+              <div class="section-label">责任岗位</div>
+              <div class="role-list">
+                <span class="role-tag">服务运营监督班长</span>
+                <span class="role-tag">服务站站长</span>
+                <span class="role-tag">网格长</span>
+              </div>
+            </div>
+            <div class="step-card-section">
+              <div class="section-label">系统操作要点</div>
+              <ol class="ops-list">
+                <li>CRM派单至服务站</li>
+                <li>服务站匹配最近网格员（GPS距离 + 技能标签）</li>
+                <li>网格员移动端接收工单提醒</li>
+                <li>系统自动发送预约短信给用户</li>
+              </ol>
+            </div>
+          </div>
+          <div class="source-ref">来源：《客户服务部管理制度》V2.0 第三章 第2条</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 箭头 -->
+    <div class="flow-arrow">
+      <svg class="flow-arrow-svg" viewBox="0 0 40 32"><path d="M20 0 L20 22 M12 14 L20 24 L28 14" stroke="#8892a8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-node">
+        <div class="step-badge s3">03</div>
+      </div>
+      <div class="step-body">
+        <div class="step-card" data-step="3">
+          <div class="step-card-header">
+            <span class="step-card-num">STEP 03</span>
+            <span class="step-card-title">上门服务</span>
+            <span class="step-title-deadline">（安检3日 / 维修24h / 抢险30分钟）</span>
+          </div>
+          <p class="step-card-summary">网格员按约定时间上门，提前30分钟致电用户确认。到达后出示工作证，穿戴鞋套进入。执行标准化作业流程，全程使用手持终端记录，关键节点拍照上传CRM。</p>
+          <div class="step-card-grid">
+            <div class="step-card-section">
+              <div class="section-label">责任岗位</div>
+              <div class="role-list">
+                <span class="role-tag">网格员（开通维修岗）</span>
+                <span class="role-tag">安检员</span>
+                <span class="role-tag">安全技术员（复杂作业）</span>
+              </div>
+            </div>
+            <div class="step-card-section">
+              <div class="section-label">系统操作要点</div>
+              <ol class="ops-list">
+                <li>手持终端签到（GPS定位）</li>
+                <li>作业执行（按标准SOP）</li>
+                <li>关键节点拍照上传（至少8张）</li>
+                <li>用户电子签名确认</li>
+                <li>离场关阀检查</li>
+              </ol>
+            </div>
+          </div>
+          <div class="source-ref">来源：《客户服务部管理制度》V2.0 第三章 第3条</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 箭头 -->
+    <div class="flow-arrow">
+      <svg class="flow-arrow-svg" viewBox="0 0 40 32"><path d="M20 0 L20 22 M12 14 L20 24 L28 14" stroke="#8892a8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Step 4 - 隐患处理（含三级分支） -->
+    <div class="step">
+      <div class="step-node">
+        <div class="step-badge s4">04</div>
+      </div>
+      <div class="step-body">
+        <div class="step-card" data-step="4">
+          <div class="step-card-header">
+            <span class="step-card-num">STEP 04</span>
+            <span class="step-card-title">隐患处理</span>
+            <span class="step-title-deadline">（一级1~7日 / 二级30日 / 三级30日）</span>
+          </div>
+          <p class="step-card-summary">发现隐患按三级分级标准处理。一级隐患（重大）立即关阀或停气报调度中心；二级隐患（一般）现场签发整改通知单；三级隐患（轻微）现场口头告知并发放宣传资料。</p>
+          <div class="hazard-branches">
+            <div class="hazard-branch" style="border-left:3px solid var(--red)">
+              <div class="hazard-level l1">🔴 一级隐患 · 重大</div>
+              <div class="hazard-desc">漏气、直通表等严重隐患。<br>立即关阀或停气，30分钟内上报调度中心。CRM标记红色紧急+自动上报。</div>
+              <div class="hazard-time" style="color:var(--red)">⏱ 1-7日内整改完毕</div>
+            </div>
+            <div class="hazard-branch" style="border-left:3px solid var(--amber)">
+              <div class="hazard-level l2">🟠 二级隐患 · 一般</div>
+              <div class="hazard-desc">软管老化等常规隐患。<br>现场签发整改通知单，用户签字确认。生成整改跟踪记录。</div>
+              <div class="hazard-time" style="color:var(--amber)">⏱ 30日内整改完毕</div>
+            </div>
+            <div class="hazard-branch" style="border-left:3px solid var(--blue)">
+              <div class="hazard-level l3">🔵 三级隐患 · 轻微</div>
+              <div class="hazard-desc">轻微问题，现场口头告知。<br>拍照留痕+发放宣传资料，下次安检时重点关注复查。</div>
+              <div class="hazard-time" style="color:var(--blue)">⏱ 建议30日内改善</div>
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <div class="section-label">责任岗位</div>
+            <div class="role-list">
+              <span class="role-tag">网格员</span>
+              <span class="role-tag">安全技术员（技术判定）</span>
+              <span class="role-tag">安检网格长（审核）</span>
+            </div>
+          </div>
+          <div class="source-ref">来源：《客户服务部管理制度》V2.0 第三章 第4条</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 箭头 -->
+    <div class="flow-arrow">
+      <svg class="flow-arrow-svg" viewBox="0 0 40 32"><path d="M20 0 L20 22 M12 14 L20 24 L28 14" stroke="#8892a8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step">
+      <div class="step-node">
+        <div class="step-badge s5">05</div>
+      </div>
+      <div class="step-body">
+        <div class="step-card" data-step="5">
+          <div class="step-card-header">
+            <span class="step-card-num">STEP 05</span>
+            <span class="step-card-title">服务回访</span>
+            <span class="step-title-deadline">（短信即时 / 人工48h）</span>
+          </div>
+          <p class="step-card-summary">服务完成后系统自动触发短信回访，询问用户满意度（1-5分）。不满意工单（≤3分）自动转入二次跟踪队列，由服务运营监督组人工回访了解具体问题。所有回访记录存档备查。</p>
+          <div class="step-card-grid">
+            <div class="step-card-section">
+              <div class="section-label">责任岗位</div>
+              <div class="role-list">
+                <span class="role-tag">服务运营监督组</span>
+                <span class="role-tag">系统自动触发短信</span>
+              </div>
+            </div>
+            <div class="step-card-section">
+              <div class="section-label">系统操作要点</div>
+              <ol class="ops-list">
+                <li>服务完成标记后自动触发短信回访</li>
+                <li>满意度统计（1-5分）</li>
+                <li>差评（≤3分）自动标记红色预警</li>
+                <li>人工二次回访</li>
+                <li>归档生成服务质量周报</li>
+              </ol>
+            </div>
+          </div>
+          <div class="source-ref">来源：《客户服务部管理制度》V2.0 第三章 第5条</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /flow-main -->
+
+  <!-- 专家经验板块 -->
+  <section class="expert-section">
+    <div class="expert-header">
+      <h2>专家经验 · 老师傅传帮带</h2>
+      <p class="expert-sub">3条实操经验 —— 场景 + 土办法 + 制度依据 + 风险提示</p>
+    </div>
+
+    <div class="expert-grid">
+
+      <div class="expert-card">
+        <div class="expert-card-num">01</div>
+        <div class="expert-card-title">老旧小区户内管道锈蚀判定</div>
+        <div class="expert-field">
+          <div class="expert-field-label">土办法 / 实操技巧</div>
+          <div class="expert-field-value">用硬币轻刮锈蚀表面，若锈层脱落露出金属光泽为"中度锈蚀"；若刮后呈坑洼状且管壁变薄为"严重锈蚀"，需立即建议用户更换。切勿仅凭外观判断。</div>
+        </div>
+        <div class="expert-field">
+          <div class="expert-field-label">制度依据</div>
+          <div class="expert-field-value">《隐患管理制度》表5 锈蚀等级3-4级标准</div>
+        </div>
+        <div class="expert-field">
+          <div class="expert-field-label">风险提示</div>
+          <div class="expert-field-value warn">误判为轻微锈蚀可能导致后期漏气事故，造成人身伤亡。锈蚀判定错误属于严重工作失误。</div>
+        </div>
+      </div>
+
+      <div class="expert-card">
+        <div class="expert-card-num">02</div>
+        <div class="expert-card-title">用户不在家时的安检处理</div>
+        <div class="expert-field">
+          <div class="expert-field-label">土办法 / 实操技巧</div>
+          <div class="expert-field-value">粘贴《到访不遇告知单》后拍照上传CRM（含门牌号、告知单张贴位置），同时在门口张贴安全用气宣传单。下次安检时此类用户优先安排，提前电话确认。</div>
+        </div>
+        <div class="expert-field">
+          <div class="expert-field-label">制度依据</div>
+          <div class="expert-field-value">《安检管理制度》第三章第2条：到访不遇处理规范</div>
+        </div>
+        <div class="expert-field">
+          <div class="expert-field-label">风险提示</div>
+          <div class="expert-field-value warn">未留痕可能导致安检入户率统计失真，外包结算产生争议。用户后续投诉未通知到门，公司需承担举证责任。</div>
+        </div>
+      </div>
+
+      <div class="expert-card">
+        <div class="expert-card-num">03</div>
+        <div class="expert-card-title">CRM系统卡顿时的工单处理</div>
+        <div class="expert-field">
+          <div class="expert-field-label">土办法 / 实操技巧</div>
+          <div class="expert-field-value">手机端APP可离线缓存最近30条工单数据，网络恢复后自动同步。若抢修工单无法及时录入，可先电话直报调度中心（3102277），调度中心代为补录，网格员返岗后24小时内补全系统记录。</div>
+        </div>
+        <div class="expert-field">
+          <div class="expert-field-label">制度依据</div>
+          <div class="expert-field-value">《管理制度》第六章 信息系统管理第12条：系统故障应急处理</div>
+        </div>
+        <div class="expert-field">
+          <div class="expert-field-label">风险提示</div>
+          <div class="expert-field-value warn">离线操作须当日补录，超期未补录按工单缺失考核（50元/次）。抢险工单未录入导致事故追溯困难，责任由网格员承担。</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    客户服务部 &copy; 2024 · 基于《客户服务部管理制度》V2.0 · 仅供内部培训使用
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -4,64 +4,64 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 220 14% 96%;
+    --foreground: 220 20% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 220 20% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    --popover-foreground: 220 20% 12%;
+    --primary: 220 20% 12%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 220 20% 12%;
+    --muted: 220 14% 94%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 220 14% 92%;
+    --accent-foreground: 220 20% 12%;
+    --destructive: 0 84% 55%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.625rem;
+    --border: 220 14% 88%;
+    --input: 220 14% 88%;
+    --ring: 220 20% 12%;
+    --radius: 0.75rem;
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-foreground: 220 12% 28%;
+    --sidebar-primary: 220 20% 12%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 20% 12%;
+    --sidebar-border: 220 12% 90%;
+    --sidebar-ring: 217 91% 60%;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --background: 220 20% 8%;
+    --foreground: 220 10% 93%;
+    --card: 220 20% 10%;
+    --card-foreground: 220 10% 93%;
+    --popover: 220 20% 10%;
+    --popover-foreground: 220 10% 93%;
+    --primary: 220 10% 93%;
+    --primary-foreground: 220 20% 10%;
+    --secondary: 220 16% 16%;
+    --secondary-foreground: 220 10% 93%;
+    --muted: 220 16% 16%;
+    --muted-foreground: 220 10% 60%;
+    --accent: 220 16% 16%;
+    --accent-foreground: 220 10% 93%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 220 10% 93%;
+    --border: 220 16% 18%;
+    --input: 220 16% 18%;
+    --ring: 220 10% 80%;
+    --sidebar-background: 220 18% 10%;
+    --sidebar-foreground: 220 10% 88%;
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 220 16% 16%;
+    --sidebar-accent-foreground: 220 10% 88%;
+    --sidebar-border: 220 16% 18%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
@@ -74,102 +74,597 @@
   }
 }
 
-/* ========== 南宁中燃主题系统 ========== */
+/* ============================================================
+   南宁中燃 — 玻璃质感主题系统 v4.0
+   设计语言：灰色渐变画布 + 毛玻璃卡片 + 低光微影
+   亮色模式：暖灰珍珠色调 · 暗色模式：深空炭灰调
+   ============================================================ */
+
+/* ---------- 全局主题变量 ---------- */
 :root {
-  /* 夜间模式（默认） */
-  --page-bg: #050A14;
-  --page-bg-rgb: 5, 10, 20;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --card-bg: rgba(13, 25, 48, 0.6);
-  --card-solid: #0D1A2D;
-  --card-glass: rgba(13, 25, 48, 0.8);
-  --nav-bg: rgba(5, 10, 20, 0.95);
-  --border-subtle: rgba(200, 16, 46, 0.2);
-  --border-light: rgba(200, 16, 46, 0.1);
-  --border-hover: rgba(200, 16, 46, 0.4);
-  --brand-bg: rgba(200, 16, 46, 0.08);
-  --brand-bg-hover: rgba(200, 16, 46, 0.15);
+  /* 页面背景：三层灰色渐变，营造深邃层次 */
+  --page-bg: #F2F4F8;
+  --page-bg-rgb: 242, 244, 248;
+  --page-bg-top: #F4F6F9;
+  --page-bg-mid: #F0F2F6;
+  --page-bg-bottom: #E8EBF0;
+  --gradient-page: linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-mid) 50%, var(--page-bg-bottom) 100%);
+
+  /* 文字层级 */
+  --text-primary: #1A1D26;
+  --text-secondary: #4A5568;
+  --text-muted: #8896A8;
+  --text-inverse: #F2F4F8;
+
+  /* 统一玻璃质感系统 */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.90);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.50);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-border-hover: rgba(0, 0, 0, 0.12);
+  --glass-border-active: rgba(99, 102, 241, 0.20);
+  --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.60);
+  --glass-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.70);
+  --glass-shadow-elevated: 0 24px 64px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.50);
+
+  /* 导航栏玻璃 */
+  --nav-bg: rgba(242, 244, 248, 0.85);
+  --nav-border: rgba(0, 0, 0, 0.06);
+  --nav-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  /* 卡片系统 */
+  --card-glass: rgba(255, 255, 255, 0.78);
+  --card-solid: #FFFFFF;
+  --card-bg: rgba(255, 255, 255, 0.82);
+  --card-hover-bg: rgba(255, 255, 255, 0.94);
+  --card-inner-bg: rgba(0, 0, 0, 0.03);
+  --card-inner-bg-strong: rgba(0, 0, 0, 0.05);
+
+  /* 边框系统 */
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(99, 102, 241, 0.25);
+  --border-accent: rgba(99, 102, 241, 0.15);
+
+  /* 品牌色 — 电感靛蓝（Light） */
+  --brand-primary: #6366F1;
+  --brand-primary-rgb: 99, 102, 241;
+  --brand-secondary: #4F46E5;
+  --brand-bg: rgba(99, 102, 241, 0.06);
+  --brand-bg-hover: rgba(99, 102, 241, 0.12);
+  --brand-glow: rgba(99, 102, 241, 0.06);
+  --brand-glow-strong: rgba(99, 102, 241, 0.15);
+
+  /* 发光系统 */
+  --glow-primary: rgba(99, 102, 241, 0.06);
+  --glow-primary-strong: rgba(99, 102, 241, 0.15);
+  --glow-accent: rgba(56, 189, 248, 0.06);
+
+  /* Hero 区域 */
+  --hero-grid: rgba(0, 0, 0, 0.03);
+  --hero-gradient-overlay: linear-gradient(
+    to bottom,
+    rgba(242, 244, 248, 0.85) 0%,
+    rgba(242, 244, 248, 0.30) 45%,
+    rgba(232, 235, 240, 0.95) 100%
+  );
+
+  /* 手风琴面板 */
+  --accordion-panel-bg: rgba(255, 255, 255, 0.60);
+  --sub-accordion-panel-bg: rgba(0, 0, 0, 0.02);
+
+  /* ------------------------------------------------- */
+  /* KPI 模块 */
+  --kpi-glass-bg: rgba(255, 255, 255, 0.72);
+  --kpi-glass-bg-strong: rgba(255, 255, 255, 0.90);
+  --kpi-glass-border: rgba(0, 0, 0, 0.06);
+  --kpi-glass-border-active: rgba(99, 102, 241, 0.20);
+  --kpi-glass-highlight: rgba(255, 255, 255, 0.60);
+  --kpi-glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.60);
+  --kpi-glass-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.70);
+  --kpi-card-bg: rgba(255, 255, 255, 0.80);
+  --kpi-card-hover-bg: rgba(255, 255, 255, 0.94);
+  --kpi-card-border: rgba(0, 0, 0, 0.05);
+  --kpi-divider: rgba(0, 0, 0, 0.05);
+  --kpi-text-primary: #1A1D26;
+  --kpi-text-secondary: #4A5568;
+  --kpi-text-muted: #8896A8;
+  --kpi-accent-blue: #3B82F6;
+  --kpi-accent-teal: #0D9488;
+  --kpi-accent-purple: #7C3AED;
+  --kpi-accent-amber: #D97706;
+  --kpi-accent-emerald: #059669;
+  --kpi-accent-rose: #E11D48;
+  --kpi-glow-blue: rgba(59, 130, 246, 0.08);
+  --kpi-glow-teal: rgba(13, 148, 136, 0.08);
+  --kpi-glow-purple: rgba(124, 58, 237, 0.08);
+  --kpi-glow-amber: rgba(217, 119, 6, 0.08);
+  --kpi-gradient-blue: linear-gradient(135deg, #3B82F6 0%, #0D9488 100%);
+  --kpi-gradient-purple: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+  --kpi-gradient-amber: linear-gradient(135deg, #F59E0B 0%, #DC2626 100%);
+  --kpi-gradient-emerald: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  --kpi-gradient-rose: linear-gradient(135deg, #F43F5E 0%, #FB7185 100%);
+  --kpi-gradient-card-1: linear-gradient(160deg, rgba(59, 130, 246, 0.05) 0%, rgba(13, 148, 136, 0.03) 100%);
+  --kpi-gradient-card-2: linear-gradient(160deg, rgba(124, 58, 237, 0.05) 0%, rgba(99, 102, 241, 0.03) 100%);
+  --kpi-gradient-card-3: linear-gradient(160deg, rgba(217, 119, 6, 0.05) 0%, rgba(234, 88, 12, 0.03) 100%);
+  --kpi-gradient-card-4: linear-gradient(160deg, rgba(13, 148, 136, 0.05) 0%, rgba(5, 150, 105, 0.03) 100%);
+  --kpi-ring-track: rgba(0, 0, 0, 0.06);
+
+  /* ------------------------------------------------- */
+  /* 安检与隐患模块 */
+  --safety-bg: #F0F4F8;
+  --safety-card: rgba(255, 255, 255, 0.88);
+  --safety-card-hover: rgba(255, 255, 255, 0.96);
+  --safety-border: rgba(100, 116, 139, 0.10);
+  --safety-border-active: rgba(99, 102, 241, 0.20);
+  --safety-danger: #DC2626;
+  --safety-danger-bg: rgba(220, 38, 38, 0.05);
+  --safety-danger-border: rgba(220, 38, 38, 0.14);
+  --safety-warning: #B8860B;
+  --safety-warning-bg: rgba(212, 160, 23, 0.05);
+  --safety-warning-border: rgba(212, 160, 23, 0.14);
+  --safety-info: #3B6FD4;
+  --safety-info-bg: rgba(59, 111, 212, 0.05);
+  --safety-info-border: rgba(59, 111, 212, 0.14);
+  --safety-success: #059669;
+  --safety-success-bg: rgba(5, 150, 105, 0.05);
+  --safety-accent: #4F46E5;
+  --safety-accent-bg: rgba(79, 70, 229, 0.05);
+  --safety-accent-border: rgba(79, 70, 229, 0.16);
+  --safety-stat-bg: linear-gradient(135deg, rgba(79, 70, 229, 0.04) 0%, rgba(139, 92, 246, 0.03) 100%);
+  --safety-stat-border: rgba(79, 70, 229, 0.10);
+  --safety-divider: rgba(100, 116, 139, 0.08);
+  --safety-glass: rgba(255, 255, 255, 0.88);
+  --safety-glass-border: rgba(100, 116, 139, 0.10);
+
+  /* ------------------------------------------------- */
+  /* 记分执行模块 */
+  --score-critical: #DC2626;
+  --score-critical-bg: rgba(220, 38, 38, 0.06);
+  --score-critical-border: rgba(220, 38, 38, 0.16);
+  --score-critical-glow: rgba(220, 38, 38, 0.08);
+  --score-critical-soft: rgba(220, 38, 38, 0.03);
+  --score-major: #D97706;
+  --score-major-bg: rgba(217, 119, 6, 0.06);
+  --score-major-border: rgba(217, 119, 6, 0.16);
+  --score-major-glow: rgba(217, 119, 6, 0.08);
+  --score-major-soft: rgba(217, 119, 6, 0.03);
+  --score-general: #3B82F6;
+  --score-general-bg: rgba(59, 130, 246, 0.06);
+  --score-general-border: rgba(59, 130, 246, 0.16);
+  --score-general-glow: rgba(59, 130, 246, 0.08);
+  --score-general-soft: rgba(59, 130, 246, 0.03);
+  --score-minor: #6366F1;
+  --score-minor-bg: rgba(99, 102, 241, 0.06);
+  --score-minor-border: rgba(99, 102, 241, 0.16);
+  --score-minor-glow: rgba(99, 102, 241, 0.08);
+  --score-minor-soft: rgba(99, 102, 241, 0.03);
+  --score-panel-bg: rgba(255, 255, 255, 0.75);
+  --score-panel-hover: rgba(99, 102, 241, 0.03);
+  --score-panel-border: rgba(99, 102, 241, 0.10);
+  --score-card-bg: rgba(255, 255, 255, 0.85);
+  --score-card-bg-hover: rgba(255, 255, 255, 0.95);
+  --score-card-border: rgba(100, 116, 139, 0.10);
+  --score-card-accent-line: rgba(99, 102, 241, 0.35);
+  --score-track-bg: rgba(0, 0, 0, 0.04);
+  --score-track-border: rgba(0, 0, 0, 0.04);
+  --score-tag-bg: rgba(0, 0, 0, 0.03);
+  --score-section-line: rgba(99, 102, 241, 0.15);
+  --score-section-dot: rgba(99, 102, 241, 0.50);
+  --score-gradient-panel: linear-gradient(160deg, rgba(99, 102, 241, 0.03) 0%, rgba(255, 255, 255, 0.80) 50%, rgba(59, 130, 246, 0.02) 100%);
+  --score-gradient-stat-1: linear-gradient(160deg, rgba(59, 130, 246, 0.04) 0%, rgba(255, 255, 255, 0.80) 100%);
+  --score-gradient-stat-2: linear-gradient(160deg, rgba(220, 38, 38, 0.04) 0%, rgba(255, 255, 255, 0.80) 100%);
+  --score-gradient-stat-3: linear-gradient(160deg, rgba(217, 119, 6, 0.04) 0%, rgba(255, 255, 255, 0.80) 100%);
+  --score-gradient-stat-4: linear-gradient(160deg, rgba(99, 102, 241, 0.04) 0%, rgba(255, 255, 255, 0.80) 100%);
+  --score-bar-grad-critical: linear-gradient(90deg, #DC2626 0%, #F87171 100%);
+  --score-bar-grad-major: linear-gradient(90deg, #D97706 0%, #FBBF24 100%);
+  --score-bar-grad-general: linear-gradient(90deg, #3B82F6 0%, #60A5FA 100%);
+  --score-bar-grad-minor: linear-gradient(90deg, #6366F1 0%, #818CF8 100%);
+
+  /* ------------------------------------------------- */
+  /* NVIDIA 风格卡片（首页用） */
+  --card-nvidia-bg: rgba(255, 255, 255, 0.80);
+  --card-nvidia-border: rgba(0, 0, 0, 0.05);
+  --card-nvidia-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --card-nvidia-glow: rgba(99, 102, 241, 0.04);
+  --card-nvidia-cta-bg: rgba(99, 102, 241, 0.08);
+  --card-nvidia-cta-border: rgba(99, 102, 241, 0.18);
+  --card-nvidia-cta-text: #6366F1;
+  --card-nvidia-badge-bg: rgba(0, 0, 0, 0.04);
+  --card-nvidia-badge-text: rgba(0, 0, 0, 0.50);
+  --card-nvidia-text: rgba(26, 29, 38, 0.85);
+  --card-nvidia-text-secondary: rgba(26, 29, 38, 0.65);
+  --card-nvidia-text-desc: rgba(26, 29, 38, 0.50);
+  --card-nvidia-icon-bg: rgba(99, 102, 241, 0.12);
+}
+
+/* ---------- 暗色模式覆盖 ---------- */
+[data-theme="dark"] {
+  --page-bg: #080C15;
+  --page-bg-rgb: 8, 12, 21;
+  --page-bg-top: #0A0E1A;
+  --page-bg-mid: #080C15;
+  --page-bg-bottom: #060A12;
+  --gradient-page: linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-mid) 50%, var(--page-bg-bottom) 100%);
+
+  --text-primary: #E2E8F0;
+  --text-secondary: #8899B4;
+  --text-muted: #5A6B85;
+  --text-inverse: #1A1D26;
+
+  --glass-bg: rgba(14, 20, 34, 0.68);
+  --glass-bg-strong: rgba(18, 26, 42, 0.85);
+  --glass-bg-subtle: rgba(14, 20, 34, 0.40);
+  --glass-border: rgba(255, 255, 255, 0.04);
+  --glass-border-hover: rgba(255, 255, 255, 0.10);
+  --glass-border-active: rgba(99, 102, 241, 0.25);
+  --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.30), 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --glass-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.40), 0 2px 6px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --glass-shadow-elevated: 0 24px 64px rgba(0, 0, 0, 0.50), 0 4px 12px rgba(0, 0, 0, 0.25);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+
+  --nav-bg: rgba(8, 12, 21, 0.88);
+  --nav-border: rgba(255, 255, 255, 0.04);
+  --nav-shadow: 0 1px 3px rgba(0, 0, 0, 0.20);
+
+  --card-glass: rgba(14, 20, 34, 0.70);
+  --card-solid: #0E1422;
+  --card-bg: rgba(14, 20, 34, 0.60);
+  --card-hover-bg: rgba(18, 26, 42, 0.75);
+  --card-inner-bg: rgba(0, 0, 0, 0.15);
+  --card-inner-bg-strong: rgba(0, 0, 0, 0.25);
+
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-light: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(99, 102, 241, 0.30);
+  --border-accent: rgba(99, 102, 241, 0.15);
+
+  --brand-primary: #818CF8;
+  --brand-primary-rgb: 129, 140, 248;
+  --brand-secondary: #6366F1;
+  --brand-bg: rgba(99, 102, 241, 0.08);
+  --brand-bg-hover: rgba(99, 102, 241, 0.15);
+  --brand-glow: rgba(99, 102, 241, 0.06);
+  --brand-glow-strong: rgba(99, 102, 241, 0.18);
+
+  --glow-primary: rgba(99, 102, 241, 0.08);
+  --glow-primary-strong: rgba(99, 102, 241, 0.20);
+  --glow-accent: rgba(56, 189, 248, 0.06);
+
   --hero-grid: rgba(255, 255, 255, 0.02);
-  --accent: #F8FAFC;
-  --glow-red: rgba(200, 16, 46, 0.08);
-  --glow-red-strong: rgba(200, 16, 46, 0.25);
-  --card-nvidia-bg: #0a0a12;
-  --card-nvidia-border: rgba(255, 255, 255, 0.06);
-  --card-nvidia-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-  --card-nvidia-glow: rgba(99, 102, 241, 0.10);
+  --hero-gradient-overlay: linear-gradient(
+    to bottom,
+    rgba(8, 12, 21, 0.88) 0%,
+    rgba(8, 12, 21, 0.30) 45%,
+    rgba(6, 10, 18, 0.95) 100%
+  );
+
+  --accordion-panel-bg: rgba(14, 20, 34, 0.55);
+  --sub-accordion-panel-bg: rgba(0, 0, 0, 0.15);
+
+  /* KPI 暗色 */
+  --kpi-glass-bg: rgba(14, 20, 34, 0.55);
+  --kpi-glass-bg-strong: rgba(18, 26, 42, 0.80);
+  --kpi-glass-border: rgba(255, 255, 255, 0.05);
+  --kpi-glass-border-active: rgba(255, 255, 255, 0.12);
+  --kpi-glass-highlight: rgba(255, 255, 255, 0.02);
+  --kpi-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --kpi-glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --kpi-card-bg: rgba(14, 20, 34, 0.65);
+  --kpi-card-hover-bg: rgba(18, 26, 42, 0.80);
+  --kpi-card-border: rgba(255, 255, 255, 0.04);
+  --kpi-divider: rgba(255, 255, 255, 0.04);
+  --kpi-text-primary: #E2E8F0;
+  --kpi-text-secondary: #8899B4;
+  --kpi-text-muted: #5A6B85;
+  --kpi-accent-blue: #38BDF8;
+  --kpi-accent-teal: #2DD4BF;
+  --kpi-accent-purple: #A78BFA;
+  --kpi-accent-amber: #FBBF24;
+  --kpi-accent-emerald: #34D399;
+  --kpi-accent-rose: #FB7185;
+  --kpi-glow-blue: rgba(56, 189, 248, 0.15);
+  --kpi-glow-teal: rgba(45, 212, 191, 0.12);
+  --kpi-glow-purple: rgba(167, 139, 250, 0.12);
+  --kpi-glow-amber: rgba(251, 191, 36, 0.12);
+  --kpi-gradient-card-1: linear-gradient(160deg, rgba(56, 189, 248, 0.06) 0%, rgba(45, 212, 191, 0.03) 100%);
+  --kpi-gradient-card-2: linear-gradient(160deg, rgba(167, 139, 250, 0.06) 0%, rgba(99, 102, 241, 0.03) 100%);
+  --kpi-gradient-card-3: linear-gradient(160deg, rgba(251, 191, 36, 0.05) 0%, rgba(234, 88, 12, 0.03) 100%);
+  --kpi-gradient-card-4: linear-gradient(160deg, rgba(45, 212, 191, 0.05) 0%, rgba(52, 211, 153, 0.03) 100%);
+  --kpi-ring-track: rgba(255, 255, 255, 0.04);
+
+  /* 安检暗色 */
+  --safety-bg: #080C15;
+  --safety-card: rgba(14, 20, 34, 0.70);
+  --safety-card-hover: rgba(18, 28, 48, 0.85);
+  --safety-border: rgba(148, 163, 184, 0.08);
+  --safety-border-active: rgba(148, 163, 184, 0.18);
+  --safety-danger-bg: rgba(220, 38, 38, 0.08);
+  --safety-danger-border: rgba(220, 38, 38, 0.18);
+  --safety-warning-bg: rgba(212, 160, 23, 0.07);
+  --safety-warning-border: rgba(212, 160, 23, 0.16);
+  --safety-info-bg: rgba(59, 111, 212, 0.07);
+  --safety-info-border: rgba(59, 111, 212, 0.16);
+  --safety-success-bg: rgba(16, 185, 129, 0.07);
+  --safety-accent-bg: rgba(99, 102, 241, 0.07);
+  --safety-accent-border: rgba(99, 102, 241, 0.20);
+  --safety-stat-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(139, 92, 246, 0.04) 100%);
+  --safety-stat-border: rgba(99, 102, 241, 0.12);
+  --safety-divider: rgba(148, 163, 184, 0.06);
+  --safety-glass: rgba(14, 20, 34, 0.65);
+  --safety-glass-border: rgba(148, 163, 184, 0.10);
+
+  /* 记分暗色 */
+  --score-critical: #E31837;
+  --score-critical-bg: rgba(227, 24, 55, 0.08);
+  --score-critical-border: rgba(227, 24, 55, 0.18);
+  --score-critical-glow: rgba(227, 24, 55, 0.12);
+  --score-critical-soft: rgba(227, 24, 55, 0.04);
+  --score-major: #F59E0B;
+  --score-major-bg: rgba(245, 158, 11, 0.08);
+  --score-major-border: rgba(245, 158, 11, 0.18);
+  --score-major-glow: rgba(245, 158, 11, 0.12);
+  --score-major-soft: rgba(245, 158, 11, 0.04);
+  --score-general: #3B82F6;
+  --score-general-bg: rgba(59, 130, 246, 0.08);
+  --score-general-border: rgba(59, 130, 246, 0.18);
+  --score-general-glow: rgba(59, 130, 246, 0.12);
+  --score-general-soft: rgba(59, 130, 246, 0.04);
+  --score-minor: #6366F1;
+  --score-minor-bg: rgba(99, 102, 241, 0.08);
+  --score-minor-border: rgba(99, 102, 241, 0.18);
+  --score-minor-glow: rgba(99, 102, 241, 0.12);
+  --score-minor-soft: rgba(99, 102, 241, 0.04);
+  --score-panel-bg: rgba(14, 20, 34, 0.55);
+  --score-panel-hover: rgba(255, 255, 255, 0.02);
+  --score-panel-border: rgba(99, 102, 241, 0.10);
+  --score-card-bg: rgba(14, 20, 34, 0.65);
+  --score-card-bg-hover: rgba(18, 26, 42, 0.80);
+  --score-card-border: rgba(255, 255, 255, 0.04);
+  --score-card-accent-line: rgba(99, 102, 241, 0.40);
+  --score-track-bg: rgba(255, 255, 255, 0.04);
+  --score-track-border: rgba(255, 255, 255, 0.04);
+  --score-tag-bg: rgba(255, 255, 255, 0.03);
+  --score-section-line: rgba(99, 102, 241, 0.18);
+  --score-section-dot: rgba(99, 102, 241, 0.55);
+  --score-gradient-panel: linear-gradient(160deg, rgba(99, 102, 241, 0.04) 0%, rgba(14, 20, 34, 0.60) 50%, rgba(59, 130, 246, 0.02) 100%);
+  --score-gradient-stat-1: linear-gradient(160deg, rgba(59, 130, 246, 0.06) 0%, rgba(14, 20, 34, 0.50) 100%);
+  --score-gradient-stat-2: linear-gradient(160deg, rgba(227, 24, 55, 0.06) 0%, rgba(14, 20, 34, 0.50) 100%);
+  --score-gradient-stat-3: linear-gradient(160deg, rgba(245, 158, 11, 0.06) 0%, rgba(14, 20, 34, 0.50) 100%);
+  --score-gradient-stat-4: linear-gradient(160deg, rgba(99, 102, 241, 0.06) 0%, rgba(14, 20, 34, 0.50) 100%);
+  --score-bar-grad-critical: linear-gradient(90deg, #E31837 0%, #FF4D6A 100%);
+  --score-bar-grad-major: linear-gradient(90deg, #F59E0B 0%, #FBBF24 100%);
+  --score-bar-grad-general: linear-gradient(90deg, #3B82F6 0%, #60A5FA 100%);
+  --score-bar-grad-minor: linear-gradient(90deg, #6366F1 0%, #818CF8 100%);
+
+  /* NVIDIA 卡片暗色 */
+  --card-nvidia-bg: rgba(14, 20, 34, 0.75);
+  --card-nvidia-border: rgba(255, 255, 255, 0.05);
+  --card-nvidia-shadow: 0 8px 32px rgba(0, 0, 0, 0.30);
+  --card-nvidia-glow: rgba(99, 102, 241, 0.08);
   --card-nvidia-cta-bg: rgba(99, 102, 241, 0.15);
   --card-nvidia-cta-border: rgba(99, 102, 241, 0.25);
   --card-nvidia-cta-text: #818cf8;
-  --card-nvidia-badge-bg: rgba(255, 255, 255, 0.06);
-  --card-nvidia-badge-text: rgba(255, 255, 255, 0.6);
-  --card-nvidia-text: #ffffff;
-  --card-nvidia-text-secondary: rgba(255, 255, 255, 0.7);
-  --card-nvidia-text-desc: rgba(255, 255, 255, 0.5);
-  --card-nvidia-icon-bg: rgba(99, 102, 241, 0.2);
-
-  /* 子页面手风琴卡片内嵌背景 */
-  --accordion-panel-bg: rgba(13, 25, 48, 0.5);
-  --sub-accordion-panel-bg: rgba(13, 25, 48, 0.4);
-  --card-inner-bg: rgba(13, 25, 48, 0.3);
-  --card-inner-bg-strong: rgba(13, 25, 48, 0.4);
+  --card-nvidia-badge-bg: rgba(255, 255, 255, 0.05);
+  --card-nvidia-badge-text: rgba(255, 255, 255, 0.55);
+  --card-nvidia-text: rgba(226, 232, 240, 0.90);
+  --card-nvidia-text-secondary: rgba(226, 232, 240, 0.65);
+  --card-nvidia-text-desc: rgba(226, 232, 240, 0.48);
+  --card-nvidia-icon-bg: rgba(99, 102, 241, 0.18);
 }
 
-[data-theme="light"] {
-  --page-bg: #F1F5F9;
-  --page-bg-rgb: 241, 245, 249;
-  --text-primary: #0F172A;
-  --text-secondary: #1E293B;
-  --text-muted: #475569;
-  --card-bg: rgba(255, 255, 255, 0.95);
-  --card-solid: #FFFFFF;
-  --card-glass: rgba(255, 255, 255, 0.95);
-  --nav-bg: rgba(255, 255, 255, 0.95);
-  --border-subtle: rgba(100, 116, 139, 0.3);
-  --border-light: rgba(100, 116, 139, 0.15);
-  --border-hover: rgba(99, 102, 241, 0.35);
-  --brand-bg: rgba(99, 102, 241, 0.06);
-  --brand-bg-hover: rgba(99, 102, 241, 0.12);
-  --hero-grid: rgba(0, 0, 0, 0.03);
-  --glow-red: rgba(99, 102, 241, 0.04);
-  --glow-red-strong: rgba(99, 102, 241, 0.1);
-  --accent: #0F172A;
-
-  /* 亮色 NVIDIA 风格卡片 */
-  --card-nvidia-bg: #ffffff;
-  --card-nvidia-border: rgba(0, 0, 0, 0.06);
-  --card-nvidia-shadow: 0 8px 32px rgba(99, 102, 241, 0.08);
-  --card-nvidia-glow: rgba(99, 102, 241, 0.04);
-  --card-nvidia-cta-bg: rgba(99, 102, 241, 0.08);
-  --card-nvidia-cta-border: rgba(99, 102, 241, 0.2);
-  --card-nvidia-cta-text: #4f46e5;
-  --card-nvidia-badge-bg: rgba(0, 0, 0, 0.05);
-  --card-nvidia-badge-text: rgba(0, 0, 0, 0.5);
-  --card-nvidia-text: rgba(0, 0, 0, 0.8);
-  --card-nvidia-text-secondary: rgba(0, 0, 0, 0.6);
-  --card-nvidia-text-desc: rgba(0, 0, 0, 0.45);
-  --card-nvidia-icon-bg: rgba(99, 102, 241, 0.12);
-
-  /* 子页面手风琴卡片内嵌背景（亮色模式加深，使白色文字可读） */
-  --accordion-panel-bg: rgba(30, 41, 59, 0.92);
-  --sub-accordion-panel-bg: rgba(30, 41, 59, 0.88);
-  --card-inner-bg: rgba(30, 41, 59, 0.85);
-  --card-inner-bg-strong: rgba(30, 41, 59, 0.9);
+/* ============================================================
+   通用玻璃卡片类
+   ============================================================ */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1rem;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* 亮色模式下深色背景卡片 → 纯白文字（全部统一，避免低对比度） */
-[data-theme="light"] .dark-card {
-  --text-primary: #FFFFFF;
-  --text-secondary: #FFFFFF;
-  --accent: #FFFFFF;
+.glass-card:hover {
+  background: var(--glass-bg-strong);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
 }
 
+.glass-card-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1rem;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-card-subtle {
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   全局动画关键帧
+   ============================================================ */
+@keyframes glass-fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glass-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glass-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes glass-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes glass-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes glass-glow-pulse {
+  0%, 100% { opacity: 0.30; transform: scale(1); }
+  50% { opacity: 0.60; transform: scale(1.05); }
+}
+
+@keyframes glass-gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* KPI 动画 */
+@keyframes kpi-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes kpi-glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes kpi-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes kpi-fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes kpi-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes kpi-ring-fill {
+  from { stroke-dashoffset: var(--ring-circumference); }
+}
+
+@keyframes kpi-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* 记分动画 */
+@keyframes score-bar-load {
+  from { width: 0%; opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+@keyframes score-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* KPI 工具类 */
+.kpi-animate-in {
+  animation: kpi-fade-in-up 0.5s ease-out both;
+}
+
+/* ---------- 玻璃卡片浮动微光 ---------- */
+.glass-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+  transform: skewX(-15deg);
+  transition: left 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.glass-shimmer:hover::before {
+  left: 200%;
+}
+
+/* ---------- KPI 卡片 ---------- */
+.kpi-card {
+  background: var(--kpi-glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--kpi-glass-border);
+  box-shadow: var(--kpi-glass-shadow);
+  border-radius: 1.25rem;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kpi-card:hover {
+  background: var(--kpi-card-hover-bg);
+  border-color: var(--kpi-glass-border-active);
+  box-shadow: var(--kpi-glass-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.kpi-card-liquid {
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card-liquid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--kpi-glass-highlight), transparent);
+  transform: skewX(-15deg);
+  transition: left 0.8s;
+}
+
+.kpi-card-liquid:hover::before {
+  left: 200%;
+}
+
+/* ---------- Workflow 流程图卡片 ---------- */
+.workflow-step-card {
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.workflow-step-card:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--glass-border-hover);
+}
+
+/* ---------- 主题切换过渡 ---------- */
 .theme-transitioning,
 .theme-transitioning * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease !important;
 }
 
-/* Hero Banner - 暗色模式下文字白色提高可读性 */
-[data-theme="dark"] .hero-tagline { color: rgba(255, 255, 255, 0.8) !important; }
-[data-theme="dark"] .hero-desc { color: rgba(255, 255, 255, 0.9) !important; }
+/* ---------- Hero 文字 ---------- */
+[data-theme="dark"] .hero-tagline { color: rgba(129, 140, 248, 0.85) !important; }
+[data-theme="dark"] .hero-desc { color: rgba(226, 232, 240, 0.80) !important; }
+[data-theme="light"] .hero-tagline { color: rgba(99, 102, 241, 0.80) !important; }
+[data-theme="light"] .hero-desc { color: rgba(26, 29, 38, 0.70) !important; }

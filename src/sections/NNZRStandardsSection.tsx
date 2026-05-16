@@ -53,7 +53,7 @@ export default function NNZRStandardsSection() {
                   href={s.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline" style={{ color: 'var(--brand-primary)' }}
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   下载查看文档 →
@@ -61,7 +61,7 @@ export default function NNZRStandardsSection() {
               ) : s.link ? (
                 <button
                   onClick={() => setPreview({ filePath: s.link!, fileName: `附件：${s.code}.${s.name}.pdf`, fileType: 'pdf' })}
-                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline cursor-pointer" style={{ color: 'var(--brand-primary)' }}
                 >
                   <Eye className="w-3.5 h-3.5" />
                   在线预览PDF →

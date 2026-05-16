@@ -79,7 +79,7 @@ function PreviewCard({ result, query, onClose }: {
             href={result.pdfLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#C8102E] text-white text-xs font-medium hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white text-xs font-medium hover:opacity-90 transition-opacity" style={{ background: 'var(--brand-primary)' }}
           >
             打开 PDF 阅读原文
             <ExternalLink className="w-3 h-3" />

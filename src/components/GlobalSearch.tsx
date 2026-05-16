@@ -100,7 +100,7 @@ export default function GlobalSearchPanel({ query, onClose, onSelect }: GlobalSe
                   {results.slice(0, 30).map((result) => (
                     <button key={result.id} className="w-full text-left px-4 py-2 flex items-start gap-2.5 hover:bg-[var(--brand-bg)] transition-colors group"
                       onClick={() => { onSelect(result.section); onClose(); }}>
-                      <ArrowRight className="w-3.5 h-3.5 mt-0.5 text-[var(--text-secondary)]/30 group-hover:text-[#C8102E] flex-shrink-0 transition-colors" />
+                      <ArrowRight className="w-3.5 h-3.5 mt-0.5 text-[var(--text-secondary)]/30 group-hover:text-[var(--brand-primary)] flex-shrink-0 transition-colors" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors truncate">{result.title}</span>

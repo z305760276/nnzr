@@ -59,14 +59,14 @@ export default function FilePreview({ open, onClose, fileName, filePath, fileTyp
 
   const typeIcon = fileType === 'xlsx'
     ? <FileSpreadsheet className="w-5 h-5 text-[#10B981]" />
-    : <FileText className="w-5 h-5 text-[#C8102E]" />;
+    : <FileText className="w-5 h-5" style={{ color: 'var(--brand-primary)' }} />;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="!inset-0 !top-0 !left-0 !translate-x-0 !translate-y-0 !w-screen !h-screen !max-w-none !rounded-none p-0 gap-0 flex flex-col bg-[var(--page-bg)] border-0">
         <DialogTitle className="sr-only">{fileName}</DialogTitle>
 
-        <div className="flex items-center gap-3 px-6 py-4 bg-[#C8102E] shrink-0">
+        <div className="flex items-center gap-3 px-6 py-4 shrink-0" style={{ background: 'var(--brand-primary)' }}>
           {typeIcon}
           <span className="text-sm font-medium text-white truncate">{fileName}</span>
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/15 text-white/80 border border-white/20 ml-auto">
@@ -78,7 +78,7 @@ export default function FilePreview({ open, onClose, fileName, filePath, fileTyp
           {loading && (
             <div className="flex items-center justify-center h-full">
               <div className="flex flex-col items-center gap-3">
-                <Loader2 className="w-6 h-6 text-[#C8102E] animate-spin" />
+                <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--brand-primary)' }} />
                 <span className="text-xs text-[var(--text-secondary)]">加载中...</span>
               </div>
             </div>
@@ -91,7 +91,7 @@ export default function FilePreview({ open, onClose, fileName, filePath, fileTyp
                 <p className="text-sm text-[var(--text-primary)] font-medium">预览失败</p>
                 <p className="text-xs text-[var(--text-secondary)]">{error}</p>
                 <a href={filePath} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline mt-2">
+                  className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline mt-2" style={{ color: 'var(--brand-primary)' }}>
                   <FileSpreadsheet className="w-3.5 h-3.5" />
                   下载文件查看
                 </a>
@@ -115,9 +115,10 @@ export default function FilePreview({ open, onClose, fileName, filePath, fileTyp
                     <button key={i} onClick={() => setActiveSheet(i)}
                       className={`text-[11px] px-3 py-1 rounded-md whitespace-nowrap transition-colors ${
                         activeSheet === i
-                          ? 'bg-[#C8102E] text-white font-medium'
+                          ? 'text-white font-medium'
                           : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-light)]'
-                      }`}>
+                      }`}
+                      style={activeSheet === i ? { background: 'var(--brand-primary)' } : {}}>
                       {sheet.name}
                     </button>
                   ))}

@@ -1,39 +1,34 @@
-// ============================================
-// 南宁中燃品牌色彩系统 - 参考中国燃气2026财年海报
-// 主色：中国红 #C8102E
-// ============================================
-
 export const brand = {
-  primary: '#C8102E',        // 中国燃气标准红
-  primaryLight: '#E31837',   // 亮红
-  primaryDark: '#8B0000',    // 深红
-  accent: '#FF6B8A',         // 粉红高亮
-  glow: 'rgba(200,16,46,0.3)',
-  glowStrong: 'rgba(200,16,46,0.5)',
-  border: 'rgba(200,16,46,0.2)',
-  borderHover: 'rgba(200,16,46,0.4)',
-  bg: 'rgba(200,16,46,0.08)',
-  bgHover: 'rgba(200,16,46,0.15)',
+  primary: '#6366F1',
+  primaryLight: '#818CF8',
+  primaryDark: '#4F46E5',
+  accent: '#A5B4FC',
+  glow: 'rgba(99,102,241,0.08)',
+  glowStrong: 'rgba(99,102,241,0.15)',
+  border: 'rgba(99,102,241,0.12)',
+  borderHover: 'rgba(99,102,241,0.25)',
+  bg: 'rgba(99,102,241,0.06)',
+  bgHover: 'rgba(99,102,241,0.12)',
 };
 
 export const semantic = {
-  danger: '#E31837',
-  warning: '#F59E0B',
-  success: '#10B981',
+  danger: '#DC2626',
+  warning: '#D97706',
+  success: '#059669',
   info: '#3B82F6',
 };
 
 export const text = {
-  primary: '#F8FAFC',
-  secondary: '#94A3B8',
-  muted: '#64748B',
-  placeholder: '#94A3B8',
+  primary: '#E2E8F0',
+  secondary: '#8899B4',
+  muted: '#5A6B85',
+  placeholder: '#8899B4',
 };
 
 export const surface = {
-  bg: '#050A14',
-  card: 'rgba(13,25,48,0.6)',
-  cardHover: 'rgba(13,25,48,0.8)',
-  modal: '#0D1A2D',
-  glass: 'rgba(13,25,48,0.8)',
+  bg: '#080C15',
+  card: 'rgba(14,20,34,0.6)',
+  cardHover: 'rgba(18,26,42,0.8)',
+  modal: '#0E1422',
+  glass: 'rgba(14,20,34,0.68)',
 };

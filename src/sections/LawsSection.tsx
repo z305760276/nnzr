@@ -86,7 +86,7 @@ export default function LawsSection() {
               {l.link ? (
                 <button
                   onClick={() => setPreview({ filePath: l.link, fileName: `${l.name}.pdf`, fileType: 'pdf' })}
-                  className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline cursor-pointer" style={{ color: 'var(--brand-primary)' }}
                 >
                   <Eye className="w-3.5 h-3.5" />
                   在线预览PDF →

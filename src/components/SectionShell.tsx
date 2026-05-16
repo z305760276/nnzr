@@ -16,36 +16,44 @@ export default function SectionShell({ id, title, subtitle, icon, isOpen, onTogg
     <div id={id} className="relative py-3">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:pl-64 relative z-10">
         <div
-          className={`dark-card bg-[rgba(13,25,48,0.5)] border rounded-xl overflow-hidden transition-all duration-300 ${
-            isOpen
-              ? 'border-[rgba(200,16,46,0.3)] shadow-[0_0_20px_rgba(200,16,46,0.06)]'
-              : 'border-[rgba(200,16,46,0.08)] hover:border-[var(--border-subtle)]'
-          }`}
+          className="overflow-hidden transition-all duration-300 glass-card"
+          style={{
+            background: isOpen ? 'var(--glass-bg-strong)' : 'var(--glass-bg)',
+            borderColor: isOpen ? 'var(--glass-border-active)' : 'var(--glass-border)',
+          }}
         >
           <button
             onClick={onToggle}
-            className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors ${
-              isOpen ? 'bg-[var(--brand-bg)]' : 'hover:bg-[rgba(200,16,46,0.03)]'
-            }`}
+            className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors"
+            style={{
+              background: isOpen ? 'var(--brand-bg)' : 'transparent',
+            }}
+            onMouseEnter={(e) => {
+              if (!isOpen) e.currentTarget.style.background = 'var(--brand-bg)';
+            }}
+            onMouseLeave={(e) => {
+              if (!isOpen) e.currentTarget.style.background = 'transparent';
+            }}
           >
             <div className="flex items-center gap-3 min-w-0">
-              <span className="text-[#C8102E] shrink-0">{icon}</span>
+              <span className="shrink-0" style={{ color: 'var(--brand-primary)' }}>{icon}</span>
               <div className="min-w-0">
                 <h2
-                  className={`text-xl md:text-2xl font-bold truncate ${
-                    isOpen ? 'text-[var(--accent)]' : 'text-[var(--text-primary)]'
-                  }`}
+                  className="text-xl md:text-2xl font-bold truncate"
+                  style={{ color: isOpen ? 'var(--brand-primary)' : 'var(--text-primary)' }}
                 >
                   {title}
                 </h2>
-                <p className="text-xs text-white truncate mt-0.5">{subtitle}</p>
+                <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-muted)' }}>{subtitle}</p>
               </div>
             </div>
             <div className="shrink-0 ml-3">
               <ChevronRight
-                className={`w-5 h-5 text-[#C8102E] transition-transform duration-300 ${
-                  isOpen ? 'rotate-90' : ''
-                }`}
+                className="w-5 h-5 transition-transform duration-300"
+                style={{
+                  color: 'var(--brand-primary)',
+                  transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                }}
               />
             </div>
           </button>
@@ -53,7 +61,10 @@ export default function SectionShell({ id, title, subtitle, icon, isOpen, onTogg
             className="overflow-hidden transition-all duration-500 ease-in-out"
             style={{ maxHeight: isOpen ? '99999px' : '0px', opacity: isOpen ? 1 : 0 }}
           >
-            <div className="px-5 pb-5 pt-1 border-t border-[rgba(200,16,46,0.06)]">
+            <div
+              className="px-5 pb-5 pt-1"
+              style={{ borderTop: '1px solid var(--border-accent)' }}
+            >
               {children}
             </div>
           </div>

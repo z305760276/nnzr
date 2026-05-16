@@ -45,7 +45,7 @@ export default function GroupStandardsSection() {
               </div>
               <button
                 onClick={() => setPreview({ filePath: s.link, fileName: s.isExcel ? `附件${s.code}. ${s.name}.xlsx` : `附件${s.code}.《${s.name}》.pdf`, fileType: s.isExcel ? 'xlsx' : 'pdf' })}
-                className="inline-flex items-center gap-1.5 text-xs text-[#C8102E] font-medium hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline cursor-pointer" style={{ color: 'var(--brand-primary)' }}
               >
                 <Eye className="w-3.5 h-3.5" />
                 {s.isExcel ? '在线预览表格 →' : '在线预览PDF →'}
