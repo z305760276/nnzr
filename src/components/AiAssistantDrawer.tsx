@@ -148,25 +148,16 @@ function AiAssistantDrawer() {
         >
           <SheetTitle className="sr-only">AI 查询助手</SheetTitle>
 
-          <div className="flex items-center justify-between border-b border-border px-5 py-3 shrink-0">
-            <div className="flex items-center gap-3">
-              <img
-                src="./ai-assistant-icon.png"
-                alt="AI"
-                className="size-8 rounded-full object-cover shrink-0"
-              />
-              <div>
-                <h2 className="text-sm font-semibold text-foreground">AI 查询助手</h2>
-                <p className="text-xs text-muted-foreground">南宁中燃客服部</p>
-              </div>
+          <div className="flex items-center border-b border-border px-5 py-3 shrink-0">
+            <img
+              src="./ai-assistant-icon.png"
+              alt="AI"
+              className="size-8 rounded-full object-cover shrink-0"
+            />
+            <div className="ml-3">
+              <h2 className="text-sm font-semibold text-foreground">AI 查询助手</h2>
+              <p className="text-xs text-muted-foreground">南宁中燃客服部</p>
             </div>
-            <button
-              onClick={clearHistory}
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-              title="清除对话历史"
-            >
-              <Trash2 className="size-4" />
-            </button>
           </div>
 
           <div ref={scrollRef} className="flex-1 overflow-y-auto">
@@ -237,6 +228,18 @@ function AiAssistantDrawer() {
           </div>
 
           <div className="border-t border-border p-3 shrink-0">
+            <div className="flex items-center justify-between mb-2 px-1">
+              <span className="text-xs text-muted-foreground">AI 查询助手</span>
+              {hasStarted && (
+                <button
+                  onClick={clearHistory}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
+                  <Trash2 className="size-3" />
+                  清除历史
+                </button>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <button className="flex size-9 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors" title="上传文件">
                 <Plus className="size-5" />
