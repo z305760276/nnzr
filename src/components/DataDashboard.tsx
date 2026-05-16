@@ -1,4 +1,4 @@
-import { Gauge, ShieldAlert, ClipboardCheck, BookOpen, type LucideIcon } from 'lucide-react';
+import { Gauge, ShieldAlert, ClipboardCheck, BookOpen, AlertTriangle, CheckCircle2, type LucideIcon } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
 
 export interface DashboardTab {
@@ -12,10 +12,10 @@ export interface DashboardTab {
 export const DEFAULT_TABS: DashboardTab[] = [
   {
     id: 'kpi',
-    label: '示例展示',
+    label: '业务图谱',
     icon: Gauge,
-    iframeSrc: 'https://alidocs.dingtalk.com/notable/share/dashboard/cebe13b5fda7df0fc78ec57d6cc9cc4e_WgZOZA8Aa0BB8qLX',
-    description: '示例数据展示',
+    iframeSrc: '',
+    description: '业务图谱展示',
   },
   {
     id: 'safety',
@@ -26,17 +26,31 @@ export const DEFAULT_TABS: DashboardTab[] = [
   },
   {
     id: 'workflow',
-    label: '数据暂缺',
+    label: '抄收管理',
     icon: ClipboardCheck,
-    iframeSrc: '',
-    description: '待确认展示内容',
+    iframeSrc: 'https://alidocs.dingtalk.com/notable/share/dashboard/cebe13b5fda7df0fc78ec57d6cc9cc4e_WgZOZA8Aa0BB8qLX',
+    description: '抄收管理相关数据展示',
   },
   {
     id: 'docs',
-    label: '数据暂缺',
+    label: '核算管理',
     icon: BookOpen,
     iframeSrc: '',
-    description: '待确认展示内容',
+    description: '核算管理相关数据展示',
+  },
+  {
+    id: 'hidden-danger',
+    label: '隐患整改',
+    icon: AlertTriangle,
+    iframeSrc: '',
+    description: '隐患整改相关数据展示',
+  },
+  {
+    id: 'inspection-rate',
+    label: '安检完成率',
+    icon: CheckCircle2,
+    iframeSrc: '',
+    description: '安检完成率相关数据展示',
   },
 ];
 
