@@ -10,11 +10,23 @@ const TOKEN = 'pat_EA8ohczLvGSuWzoKT8Z1sFIzUGc1nq1czYbYeyn6VagbHjMJAUNKWbnEjh8tI
 
 const STORAGE_KEY = 'ai_assistant_conv'
 
-const QUICK_QUESTIONS = [
+const QUICK_QUESTION_POOL = [
   '请解释安检隐患分级标准的具体内容',
   'CRM工单的流转流程是怎样的？',
   'HSE和客服质量记分标准在哪里查询',
+  '什么是暗厨房？',
+  '组织架构和岗位职责有哪些？',
+  '财年指标如何查询？',
+  '安全管理制度有哪些？',
+  '客户投诉处理流程是什么？',
+  '燃气管道巡检频次要求？',
+  '内部管理制度如何检索？',
 ]
+
+const pickRandomQuestions = (pool: string[], count: number) => {
+  const shuffled = [...pool].sort(() => Math.random() - 0.5)
+  return shuffled.slice(0, count)
+}
 
 const WELCOME_TEXT =
   '您好，我是南宁中燃客户服务部的 AI 助手，能为您解答组织架构、岗位职责等相关问题，确保回答规范且引用来源。'
@@ -50,6 +62,9 @@ function AiAssistantDrawer() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [convId, setConvId] = useState(loadConversationId)
+  const [quickQuestions, setQuickQuestions] = useState(() =>
+    pickRandomQuestions(QUICK_QUESTION_POOL, 3)
+  )
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -119,6 +134,7 @@ function AiAssistantDrawer() {
     setMessages([])
     setConvId('')
     saveConversationId('')
+    setQuickQuestions(pickRandomQuestions(QUICK_QUESTION_POOL, 3))
   }
 
   const hasStarted = messages.length > 0
@@ -177,10 +193,13 @@ function AiAssistantDrawer() {
                 </div>
 
                 <div className="flex flex-wrap gap-2 w-full">
-                  {QUICK_QUESTIONS.map((q) => (
+                  {quickQuestions.map((q) => (
                     <button
                       key={q}
-                      onClick={() => sendMessage(q)}
+                      onClick={() => {
+                        setQuickQuestions(pickRandomQuestions(QUICK_QUESTION_POOL, 3))
+                        sendMessage(q)
+                      }}
                       className="rounded-full border border-border bg-background px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors text-left"
                     >
                       {q}
