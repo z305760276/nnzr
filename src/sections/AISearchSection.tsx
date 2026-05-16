@@ -2,8 +2,65 @@ import { useEffect, useRef } from 'react';
 import { Bot, Sparkles, ExternalLink } from 'lucide-react';
 
 const BOT_ID = '7640388142570684451';
-const TOKEN = 'cztei_hlsELW1jRDjiJ42FUpuRhxJGnLMxN2kU3Kzi8zwdX89eTANcZEatzjMf9yUDJs43x';
+const TOKEN = 'cztei_q8DfPR6nMe9wXxsSdpt7FIBHHuEoomgjuaZhnC3NiNdBxsnOblC5homy6DPuiKXdp';
 const SDK_URL = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.10/libs/cn/index.js';
+
+let embeddedInstance: any = null;
+let sdkLoading = false;
+
+function initEmbeddedChat(container: HTMLElement) {
+  if (embeddedInstance) return;
+  if (!(window as any).CozeWebSDK) {
+    if (!sdkLoading) {
+      sdkLoading = true;
+      const script = document.createElement('script');
+      script.src = SDK_URL;
+      script.async = true;
+      script.onload = () => { sdkLoading = false; initEmbeddedChat(container); };
+      document.body.appendChild(script);
+    }
+    return;
+  }
+  embeddedInstance = new (window as any).CozeWebSDK.WebChatClient({
+    config: {
+      type: 'bot',
+      bot_id: BOT_ID,
+      isIframe: false,
+    },
+    auth: {
+      type: 'token',
+      token: TOKEN,
+      onRefreshToken: async () => TOKEN,
+    },
+    userInfo: {
+      id: 'user',
+      url: '/nnzr/mascot.png',
+      nickname: '客服部',
+    },
+    ui: {
+      base: {
+        icon: '/nnzr/mascot.png',
+        layout: 'pc',
+        lang: 'zh-CN',
+        zIndex: 1000,
+      },
+      header: {
+        isShow: false,
+      },
+      asstBtn: {
+        isNeed: false,
+      },
+      footer: {
+        isShow: false,
+      },
+      chatBot: {
+        title: '燃气管家',
+        uploadable: false,
+        el: container,
+      },
+    },
+  });
+}
 
 export default function AISearchSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -12,37 +69,7 @@ export default function AISearchSection() {
   useEffect(() => {
     if (initializedRef.current || !containerRef.current) return;
     initializedRef.current = true;
-
-    const loadSDK = () => {
-      if (document.querySelector(`script[src="${SDK_URL}"]`)) {
-        initChat();
-        return;
-      }
-      const script = document.createElement('script');
-      script.src = SDK_URL;
-      script.async = true;
-      script.onload = initChat;
-      document.body.appendChild(script);
-    };
-
-    const initChat = () => {
-      if (!containerRef.current) return;
-      new (window as any).CozeWebSDK.WebChat({
-        bot_id: BOT_ID,
-        lang: 'zh-CN',
-        auth: { type: 'token', token: TOKEN },
-        container: containerRef.current,
-        ui: {
-          chat: {
-            primaryColor: '#C8102E',
-            backgroundColor: 'transparent',
-            bubbleColor: '#C8102E',
-          },
-        },
-      });
-    };
-
-    loadSDK();
+    initEmbeddedChat(containerRef.current);
   }, []);
 
   const openAIAssistant = () => {
