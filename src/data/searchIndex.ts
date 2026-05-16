@@ -430,9 +430,17 @@ const CATEGORY_COLORS: Record<string, string> = {
   '南宁中燃管理规范': '#10B981',
 };
 
-let pdfIndexCache: { entries: any[] } | null = null;
+interface PdfIndexEntry {
+  displayName: string;
+  pdfLink: string;
+  category: string;
+  section: string;
+  chunks: string[];
+}
 
-async function loadPdfIndex(): Promise<{ entries: any[] }> {
+let pdfIndexCache: { entries: PdfIndexEntry[] } | null = null;
+
+async function loadPdfIndex(): Promise<{ entries: PdfIndexEntry[] }> {
   if (pdfIndexCache) return pdfIndexCache;
   try {
     const resp = await fetch('./pdf-search-index.json');

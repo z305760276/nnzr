@@ -4,7 +4,7 @@ import HomePage from './pages/HomePage';
 import DetailPage from './pages/DetailPage';
 import GlobalSearchPanel from './components/GlobalSearch';
 import TopNav from './components/TopNav';
-import AIAssistant from './components/AIAssistant';
+import AiAssistantDrawer from './components/AiAssistantDrawer';
 import { createContext, useContext } from 'react';
 
 const SECTION_ROUTE_MAP: Record<string, string> = {
@@ -89,6 +89,7 @@ function SearchWrapper({ children }: { children: React.ReactNode }) {
         <main className="pt-14">
           {children}
         </main>
+        <AiAssistantDrawer />
       </SearchContext.Provider>
     </>
   );
@@ -104,7 +105,6 @@ function App() {
             <Route path="/detail/:moduleId" element={<DetailPage />} />
           </Routes>
         </SearchWrapper>
-        <AIAssistant />
       </div>
     </HashRouter>
   );

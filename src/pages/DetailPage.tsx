@@ -91,6 +91,7 @@ function StandardsCombined() {
 export default function DetailPage() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
+  const searchCtx = useSearch();
 
   const meta = moduleId ? MODULE_META[moduleId] : null;
   const Component = moduleId ? COMPONENT_MAP[moduleId] : null;
@@ -109,7 +110,7 @@ export default function DetailPage() {
   }
 
   const Icon = meta.icon;
-  const { searchQuery, setSearchQuery, setShowSearchResults } = useSearch();
+  const { searchQuery, setSearchQuery, setShowSearchResults } = searchCtx;
 
   return (
     <div className="min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)]">

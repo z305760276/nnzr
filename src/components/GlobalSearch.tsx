@@ -15,21 +15,33 @@ export default function GlobalSearchPanel({ query, onClose, onSelect }: GlobalSe
   const [pdfResults, setPdfResults] = useState<PdfSearchResult[]>([]);
   const [pdfLoading, setPdfLoading] = useState(false);
   const lastQueryRef = useRef('');
+  const timeoutIds = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
-    if (!query || query.length < 1) {
-      setPdfResults([]);
-      setPdfLoading(false);
+    timeoutIds.current.forEach(clearTimeout);
+    timeoutIds.current = [];
+    const q = query;
+
+    if (!q || q.length < 1) {
       lastQueryRef.current = '';
+      const id = setTimeout(() => {
+        setPdfResults([]);
+        setPdfLoading(false);
+      });
+      timeoutIds.current.push(id);
       return;
     }
 
-    if (query === lastQueryRef.current) return;
-    lastQueryRef.current = query;
+    if (q === lastQueryRef.current) return;
+    lastQueryRef.current = q;
 
-    setPdfLoading(true);
-    searchPdf(query).then((res) => {
-      if (lastQueryRef.current === query) {
+    const id2 = setTimeout(() => {
+      setPdfLoading(true);
+    });
+    timeoutIds.current.push(id2);
+
+    searchPdf(q).then((res) => {
+      if (lastQueryRef.current === q) {
         setPdfResults(res);
         setPdfLoading(false);
       }

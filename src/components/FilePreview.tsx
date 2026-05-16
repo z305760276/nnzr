@@ -36,8 +36,8 @@ export default function FilePreview({ open, onClose, fileName, filePath, fileTyp
         return { name, rows };
       });
       setExcelData(sheets);
-    } catch (e: any) {
-      setError(e.message || '解析失败');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : '解析失败');
     } finally {
       setLoading(false);
     }
