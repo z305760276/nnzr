@@ -664,7 +664,7 @@
 }
 
 /* ---------- Hero 文字 ---------- */
-[data-theme="dark"] .hero-tagline { color: rgba(129, 140, 248, 0.85) !important; }
-[data-theme="dark"] .hero-desc { color: rgba(226, 232, 240, 0.80) !important; }
-[data-theme="light"] .hero-tagline { color: rgba(99, 102, 241, 0.80) !important; }
-[data-theme="light"] .hero-desc { color: rgba(26, 29, 38, 0.70) !important; }
+[data-theme="dark"] .hero-tagline { color: rgba(226, 232, 240, 0.85) !important; }
+[data-theme="dark"] .hero-desc { color: rgba(226, 232, 240, 0.70) !important; }
+[data-theme="light"] .hero-tagline { color: rgba(26, 29, 38, 0.80) !important; }
+[data-theme="light"] .hero-desc { color: rgba(26, 29, 38, 0.65) !important; }

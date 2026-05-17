@@ -142,7 +142,7 @@ export default function HomePage() {
               }}
             >
               南宁中燃客户服务部
-              <span className="block text-2xl md:text-3xl font-light mt-2 tracking-wide" style={{ color: 'var(--brand-primary)' }}>
+              <span className="block text-2xl md:text-3xl font-light mt-2 tracking-wide" style={{ color: 'var(--text-primary)' }}>
                 管理图谱
               </span>
             </h1>
