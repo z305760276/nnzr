@@ -20,10 +20,10 @@ export const DEFAULT_TABS: DashboardTab[] = [
   },
   {
     id: 'safety',
-    label: '服务质量',
+    label: '服务管理',
     icon: ShieldAlert,
     iframeSrc: 'https://alidocs.dingtalk.com/notable/share/dashboard/471f7ca52979ea12d31b18bcff4bc570_XNkOM5jAK3wv3OY7',
-    description: '服务质量相关数据展示',
+    description: '服务管理相关数据展示',
   },
   {
     id: 'workflow',
@@ -41,17 +41,17 @@ export const DEFAULT_TABS: DashboardTab[] = [
   },
   {
     id: 'hidden-danger',
-    label: '隐患整改',
+    label: '隐患管理',
     icon: AlertTriangle,
     iframeSrc: '',
-    description: '隐患整改相关数据展示',
+    description: '隐患管理相关数据展示',
   },
   {
     id: 'inspection-rate',
-    label: '安检完成率',
+    label: '安检管理',
     icon: CheckCircle2,
     iframeSrc: '',
-    description: '安检完成率相关数据展示',
+    description: '安检管理相关数据展示',
   },
 ];
 
