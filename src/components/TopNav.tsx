@@ -79,7 +79,7 @@ export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }
           </>
         )}
 
-        <div className="flex-1 max-w-lg mx-auto relative">
+        <div className="flex-1 min-w-0 max-w-[50%] sm:max-w-lg relative">
           <div
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-300"
             style={{

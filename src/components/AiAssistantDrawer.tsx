@@ -159,94 +159,93 @@ function AiAssistantDrawer() {
 
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
-          side="right"
-          className="flex w-[440px] flex-col p-0 sm:max-w-[440px]"
-        >
-          <SheetTitle className="sr-only">AI 查询助手</SheetTitle>
+        side="right"
+        className="flex w-[100vw] sm:w-[440px] flex-col p-0 sm:max-w-[440px] sm:border-l"
+      >
+        <SheetTitle className="sr-only">AI 查询助手</SheetTitle>
 
-          <div className="flex items-center border-b border-border px-5 py-3 shrink-0">
-            <img
-              src="./ai-assistant-icon.png"
-              alt="AI"
-              className="size-8 rounded-full object-cover shrink-0"
-            />
-            <div className="ml-3">
-              <h2 className="text-sm font-semibold text-foreground">AI 查询助手</h2>
-              <p className="text-xs text-muted-foreground">南宁中燃客服部</p>
-            </div>
+        <div className="flex items-center border-b border-border px-3 sm:px-5 py-3 shrink-0">
+          <img
+            src="./ai-assistant-icon.png"
+            alt="AI"
+            className="size-8 rounded-full object-cover shrink-0"
+          />
+          <div className="ml-3">
+            <h2 className="text-sm font-semibold text-foreground">AI 查询助手</h2>
+            <p className="text-xs text-muted-foreground">南宁中燃客服部</p>
           </div>
+        </div>
 
-          <div ref={scrollRef} className="flex-1 overflow-y-auto">
-            {!hasStarted && (
-              <div className="flex flex-col items-center px-4 pt-8 pb-4">
-                <img
-                  src="./ai-assistant-icon.png"
-                  alt="AI"
-                  className="size-16 rounded-full object-cover mb-4"
-                />
-                <p className="text-base font-semibold text-foreground mb-4">
-                  南宁中燃客服AI助手
-                </p>
+        <div ref={scrollRef} className="flex-1 overflow-y-auto">
+          {!hasStarted && (
+            <div className="flex flex-col items-center px-3 sm:px-4 pt-8 pb-4">
+              <img
+                src="./ai-assistant-icon.png"
+                alt="AI"
+                className="size-12 sm:size-16 rounded-full object-cover mb-3 sm:mb-4"
+              />
+              <p className="text-base font-semibold text-foreground mb-4">
+                南宁中燃客服AI助手
+              </p>
 
-                <div className="w-full rounded-xl bg-muted px-4 py-3 text-sm leading-relaxed text-foreground mb-5">
-                  {WELCOME_TEXT}
+              <div className="w-full rounded-xl bg-muted px-3 sm:px-4 py-3 text-sm leading-relaxed text-foreground mb-5">
+                {WELCOME_TEXT}
+              </div>
+
+              <div className="flex flex-wrap gap-2 w-full">
+                {quickQuestions.map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => {
+                      setQuickQuestions(pickRandomQuestions(QUICK_QUESTION_POOL, 3))
+                      sendMessage(q)
+                    }}
+                    className="rounded-full border border-border bg-background px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors text-left"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="px-3 sm:px-4 py-4 space-y-4">
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[88%] rounded-xl px-4 py-2.5 text-sm leading-relaxed ${
+                    msg.role === 'user'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-foreground'
+                  }`}
+                >
+                  {msg.role === 'user' ? (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  ) : (
+                    <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.content}
+                      </ReactMarkdown>
+                    </div>
+                  )}
                 </div>
+              </div>
+            ))}
 
-                <div className="flex flex-wrap gap-2 w-full">
-                  {quickQuestions.map((q) => (
-                    <button
-                      key={q}
-                      onClick={() => {
-                        setQuickQuestions(pickRandomQuestions(QUICK_QUESTION_POOL, 3))
-                        sendMessage(q)
-                      }}
-                      className="rounded-full border border-border bg-background px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors text-left"
-                    >
-                      {q}
-                    </button>
-                  ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-2 rounded-xl bg-muted px-4 py-2.5">
+                  <Loader2 className="size-4 animate-spin text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">思考中...</span>
                 </div>
               </div>
             )}
-
-            <div className="px-4 py-4 space-y-4">
-              {messages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[85%] rounded-xl px-4 py-2.5 text-sm leading-relaxed ${
-                      msg.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted text-foreground'
-                    }`}
-                  >
-                    {msg.role === 'user' ? (
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
-                    ) : (
-                      <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {msg.content}
-                        </ReactMarkdown>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="flex items-center gap-2 rounded-xl bg-muted px-4 py-2.5">
-                    <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">思考中...</span>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
 
-          <div className="border-t border-border p-3 shrink-0">
+          <div className="border-t border-border p-3 sm:p-4 shrink-0">
             <div className="flex items-center justify-between mb-2 px-1">
               <span className="text-xs text-muted-foreground">AI 查询助手</span>
               {hasStarted && (
@@ -263,7 +262,7 @@ function AiAssistantDrawer() {
               <button className="flex size-9 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors" title="上传文件">
                 <Plus className="size-5" />
               </button>
-              <div className="flex-1 flex items-center rounded-full border border-border bg-background px-4 py-2 focus-within:ring-2 focus-within:ring-ring focus-within:border-transparent">
+              <div className="flex-1 flex items-center rounded-full border border-border bg-background px-3 sm:px-4 py-2 focus-within:ring-2 focus-within:ring-ring focus-within:border-transparent">
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -291,7 +290,8 @@ function AiAssistantDrawer() {
               内容由AI生成，无法确保真实准确，仅供参考。
             </p>
           </div>
-        </SheetContent>
+        </div>
+      </SheetContent>
       </Sheet>
     </>
   )
