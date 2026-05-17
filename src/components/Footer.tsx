@@ -102,9 +102,17 @@ export default function Footer() {
               南宁中燃城市燃气发展有限公司
             </span>
           </div>
-          <p className="text-[10px]" style={{ color: 'var(--text-muted)', opacity: 0.4 }}>
-            客户服务部 · 内部管理参考系统 · 数据来源于2025年12月版制度文件
-          </p>
+          <div className="flex flex-col items-end gap-1">
+            <p className="text-[10px]" style={{ color: 'var(--text-muted)', opacity: 0.4 }}>
+              客户服务部 · 内部管理参考系统 · 数据来源于2025年12月版制度文件
+            </p>
+            <p
+              className="text-[11px] select-none"
+              style={{ color: 'var(--text-muted)', opacity: 0.55 }}
+            >
+              南宁中燃客户服务部-张琨鹏 版权所有
+            </p>
+          </div>
         </div>
       </div>
     </footer>

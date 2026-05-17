@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { AccordionGroup, AccordionItem } from '../components/Accordion';
 import { safetyCheckItems } from '../data/orgData';
 import {
-  Video, AlertTriangle, CheckCircle, Clock, Target, ChevronRight
+  Video, AlertTriangle, CheckCircle, Lightbulb, ShieldAlert, Wrench,
+  Clock, Target, ChevronRight,
 } from 'lucide-react';
 
 const hazardDetails = [
@@ -58,66 +60,65 @@ const safetyExpertTips = [
 const videoPlaceholders = [
   { title: '智能表具更换标准操作', duration: '12:34', status: '待录制' },
   { title: '一级隐患现场处置示范', duration: '08:56', status: '待录制' },
-  { title: 'CRM工单派发演示', duration: '06:21', status: '待录制' }
+  { title: 'CRM工单派发演示', duration: '06:21', status: '待录制' },
 ];
 
 const level1Count = hazardFixList.filter(h => h.level === 1).length;
 const level2Count = hazardFixList.filter(h => h.level === 2).length;
 const level3Count = hazardFixList.filter(h => h.level === 3).length;
+const totalCheckItems = safetyCheckItems.reduce((s, c) => s + c.items.length, 0);
 
 const STAT_CARDS = [
   { label: '一级隐患项', value: level1Count, unit: '项', icon: AlertTriangle, color: 'var(--safety-danger)', bg: 'var(--safety-danger-bg)', desc: '须立即停气处置' },
   { label: '二级隐患项', value: level2Count, unit: '项', icon: Clock, color: 'var(--safety-warning)', bg: 'var(--safety-warning-bg)', desc: '30日内限期整改' },
   { label: '三级隐患项', value: level3Count, unit: '项', icon: CheckCircle, color: 'var(--safety-info)', bg: 'var(--safety-info-bg)', desc: '建议改善告知' },
-  { label: '安检检查项', value: safetyCheckItems.reduce((s, c) => s + c.items.length, 0), unit: '项', icon: Target, color: 'var(--safety-accent)', bg: 'var(--safety-accent-bg)', desc: '覆盖6大类别' },
+  { label: '安检检查项', value: totalCheckItems, unit: '项', icon: Target, color: 'var(--safety-accent)', bg: 'var(--safety-accent-bg)', desc: '覆盖6大类别' },
 ];
 
-function ExpertTipPanel({ tip }: { tip: typeof safetyExpertTips[number] }) {
-  const [open, setOpen] = useState(false);
+function ExpertTipItem({ tip, defaultOpen }: { tip: typeof safetyExpertTips[number]; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen || false);
 
   return (
     <div
-      className="rounded-2xl border overflow-hidden transition-all duration-300"
+      className="mt-3 overflow-hidden rounded-lg glass-card-subtle"
       style={{
-        background: 'var(--safety-card)',
-        borderColor: open ? 'var(--safety-border-active)' : 'var(--safety-border)',
+        background: 'var(--sub-accordion-panel-bg)',
+        borderColor: 'var(--glass-border)',
       }}
     >
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors"
-        style={{ background: open ? 'var(--safety-accent-bg)' : 'transparent' }}
+        className="w-full flex items-center justify-between px-4 py-3 text-left transition-colors"
+        style={{ background: open ? 'var(--brand-bg)' : 'transparent' }}
+        onMouseEnter={(e) => { if (!open) e.currentTarget.style.background = 'var(--brand-bg)' }}
+        onMouseLeave={(e) => { if (!open) e.currentTarget.style.background = 'transparent' }}
       >
-        <span className="text-sm font-medium" style={{ color: open ? 'var(--safety-accent)' : 'var(--text-primary)' }}>
+        <span className="text-sm font-medium" style={{ color: open ? 'var(--brand-primary)' : 'var(--text-secondary)' }}>
           {tip.id}. {tip.scene}
         </span>
         <ChevronRight
-          className="w-4 h-4 shrink-0 transition-transform duration-300"
-          style={{ color: open ? 'var(--safety-accent)' : 'var(--text-muted)', transform: open ? 'rotate(90deg)' : 'rotate(0deg)' }}
+          className="w-3.5 h-3.5 transition-transform duration-300"
+          style={{
+            color: 'var(--brand-primary)',
+            transform: open ? 'rotate(90deg)' : 'rotate(0deg)',
+            opacity: open ? 1 : 0.5,
+          }}
         />
       </button>
-      <div
-        className="overflow-hidden transition-all duration-400 ease-in-out"
-        style={{ maxHeight: open ? '2000px' : '0px', opacity: open ? 1 : 0 }}
-      >
-        <div className="px-5 pb-5 pt-1" style={{ borderTop: '1px solid var(--safety-divider)' }}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+      <div className="overflow-hidden transition-all duration-500 ease-in-out"
+        style={{ maxHeight: open ? '2000px' : '0px', opacity: open ? 1 : 0 }}>
+        <div className="px-4 pb-4 pt-1">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="rounded-xl p-4" style={{ background: 'var(--safety-warning-bg)', border: '1px solid var(--safety-warning-border)' }}>
-              <span className="text-[10px] font-semibold uppercase tracking-wider block mb-2" style={{ color: 'var(--safety-warning)' }}>
-                实操技巧
-              </span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider block mb-2" style={{ color: 'var(--safety-warning)' }}>实操技巧</span>
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{tip.trick}</p>
             </div>
             <div className="rounded-xl p-4" style={{ background: 'var(--safety-accent-bg)', border: '1px solid var(--safety-accent-border)' }}>
-              <span className="text-[10px] font-semibold uppercase tracking-wider block mb-2" style={{ color: 'var(--safety-accent)' }}>
-                制度依据
-              </span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider block mb-2" style={{ color: 'var(--safety-accent)' }}>制度依据</span>
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{tip.regulation}</p>
             </div>
             <div className="rounded-xl p-4" style={{ background: 'var(--safety-danger-bg)', border: '1px solid var(--safety-danger-border)' }}>
-              <span className="text-[10px] font-semibold uppercase tracking-wider block mb-2" style={{ color: 'var(--safety-danger)' }}>
-                风险提示
-              </span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider block mb-2" style={{ color: 'var(--safety-danger)' }}>风险提示</span>
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{tip.risk}</p>
             </div>
           </div>
@@ -131,7 +132,7 @@ export default function SafetyCheckSection() {
   return (
     <div className="space-y-8">
 
-      {/* ===== 统计概览卡片 ===== */}
+      {/* 统计概览卡片 — 始终可见 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {STAT_CARDS.map((stat, i) => {
           const Icon = stat.icon;
@@ -139,10 +140,7 @@ export default function SafetyCheckSection() {
             <div
               key={i}
               className="relative overflow-hidden rounded-2xl border p-5 transition-all duration-300 hover:scale-[1.02]"
-              style={{
-                background: 'var(--safety-stat-bg)',
-                borderColor: 'var(--safety-stat-border)',
-              }}
+              style={{ background: 'var(--safety-stat-bg)', borderColor: 'var(--safety-stat-border)' }}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: stat.bg }}>
@@ -160,103 +158,79 @@ export default function SafetyCheckSection() {
         })}
       </div>
 
-      {/* ===== 三级隐患分级详情 ===== */}
-      <section>
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1 h-6 rounded-full" style={{ background: 'var(--safety-danger)' }} />
-          <div>
-            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>三级隐患分级体系</h2>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>来源：《隐患管理制度》V2.0 第三章</p>
-          </div>
-        </div>
+      {/* 内容折叠区 — 手风琴模式，与规范页一致 */}
+      <AccordionGroup className="space-y-3">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {hazardDetails.map((h) => (
-            <div
-              key={h.level}
-              className="relative overflow-hidden rounded-2xl border transition-all duration-300 hover:scale-[1.01]"
-              style={{ background: 'var(--safety-card)', borderColor: 'var(--safety-border)' }}
-            >
-              <div className="absolute top-0 left-0 right-0 h-1" style={{ background: h.color }} />
-
-              <div className="p-6">
+        {/* 1. 三级隐患分级体系 */}
+        <AccordionItem
+          id="hazard-levels"
+          title="三级隐患分级体系"
+          summary="一级重大 · 二级较大 · 三级一般"
+          icon={<AlertTriangle className="w-5 h-5" />}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {hazardDetails.map((h) => (
+              <div key={h.level} className="rounded-xl p-5 transition-all" style={{ background: 'var(--card-inner-bg)', border: '1px solid var(--border-light)' }}>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold"
-                    style={{ background: h.bgColor, color: h.color }}>
-                    {h.level}
-                  </div>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold" style={{ background: h.bgColor, color: h.color }}>{h.level}</div>
                   <div>
-                    <h3 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{h.name}</h3>
+                    <h4 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{h.name}</h4>
                     <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{h.deadline}</p>
                   </div>
                 </div>
-
-                <div className="space-y-3">
-                  <div className="rounded-xl p-3" style={{ background: 'var(--safety-glass)', border: '1px solid var(--safety-divider)' }}>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider block mb-1.5" style={{ color: h.color }}>定义</span>
-                    <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{h.definition}</p>
-                  </div>
-
-                  <div className="rounded-xl p-3" style={{ background: 'var(--safety-glass)', border: '1px solid var(--safety-divider)' }}>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider block mb-1.5" style={{ color: h.color }}>判定标准（白话版）</span>
-                    <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{h.criteriaPlain}</p>
-                  </div>
-
-                  <div className="rounded-xl p-3" style={{ background: 'var(--safety-glass)', border: '1px solid var(--safety-divider)' }}>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider block mb-1.5" style={{ color: h.color }}>处置流程</span>
-                    <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{h.process}</p>
-                  </div>
+                <div className="space-y-2.5">
+                  {[
+                    { label: '定义', content: h.definition },
+                    { label: '判定标准（白话版）', content: h.criteriaPlain },
+                    { label: '处置流程', content: h.process },
+                  ].map(f => (
+                    <div key={f.label} className="rounded-lg p-3" style={{ background: 'var(--glass-bg-subtle)' }}>
+                      <span className="text-[10px] font-semibold uppercase tracking-wider block mb-1" style={{ color: h.color }}>{f.label}</span>
+                      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{f.content}</p>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--safety-divider)' }}>
+                <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                   <span className="text-[10px] font-semibold uppercase tracking-wider block mb-2" style={{ color: 'var(--text-muted)' }}>典型隐患示例</span>
                   <div className="flex flex-wrap gap-1.5">
                     {h.examples.map((ex, j) => (
-                      <span key={j} className="px-2.5 py-1 rounded-lg text-[10px] transition-colors"
-                        style={{ background: h.bgColor, border: `1px solid ${h.borderColor}`, color: 'var(--text-secondary)' }}>
-                        {ex}
-                      </span>
+                      <span key={j} className="px-2.5 py-1 rounded-lg text-[10px]" style={{ background: h.bgColor, border: `1px solid ${h.borderColor}`, color: 'var(--text-secondary)' }}>{ex}</span>
                     ))}
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== 隐患整改对照表 ===== */}
-      <section>
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1 h-6 rounded-full" style={{ background: 'var(--safety-accent)' }} />
-          <div>
-            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>隐患整改标准对照表</h2>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>27项 · 设备/部位 → 隐患内容 → 整改标准 → 等级</p>
+            ))}
           </div>
-        </div>
+        </AccordionItem>
 
-        <div className="rounded-2xl border overflow-hidden" style={{ background: 'var(--safety-card)', borderColor: 'var(--safety-border)' }}>
-          <div className="overflow-x-auto">
+        {/* 2. 隐患整改标准对照表 */}
+        <AccordionItem
+          id="hazard-fix-table"
+          title={`隐患整改标准对照表（${hazardFixList.length}项）`}
+          summary="设备/部位 → 隐患内容 → 整改标准 → 等级"
+          icon={<Wrench className="w-5 h-5" />}
+        >
+          <div className="overflow-x-auto rounded-xl border" style={{ borderColor: 'var(--border-light)' }}>
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--safety-divider)' }}>
-                  <th className="text-left text-xs font-semibold px-5 py-3.5" style={{ color: 'var(--text-muted)' }}>设备/部位</th>
-                  <th className="text-left text-xs font-semibold px-5 py-3.5" style={{ color: 'var(--text-muted)' }}>隐患内容</th>
-                  <th className="text-left text-xs font-semibold px-5 py-3.5" style={{ color: 'var(--text-muted)' }}>整改标准</th>
-                  <th className="text-center text-xs font-semibold px-5 py-3.5 w-20" style={{ color: 'var(--text-muted)' }}>等级</th>
+                <tr style={{ borderBottom: '1px solid var(--border-light)', background: 'var(--card-inner-bg)' }}>
+                  <th className="text-left text-xs font-semibold px-4 py-3" style={{ color: 'var(--text-muted)' }}>设备/部位</th>
+                  <th className="text-left text-xs font-semibold px-4 py-3" style={{ color: 'var(--text-muted)' }}>隐患内容</th>
+                  <th className="text-left text-xs font-semibold px-4 py-3" style={{ color: 'var(--text-muted)' }}>整改标准</th>
+                  <th className="text-center text-xs font-semibold px-4 py-3 w-20" style={{ color: 'var(--text-muted)' }}>等级</th>
                 </tr>
               </thead>
               <tbody>
                 {hazardFixList.map((h, i) => (
                   <tr key={i} className="transition-colors"
-                    style={{ borderBottom: '1px solid var(--safety-divider)' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--safety-accent-bg)' }}
+                    style={{ borderBottom: '1px solid var(--border-light)' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--brand-bg)' }}
                     onMouseLeave={e => { e.currentTarget.style.background = '' }}
                   >
-                    <td className="px-5 py-3 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{h.item}</td>
-                    <td className="px-5 py-3 text-xs" style={{ color: 'var(--text-secondary)' }}>{h.hazard}</td>
-                    <td className="px-5 py-3 text-xs" style={{ color: 'var(--text-secondary)' }}>{h.fix}</td>
-                    <td className="px-5 py-3 text-center">
+                    <td className="px-4 py-2.5 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{h.item}</td>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: 'var(--text-secondary)' }}>{h.hazard}</td>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: 'var(--text-secondary)' }}>{h.fix}</td>
+                    <td className="px-4 py-2.5 text-center">
                       <span className="text-[10px] px-2 py-1 rounded-full font-bold inline-block min-w-[36px]"
                         style={{
                           background: h.level === 1 ? 'var(--safety-danger-bg)' : h.level === 2 ? 'var(--safety-warning-bg)' : 'var(--safety-info-bg)',
@@ -270,130 +244,107 @@ export default function SafetyCheckSection() {
               </tbody>
             </table>
           </div>
-        </div>
-      </section>
+        </AccordionItem>
 
-      {/* ===== 管道锈蚀等级判定 ===== */}
-      <section>
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1 h-6 rounded-full" style={{ background: 'var(--safety-warning)' }} />
-          <div>
-            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>管道锈蚀等级判定标准</h2>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>6级递进 · 从正常到漏气的完整判定逻辑</p>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border p-6" style={{ background: 'var(--safety-card)', borderColor: 'var(--safety-border)' }}>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {/* 3. 管道锈蚀等级判定标准 */}
+        <AccordionItem
+          id="rust-levels"
+          title="管道锈蚀等级判定标准（6级）"
+          summary="正常 → 轻微 → 中度 → 严重 → 极严重 → 漏气"
+          icon={<ShieldAlert className="w-5 h-5" />}
+        >
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {rustLevels.map((r) => (
               <div key={r.level} className="rounded-xl p-4 text-center transition-all duration-300 hover:scale-[1.03]"
-                style={{ background: 'var(--safety-glass)', border: '1px solid var(--safety-divider)' }}>
+                style={{ background: 'var(--card-inner-bg)', border: '1px solid var(--border-light)' }}>
                 <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center text-lg font-bold mb-3"
-                  style={{ background: `${r.colorStop}18`, color: r.colorStop }}>
-                  {r.level}
-                </div>
+                  style={{ background: `${r.colorStop}18`, color: r.colorStop }}>{r.level}</div>
                 <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{r.name}</h4>
                 <p className="text-[10px] leading-relaxed mb-2" style={{ color: 'var(--text-secondary)' }}>{r.desc}</p>
-                <div className="pt-2" style={{ borderTop: '1px solid var(--safety-divider)' }}>
+                <div className="pt-2" style={{ borderTop: '1px solid var(--border-light)' }}>
                   <p className="text-[10px] font-medium" style={{ color: r.colorStop }}>{r.action}</p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </AccordionItem>
 
-      {/* ===== 安检检查内容 ===== */}
-      <section>
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1 h-6 rounded-full" style={{ background: 'var(--safety-success)' }} />
-          <div>
-            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>安检检查内容</h2>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>6大类 · {safetyCheckItems.reduce((s, c) => s + c.items.length, 0)}项检查 · 来源：《安检管理制度》V2.0</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {safetyCheckItems.map((cat, i) => (
-            <div key={i} className="rounded-2xl border p-5 transition-all duration-300 hover:scale-[1.01]"
-              style={{ background: 'var(--safety-card)', borderColor: 'var(--safety-border)' }}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
-                  style={{ background: 'var(--safety-accent-bg)', color: 'var(--safety-accent)' }}>
-                  {i + 1}
+        {/* 4. 安检检查内容 */}
+        <AccordionItem
+          id="check-items"
+          title={`安检检查内容（6大类 · ${totalCheckItems}项）`}
+          summary="用气环境 / 室内管道 / 燃气表具 / 用气设备 / 安全装置 / 气密性检测"
+          icon={<CheckCircle className="w-5 h-5" />}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {safetyCheckItems.map((cat, i) => (
+              <div key={i} className="rounded-xl p-4 transition-all duration-300"
+                style={{ background: 'var(--card-inner-bg)', border: '1px solid var(--border-light)' }}>
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold"
+                    style={{ background: 'var(--safety-accent-bg)', color: 'var(--safety-accent)' }}>{i + 1}</div>
+                  <h4 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{cat.category}</h4>
                 </div>
-                <h4 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{cat.category}</h4>
+                <ul className="space-y-1.5">
+                  {cat.items.map((item, j) => (
+                    <li key={j} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                      <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--safety-success)' }} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-2">
-                {cat.items.map((item, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-xs" style={{ color: 'var(--text-secondary)' }}>
-                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--safety-success)' }} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== 实操视频库 ===== */}
-      <section>
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1 h-6 rounded-full" style={{ background: 'var(--safety-accent)' }} />
-          <div>
-            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>实操视频库</h2>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>标准操作视频教程 · 录制完成后替换占位</p>
+            ))}
           </div>
-        </div>
+        </AccordionItem>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {videoPlaceholders.map((video, i) => (
-            <div key={i} className="rounded-2xl border overflow-hidden transition-all duration-300 hover:scale-[1.02]"
-              style={{ background: 'var(--safety-card)', borderColor: 'var(--safety-border)' }}>
-              <div className="relative aspect-video flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.04) 100%)' }}>
-                <div className="w-14 h-14 rounded-full flex items-center justify-center"
-                  style={{ background: 'var(--safety-accent-bg)', border: '1px solid var(--safety-accent-border)' }}>
-                  <Video className="w-6 h-6" style={{ color: 'var(--safety-accent)' }} />
+        {/* 5. 实操视频库 */}
+        <AccordionItem
+          id="video-lib"
+          title="实操视频库"
+          summary="智能表具更换 / 一级隐患处置 / CRM工单派发"
+          icon={<Video className="w-5 h-5" />}
+          badge={
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(245,158,11,0.08)] text-[#F59E0B] border border-[rgba(245,158,11,0.15)]">待录制</span>
+          }
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {videoPlaceholders.map((video, i) => (
+              <div key={i} className="rounded-xl border overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                style={{ background: 'var(--card-inner-bg)', borderColor: 'var(--border-light)' }}>
+                <div className="relative aspect-video flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.04) 100%)' }}>
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center"
+                    style={{ background: 'var(--safety-accent-bg)', border: '1px solid var(--safety-accent-border)' }}>
+                    <Video className="w-6 h-6" style={{ color: 'var(--safety-accent)' }} />
+                  </div>
+                  <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg text-[10px] font-medium"
+                    style={{ background: 'rgba(0,0,0,0.5)', color: 'var(--text-primary)' }}>{video.duration}</div>
+                  <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg text-[10px] font-medium"
+                    style={{ background: 'var(--safety-warning-bg)', color: 'var(--safety-warning)' }}>{video.status}</div>
                 </div>
-                <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg text-[10px] font-medium"
-                  style={{ background: 'rgba(0,0,0,0.5)', color: 'var(--text-primary)' }}>
-                  {video.duration}
-                </div>
-                <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg text-[10px] font-medium"
-                  style={{ background: 'var(--safety-warning-bg)', color: 'var(--safety-warning)' }}>
-                  {video.status}
+                <div className="p-4">
+                  <h4 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>{video.title}</h4>
+                  <span className="text-[10px] font-medium" style={{ color: 'var(--safety-danger)' }}>【待补充】视频录制后替换占位</span>
                 </div>
               </div>
-              <div className="p-4">
-                <h4 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>{video.title}</h4>
-                <span className="text-[10px] font-medium" style={{ color: 'var(--safety-danger)' }}>
-                  【待补充】视频录制后替换占位
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== 专家经验 ===== */}
-      <section>
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-1 h-6 rounded-full" style={{ background: '#F59E0B' }} />
-          <div>
-            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>专家经验（老师傅传帮带）</h2>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{safetyExpertTips.length}条 · 场景 + 实操技巧 + 制度依据 + 风险提示</p>
+            ))}
           </div>
-        </div>
+        </AccordionItem>
 
-        <div className="space-y-3">
+        {/* 6. 专家经验 */}
+        <AccordionItem
+          id="expert-tips"
+          title={`专家经验（老师傅传帮带 · ${safetyExpertTips.length}条）`}
+          summary="场景 + 实操技巧 + 制度依据 + 风险提示"
+          icon={<Lightbulb className="w-5 h-5" />}
+        >
           {safetyExpertTips.map(tip => (
-            <ExpertTipPanel key={tip.id} tip={tip} />
+            <ExpertTipItem key={tip.id} tip={tip} />
           ))}
-        </div>
-      </section>
+        </AccordionItem>
 
+      </AccordionGroup>
     </div>
   );
 }
