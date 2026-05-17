@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Users, Cpu, ShieldAlert, Gauge, BookOpen, Skull, AlertOctagon, AlertCircle, Info, Eye, FileText, Gavel, Scale, ChevronDown, ChevronUp, ExternalLink, Bookmark, Layers, FileWarning, Library } from 'lucide-react';
+import { Users, Cpu, ShieldAlert, Gauge, BookOpen, Skull, AlertOctagon, AlertCircle, Info, Eye, FileText, Gavel, Scale, ChevronDown, ChevronUp, ExternalLink, Bookmark, Layers, FileWarning, Library, Search } from 'lucide-react';
 import TopNav from '../components/TopNav';
 import { useSearch } from '../App';
 import OrgHierarchySection from '../sections/OrgHierarchySection';
@@ -14,7 +14,7 @@ const MODULE_META: Record<string, { title: string; subtitle: string; icon: React
   workflow: { title: 'CRM工单流转', subtitle: '基于《客户服务部管理制度》工单管理规范', icon: Cpu },
   safety: { title: '安检与隐患分级管理', subtitle: '基于《安检管理制度》V2.0 与《隐患管理制度》V2.0', icon: ShieldAlert },
   kpi: { title: '财年指标', subtitle: '基于《客户服务部管理制度》考核指标', icon: Gauge },
-  standards: { title: '规范及记分执行标准', subtitle: '国标 · 地方规范 · 法规 · 安全记分 · 客服记分', icon: BookOpen },
+  standards: { title: '规范及记分执行标准', subtitle: '国标 · 地方规范 · 法规 · 偷盗气 · 安全记分 · 客服记分', icon: BookOpen },
 };
 
 const COMPONENT_MAP: Record<string, React.FC> = {
@@ -112,6 +112,19 @@ const fileCategories: FileCategory[] = [
       { name: '刑法（燃气安全相关条款）', desc: '危害公共安全罪等刑事责任条款', path: './docs/法规_刑法.pdf', fileType: 'pdf', tags: ['刑事责任', '公共安全'] },
     ],
   },
+  {
+    id: 'theft', label: '偷盗气专项', subtitle: '偷盗气稽查与处置规范', icon: Search, color: '#DC2626',
+    files: [
+      { name: '关于建立常态化打击偷盗气管理工作机制的方案（通知）', desc: '发布《关于建立常态化打击偷盗气管理工作机制的方案》的通知', path: './docs/关于发布《关于建立常态化打击偷盗气管理工作机制的方案》的通知.pdf', fileType: 'pdf', tags: ['偷盗气', '通知'] },
+      { name: '关于建立常态化打击偷盗气管理工作机制的方案', desc: '常态化打击偷盗气管理工作机制的总体方案', path: './docs/附件1：关于建立常态化打击偷盗气管理工作机制的方案.pdf', fileType: 'pdf', tags: ['偷盗气', '工作机制'] },
+      { name: '中燃集团偷盗气现场排查流程与办法', desc: '偷盗气现场排查的标准流程与具体办法', path: './docs/附件1-1：中燃集团偷盗气现场排查流程与办法.pdf', fileType: 'pdf', tags: ['偷盗气', '排查流程'] },
+      { name: '发现偷盗气行为后的应对指引', desc: '发现偷盗气行为后的应急处置与后续处置指引', path: './docs/附件1-2：发现偷盗气行为后的应对指引.pdf', fileType: 'pdf', tags: ['偷盗气', '应对指引'] },
+      { name: '盗窃燃气相关法律法规', desc: '盗窃燃气行为涉及的法律法规及司法解释汇编', path: './docs/附件1-3：盗窃燃气相关法律法规.pdf', fileType: 'pdf', tags: ['偷盗气', '法律法规'] },
+      { name: '中燃集团打击偷盗气案例汇总', desc: '中燃集团内部打击偷盗气的典型案例汇总', path: './docs/附件1-4：中燃集团打击偷盗气案例汇总.pdf', fileType: 'pdf', tags: ['偷盗气', '案例汇总'] },
+      { name: '违章用气检查记录表（范本）', desc: '违章用气现场检查记录表示范模板', path: './docs/附件1-5：违章用气检查记录表（范本）.docx', fileType: 'docx', tags: ['偷盗气', '检查记录'] },
+      { name: '停气通知书', desc: '对违章用气用户下达的停气通知书范本', path: './docs/附件1-6：停气通知书.docx', fileType: 'docx', tags: ['偷盗气', '停气通知'] },
+    ],
+  },
 ];
 
 const hseScores: ScoringItem[] = [
@@ -133,7 +146,7 @@ const totalScoreCategories = hseScores.length + serviceScores.length;
 const totalExamples = hseScores.reduce((s, i) => s + i.examples.length, 0) + serviceScores.reduce((s, i) => s + i.examples.length, 0);
 
 const statCards = [
-  { label: '制度文件', value: totalFileCount, unit: '份', icon: Library, color: 'var(--score-general)', bg: 'var(--score-general-bg)', desc: '5个类别全覆盖' },
+  { label: '制度文件', value: totalFileCount, unit: '份', icon: Library, color: 'var(--score-general)', bg: 'var(--score-general-bg)', desc: '6个类别全覆盖' },
   { label: '记分等级', value: totalScoreCategories, unit: '级', icon: Layers, color: 'var(--score-critical)', bg: 'var(--score-critical-bg)', desc: 'HSE + 客服双体系' },
   { label: '违规示例', value: totalExamples, unit: '条', icon: Bookmark, color: 'var(--score-major)', bg: 'var(--score-major-bg)', desc: '覆盖全业务场景' },
   { label: '最高记分', value: '12', unit: '分/次', icon: Skull, color: 'var(--score-critical)', bg: 'var(--score-critical-bg)', desc: '一票否决红线' },
@@ -320,30 +333,56 @@ function FileCard({ cat, onPreview }: { cat: FileCategory; onPreview: (f: FileRe
                   <p className="text-xs font-medium truncate" style={{ color: 'var(--text-primary)' }}>{f.name}</p>
                   <p className="text-[10px] truncate" style={{ color: 'var(--text-muted)' }}>{f.desc}</p>
                 </div>
-                {f.fileType === 'docx' ? (
-                  <a
-                    href={f.path}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[10px] px-2 py-1 rounded-md shrink-0 font-medium inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                {!f.path ? (
+                  <span
+                    className="text-[10px] px-2 py-1 rounded-md shrink-0 font-medium opacity-0 group-hover:opacity-100 transition-all duration-300"
                     style={{
-                      background: 'var(--brand-bg)',
-                      color: 'var(--brand-primary)',
+                      background: 'var(--card-inner-bg)',
+                      color: 'var(--text-muted)',
                     }}
                   >
-                    <ExternalLink className="w-3 h-3" />下载
-                  </a>
+                    待上传
+                  </span>
                 ) : (
-                  <button
-                    onClick={() => onPreview(f)}
-                    className="text-[10px] px-2 py-1 rounded-md shrink-0 font-medium inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300"
-                    style={{
-                      background: 'var(--brand-bg)',
-                      color: 'var(--brand-primary)',
-                    }}
-                  >
-                    <Eye className="w-3 h-3" />预览
-                  </button>
+                  <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 shrink-0">
+                    {f.fileType === 'docx' ? (
+                      <a
+                        href={f.path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] px-2 py-1 rounded-md font-medium inline-flex items-center gap-1"
+                        style={{
+                          background: 'var(--brand-bg)',
+                          color: 'var(--brand-primary)',
+                        }}
+                      >
+                        <Eye className="w-3 h-3" />预览
+                      </a>
+                    ) : (
+                      <button
+                        onClick={() => onPreview(f)}
+                        className="text-[10px] px-2 py-1 rounded-md font-medium inline-flex items-center gap-1"
+                        style={{
+                          background: 'var(--brand-bg)',
+                          color: 'var(--brand-primary)',
+                        }}
+                      >
+                        <Eye className="w-3 h-3" />预览
+                      </button>
+                    )}
+                    <a
+                      href={f.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] px-2 py-1 rounded-md font-medium inline-flex items-center gap-1"
+                      style={{
+                        background: 'var(--card-inner-bg)',
+                        color: 'var(--text-muted)',
+                      }}
+                    >
+                      <ExternalLink className="w-3 h-3" />下载
+                    </a>
+                  </div>
                 )}
               </li>
             ))}

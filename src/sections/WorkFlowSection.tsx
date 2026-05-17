@@ -86,7 +86,7 @@ export default function WorkFlowSection() {
                 {/* 头部 */}
                 <div className="flex items-baseline gap-3 mb-1 flex-wrap">
                   <StepIcon className="w-5 h-5 shrink-0" style={{ color: color.accent }} />
-                  <span className="text-[11px] tracking-[2px] uppercase opacity-60 shrink-0"
+                  <span className="text-[13px] tracking-[2px] uppercase opacity-60 shrink-0"
                     style={{ color: 'var(--text-primary)' }}>Step {step.step}</span>
                   <span className="text-xl md:text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{step.title}</span>
                   <span className="text-[14px] md:text-[15px] font-semibold" style={{ color: color.accent }}>
@@ -104,10 +104,10 @@ export default function WorkFlowSection() {
                   <div>
                     <div className="flex items-center gap-1.5 mb-2">
                       <FileText className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                      <span className="text-[11px] font-semibold uppercase tracking-wider"
+                      <span className="text-[13px] font-semibold uppercase tracking-wider"
                         style={{ color: 'var(--text-primary)' }}>步骤说明</span>
                     </div>
-                    <p className="text-[14px] leading-relaxed opacity-70"
+                    <p className="text-[15px] leading-relaxed opacity-70"
                       style={{ color: 'var(--text-primary)' }}>{step.description}</p>
                   </div>
 
@@ -115,12 +115,12 @@ export default function WorkFlowSection() {
                   <div className="md:col-start-2 md:row-start-1">
                     <div className="flex items-center gap-1.5 mb-2">
                       <User className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                      <span className="text-[11px] font-semibold uppercase tracking-wider"
+                      <span className="text-[13px] font-semibold uppercase tracking-wider"
                         style={{ color: 'var(--text-primary)' }}>责任岗位</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {step.responsible.split(' / ').map((role, i) => (
-                        <span key={i} className="px-2.5 py-1 rounded-full text-[13px] border"
+                        <span key={i} className="px-2.5 py-1 rounded-full text-[14px] border"
                           style={{
                             borderColor: color.dim,
                             color: 'var(--text-primary)',
@@ -136,10 +136,10 @@ export default function WorkFlowSection() {
                   <div>
                     <div className="flex items-center gap-1.5 mb-2">
                       <Monitor className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                      <span className="text-[11px] font-semibold uppercase tracking-wider"
+                      <span className="text-[13px] font-semibold uppercase tracking-wider"
                         style={{ color: 'var(--text-primary)' }}>系统操作要点</span>
                     </div>
-                    <p className="text-[14px] leading-relaxed opacity-70"
+                    <p className="text-[15px] leading-relaxed opacity-70"
                       style={{ color: 'var(--text-primary)' }}>{step.systemOps}</p>
                   </div>
 
@@ -147,10 +147,10 @@ export default function WorkFlowSection() {
                   <div>
                     <div className="flex items-center gap-1.5 mb-2">
                       <Clock className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                      <span className="text-[11px] font-semibold uppercase tracking-wider"
+                      <span className="text-[13px] font-semibold uppercase tracking-wider"
                         style={{ color: color.accent }}>时限要求</span>
                     </div>
-                    <p className="text-[15px] font-semibold leading-relaxed" style={{ color: color.accent }}>
+                    <p className="text-[16px] font-semibold leading-relaxed" style={{ color: color.accent }}>
                       {step.deadline}
                     </p>
                   </div>
@@ -162,19 +162,19 @@ export default function WorkFlowSection() {
                     {hazardLevels.map((h) => (
                       <div key={h.level} className="rounded-lg p-3.5 border border-l-[3px]"
                         style={{ background: h.dim, borderColor: h.dim, borderLeftColor: h.accent }}>
-                        <div className="text-[13px] font-bold mb-1.5 flex items-center gap-1.5" style={{ color: h.accent }}>
+                        <div className="text-[14px] font-bold mb-1.5 flex items-center gap-1.5" style={{ color: h.accent }}>
                           <AlertTriangle className="w-3.5 h-3.5" />
                           {h.level}级 · {h.label}
                         </div>
-                        <p className="text-[14px] leading-relaxed mb-2 opacity-70"
+                        <p className="text-[15px] leading-relaxed mb-2 opacity-70"
                           style={{ color: 'var(--text-primary)' }}>{h.desc}</p>
-                        <p className="text-[13px] font-semibold" style={{ color: h.accent }}>⏱ {h.time}</p>
+                        <p className="text-[14px] font-semibold" style={{ color: h.accent }}>⏱ {h.time}</p>
                       </div>
                     ))}
                   </div>
                 )}
 
-                <p className="text-[11px] mt-4 italic opacity-40"
+                <p className="text-[12px] mt-4 italic opacity-40"
                   style={{ color: 'var(--text-primary)' }}>
                   来源：《客户服务部管理制度》V2.0 第三章 工单管理制度 第{step.step}条
                 </p>
@@ -212,25 +212,25 @@ export default function WorkFlowSection() {
           {expertTips.map((tip) => (
             <div key={tip.id} className="workflow-step-card border rounded-xl p-5 transition-shadow hover:shadow-lg"
               style={{ background: 'var(--card-bg)', borderColor: 'var(--border-light)' }}>
-              <div className="text-[40px] font-bold mb-2 leading-none opacity-10" style={{ color: '#d97706' }}>
+              <div className="text-[40px] font-bold mb-2 leading-none opacity-25" style={{ color: '#d97706' }}>
                 {String(tip.id).padStart(2, '0')}
               </div>
               <h3 className="text-[16px] font-bold mb-4" style={{ color: 'var(--text-primary)' }}>{tip.scene}</h3>
 
               <div className="space-y-3">
                 <div className="rounded-lg p-3" style={{ background: 'rgba(245,158,11,0.06)' }}>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#b45309' }}>土办法 / 实操技巧</span>
-                  <p className="text-[13px] mt-1.5 leading-relaxed opacity-75"
+                  <span className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: '#b45309' }}>土办法 / 实操技巧</span>
+                  <p className="text-[14px] mt-1.5 leading-relaxed opacity-75"
                     style={{ color: 'var(--text-primary)' }}>{tip.trick}</p>
                 </div>
                 <div className="rounded-lg p-3" style={{ background: 'rgba(99,102,241,0.06)' }}>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#4f46e5' }}>制度依据</span>
-                  <p className="text-[13px] mt-1.5 leading-relaxed opacity-75"
+                  <span className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: '#4f46e5' }}>制度依据</span>
+                  <p className="text-[14px] mt-1.5 leading-relaxed opacity-75"
                     style={{ color: 'var(--text-primary)' }}>{tip.regulation}</p>
                 </div>
                 <div className="rounded-lg p-3" style={{ background: 'rgba(239,68,68,0.06)' }}>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#dc2626' }}>风险提示</span>
-                  <p className="text-[13px] mt-1.5 leading-relaxed" style={{ color: '#b45309' }}>{tip.risk}</p>
+                  <span className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: '#dc2626' }}>风险提示</span>
+                  <p className="text-[14px] mt-1.5 leading-relaxed" style={{ color: '#b45309' }}>{tip.risk}</p>
                 </div>
               </div>
             </div>

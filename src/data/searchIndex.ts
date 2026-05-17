@@ -354,6 +354,28 @@ export function buildSearchIndex(): SearchResult[] {
     });
   });
 
+  // 22. 偷盗气专项
+  const theftStandards = [
+    { name: '关于建立常态化打击偷盗气管理工作机制的方案（通知）', desc: '发布《关于建立常态化打击偷盗气管理工作机制的方案》的通知', tags: ['偷盗气', '通知'] },
+    { name: '关于建立常态化打击偷盗气管理工作机制的方案', desc: '常态化打击偷盗气管理工作机制的总体方案', tags: ['偷盗气', '工作机制'] },
+    { name: '中燃集团偷盗气现场排查流程与办法', desc: '偷盗气现场排查的标准流程与具体办法', tags: ['偷盗气', '排查流程'] },
+    { name: '发现偷盗气行为后的应对指引', desc: '发现偷盗气行为后的应急处置与后续处置指引', tags: ['偷盗气', '应对指引'] },
+    { name: '盗窃燃气相关法律法规', desc: '盗窃燃气行为涉及的法律法规及司法解释汇编', tags: ['偷盗气', '法律法规'] },
+    { name: '中燃集团打击偷盗气案例汇总', desc: '中燃集团内部打击偷盗气的典型案例汇总', tags: ['偷盗气', '案例汇总'] },
+    { name: '违章用气检查记录表（范本）', desc: '违章用气现场检查记录表示范模板', tags: ['偷盗气', '检查记录'] },
+    { name: '停气通知书', desc: '对违章用气用户下达的停气通知书范本', tags: ['偷盗气', '停气通知'] },
+  ];
+  theftStandards.forEach((s, i) => {
+    results.push({
+      id: `theft-std-${i}`,
+      title: s.name,
+      content: `${s.desc} ${s.tags.join(' ')}`,
+      category: '偷盗气专项',
+      categoryColor: '#DC2626',
+      section: 'standards'
+    });
+  });
+
   searchIndex = results;
   return results;
 }
