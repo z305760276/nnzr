@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { type Easing } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Users, Cpu, ShieldAlert, Gauge, BookOpen, ArrowRight } from 'lucide-react';
 import Footer from '../components/Footer';
 import DataDashboard, { DEFAULT_TABS } from '../components/DataDashboard';
 import { motion } from 'framer-motion';
+
+const easeOut = [0.22, 1, 0.36, 1] as Easing;
 
 function handleCardMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
   const card = e.currentTarget;
@@ -78,7 +80,7 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, ease: easeOut },
   },
 };
 
@@ -89,7 +91,7 @@ export default function HomePage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.4, ease: easeOut }}
       className="min-h-screen"
       style={{ background: 'var(--gradient-page)', color: 'var(--text-primary)' }}
     >
@@ -124,7 +126,7 @@ export default function HomePage() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, ease: easeOut }}
             className="max-w-2xl"
           >
             <div className="flex items-center gap-2 mb-5">
@@ -161,7 +163,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.5, ease: easeOut }}
             className="mb-8"
           >
             <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>五大管理模块</h2>

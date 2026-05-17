@@ -4,7 +4,7 @@ interface TopNavProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   title?: string;
-  TitleIcon?: React.FC<{ className?: string }>;
+  TitleIcon?: React.FC<{ className?: string; style?: React.CSSProperties }>;
 }
 
 export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }: TopNavProps) {
@@ -105,7 +105,7 @@ export default function TopNav({ searchQuery, onSearchChange, title, TitleIcon }
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="搜索岗位、隐患标准、制度条款..."
               className="flex-1 bg-transparent text-sm outline-none min-w-0"
-              style={{ color: 'var(--text-primary)', placeholderColor: 'var(--text-muted)' }}
+              style={{ color: 'var(--text-primary)' }}
             />
             {searchQuery && (
               <button

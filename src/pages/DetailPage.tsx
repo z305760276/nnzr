@@ -9,7 +9,7 @@ import SafetyCheckSection from '../sections/SafetyCheckSection';
 import KpiDashboardSection from '../sections/KpiDashboardSection';
 import FilePreview from '../components/FilePreview';
 
-const MODULE_META: Record<string, { title: string; subtitle: string; icon: React.FC<{className?: string}> }> = {
+const MODULE_META: Record<string, { title: string; subtitle: string; icon: React.FC<{className?: string; style?: React.CSSProperties}> }> = {
   org: { title: '组织架构全景图谱', subtitle: '基于《管理组织架构及岗位职责》V2.0', icon: Users },
   workflow: { title: 'CRM工单流转', subtitle: '基于《客户服务部管理制度》工单管理规范', icon: Cpu },
   safety: { title: '安检与隐患分级管理', subtitle: '基于《安检管理制度》V2.0 与《隐患管理制度》V2.0', icon: ShieldAlert },
@@ -43,7 +43,7 @@ interface FileCategory {
   id: string;
   label: string;
   subtitle: string;
-  icon: React.FC<{className?: string}>;
+  icon: React.FC<{className?: string; style?: React.CSSProperties}>;
   color: string;
   files: FileRef[];
 }
@@ -161,7 +161,7 @@ function SeverityBar({ item: s }: { item: ScoringItem }) {
 }
 
 function ScoringPanel({ title, subtitle, items, icon: PanelIcon, hseRefs, serviceRefs, onPreview }: {
-  title: string; subtitle: string; items: ScoringItem[]; icon: React.FC<{className?: string}>;
+  title: string; subtitle: string; items: ScoringItem[]; icon: React.FC<{className?: string; style?: React.CSSProperties}>;
   hseRefs?: FileRef[]; serviceRefs?: FileRef[]; onPreview: (f: FileRef) => void;
 }) {
   const [open, setOpen] = useState(false);
