@@ -34,6 +34,17 @@
 - 默认推送分支为 `main`
 - 如果提交信息包含特殊字符（如 `feat:` 后的中文），确保用引号包裹
 - 使用 PowerShell 时，`&&` 连接符不被支持，需要分步执行命令
+- 如 SSH 认证失败（`Permission denied (publickey)`），可尝试先启动 SSH 代理：
+  ```powershell
+  # 在管理员 PowerShell 中执行
+  Start-Service ssh-agent
+  ssh-add
+  ```
+  或改用 HTTPS 方式推送（需输入 GitHub 账号密码/Token）：
+  ```powershell
+  git remote set-url origin https://github.com/z305760276/nnzr.git
+  git push origin main
+  ```
 
 ### 推送 Gitee（触发词：`推送Gitee`）
 
