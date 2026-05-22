@@ -141,6 +141,7 @@ export default function DataDashboard({
                   border: '1px solid var(--glass-border)',
                   boxShadow: 'var(--glass-shadow)',
                   backdropFilter: 'blur(16px) saturate(180%)',
+                  colorScheme: 'light',
                 }}
               >
                 {tab.iframeSrc ? (
