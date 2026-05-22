@@ -43,7 +43,7 @@ export const DEFAULT_TABS: DashboardTab[] = [
     id: 'hidden-danger',
     label: '隐患管理',
     icon: AlertTriangle,
-    iframeSrc: 'https://alidocs.dingtalk.com/aitable/share/view/v01AJdl65APA8aB9Oke_f76NnLb_U0A0GPg?dd_full_screen=true',
+    iframeSrc: 'https://alidocs.dingtalk.com/notable/share/dashboard/6a9f8fe1e1987d64bcf63839533024ae_AJdl65APA8aB9Oke',
     description: '隐患管理相关数据展示',
   },
   {
