@@ -1,6 +1,6 @@
 import { type Easing } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Users, Cpu, ShieldAlert, Gauge, BookOpen, ArrowRight } from 'lucide-react';
+import { Users, Cpu, ShieldAlert, Gauge, BookOpen, ArrowRight, GitBranch } from 'lucide-react';
 import Footer from '../components/Footer';
 import DataDashboard, { DEFAULT_TABS } from '../components/DataDashboard';
 import { motion } from 'framer-motion';
@@ -25,6 +25,14 @@ function handleCardMouseLeave(e: React.MouseEvent<HTMLButtonElement>) {
 }
 
 const CARDS = [
+  {
+    id: 'business-graph',
+    title: '业务能力图谱',
+    subtitle: '6层业务网络 · 5大业务板块 · 红黄线考核',
+    desc: '以业务线条为核心，串联战略目标→业务板块→业务执行→岗位支撑→数据指标→数据来源。支持责任穿刺和红黄线考核追溯。',
+    icon: GitBranch,
+    stats: '83个节点',
+  },
   {
     id: 'org',
     title: '组织架构全景图谱',
@@ -182,7 +190,7 @@ export default function HomePage() {
               return (
                 <motion.div key={card.id} variants={cardVariants}>
                   <button
-                    onClick={() => navigate(`/detail/${card.id}`)}
+                    onClick={() => navigate(card.id === 'business-graph' ? '/business-graph' : `/detail/${card.id}`)}
                     onMouseMove={handleCardMouseMove}
                     onMouseLeave={handleCardMouseLeave}
                     className="group relative overflow-hidden rounded-[20px] border text-left w-full will-change-transform glass-shimmer"

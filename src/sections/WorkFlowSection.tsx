@@ -1,13 +1,12 @@
-import { useRef, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Cpu, Clock, User, Monitor, Lightbulb, FileText, AlertTriangle, ShieldAlert, Wrench, MessageSquare, ArrowDown } from 'lucide-react';
+import { useState } from 'react';
+import { Cpu, Clock, User, Monitor, FileText, AlertTriangle, ShieldAlert, Wrench, MessageSquare, Lightbulb, ChevronDown, ChevronUp, Layers, Users } from 'lucide-react';
 
 const stepColors = {
-  1: { accent: '#2563eb', gradient: 'from-blue-500 to-blue-700', dim: 'rgba(59,130,246,0.10)', icon: FileText },
-  2: { accent: '#0891b2', gradient: 'from-cyan-500 to-cyan-700', dim: 'rgba(6,182,212,0.10)', icon: Cpu },
-  3: { accent: '#059669', gradient: 'from-emerald-500 to-emerald-700', dim: 'rgba(16,185,129,0.10)', icon: Wrench },
-  4: { accent: '#d97706', gradient: 'from-amber-500 to-amber-600', dim: 'rgba(245,158,11,0.10)', icon: ShieldAlert },
-  5: { accent: '#7c3aed', gradient: 'from-violet-500 to-violet-700', dim: 'rgba(139,92,246,0.10)', icon: MessageSquare },
+  1: { accent: '#2563eb', dim: 'rgba(59,130,246,0.10)', border: 'rgba(59,130,246,0.20)', icon: FileText },
+  2: { accent: '#0891b2', dim: 'rgba(6,182,212,0.10)', border: 'rgba(6,182,212,0.20)', icon: Cpu },
+  3: { accent: '#059669', dim: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.20)', icon: Wrench },
+  4: { accent: '#d97706', dim: 'rgba(245,158,11,0.10)', border: 'rgba(245,158,11,0.20)', icon: ShieldAlert },
+  5: { accent: '#7c3aed', dim: 'rgba(139,92,246,0.10)', border: 'rgba(139,92,246,0.20)', icon: MessageSquare },
 };
 
 const workSteps = [
@@ -30,214 +29,269 @@ const hazardLevels = [
   { level: '三级', label: '轻微隐患', desc: '轻微问题现场口头告知，拍照留痕并发放宣传资料，下次安检重点关注。', time: '建议30日内改善', accent: '#2563eb', dim: 'rgba(37,99,235,0.08)' },
 ];
 
-const timelineGradient = 'linear-gradient(to bottom, #3b82f6, #06b6d4 25%, #10b981 50%, #f59e0b 68%, #8b5cf6 85%, transparent 100%)';
+const statCards = [
+  { label: '工单步骤', value: 5, unit: '步', icon: Layers, color: 'var(--score-general)', bg: 'var(--score-general-bg)', desc: '五步闭环流程' },
+  { label: '责任岗位', value: 4, unit: '类', icon: Users, color: 'var(--score-critical)', bg: 'var(--score-critical-bg)', desc: '全链路覆盖' },
+  { label: '隐患等级', value: 3, unit: '级', icon: AlertTriangle, color: 'var(--score-major)', bg: 'var(--score-major-bg)', desc: '三级分级处置' },
+  { label: '专家经验', value: 3, unit: '条', icon: Lightbulb, color: 'var(--score-minor)', bg: 'var(--score-minor-bg)', desc: '老师傅传帮带' },
+];
 
-export default function WorkFlowSection() {
-  const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisibleSteps([0, 1, 2, 3, 4]);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
+function WorkStepPanel({ step, idx }: { step: typeof workSteps[0]; idx: number }) {
+  const [open, setOpen] = useState(idx === 0);
+  const color = stepColors[step.step as keyof typeof stepColors];
+  const StepIcon = color.icon;
 
   return (
-    <div className="space-y-0" ref={containerRef}>
+    <div
+      className="rounded-2xl border overflow-hidden transition-all duration-300 glass-shimmer"
+      style={{
+        background: 'var(--score-gradient-panel)',
+        borderColor: 'var(--score-panel-border)',
+      }}
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full px-5 py-4 flex items-center justify-between text-left transition-colors"
+        style={{ background: open ? 'var(--score-panel-hover)' : 'transparent' }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--score-panel-hover)'; }}
+        onMouseLeave={(e) => { if (!open) e.currentTarget.style.background = 'transparent'; }}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <div
+            className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 text-white font-bold text-base"
+            style={{ background: `linear-gradient(135deg, ${color.accent}, ${color.accent}dd)` }}
+          >
+            {step.step}
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <StepIcon className="w-4 h-4 shrink-0" style={{ color: color.accent }} />
+              <h3 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>{step.title}</h3>
+              <span className="text-xs font-semibold" style={{ color: color.accent }}>
+                {step.titleShort}
+              </span>
+            </div>
+            <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+              来源：《客户服务部管理制度》V2.0 第三章 第{step.step}条
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+            style={{ background: color.dim, color: color.accent }}
+          >
+            {step.responsible.split(' / ').length}岗
+          </span>
+          {open ? <ChevronUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} /> : <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />}
+        </div>
+      </button>
 
-      {/* ===== 流程图主体 ===== */}
-      <div className="relative pl-[52px] md:pl-[88px]">
-
-        {/* 竖线 */}
-        <div className="absolute left-[23px] md:left-[42px] top-0 bottom-0 w-[2px]"
-          style={{ background: timelineGradient }}
-        />
-
-        {workSteps.map((step, idx) => {
-          const color = stepColors[step.step as keyof typeof stepColors];
-          const StepIcon = color.icon;
-          const isVisible = visibleSteps.includes(idx);
-
-          return (
-            <motion.div
-              key={step.step}
-              initial={{ opacity: 0, x: -20 }}
-              animate={isVisible ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.45, delay: idx * 0.1 }}
-              className="relative mb-10"
-            >
-              {/* 左侧节点圆 */}
-              <div className="absolute left-[-52px] md:left-[-88px] top-0 flex flex-col items-center"
-                style={{ width: '50px', transform: 'translateX(25px)' }}
-              >
-                <div className={`w-[50px] h-[50px] rounded-full bg-gradient-to-br ${color.gradient} flex items-center justify-center shadow-lg shadow-black/30 relative z-10`}>
-                  <span className="text-white font-bold text-xl">{step.step}</span>
-                </div>
+      <div
+        className="overflow-hidden transition-all duration-500 ease-in-out"
+        style={{ maxHeight: open ? '4000px' : '0px', opacity: open ? 1 : 0 }}
+      >
+        <div className="px-5 pb-5 pt-1" style={{ borderTop: '1px solid var(--score-divider)' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <div className="flex items-center gap-1.5 mb-2">
+                <FileText className="w-3.5 h-3.5" style={{ color: color.accent }} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-primary)' }}>步骤说明</span>
               </div>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{step.description}</p>
+            </div>
 
-              {/* 右侧卡片 — 亮色/暗色自适应 */}
-              <div className="workflow-step-card border rounded-xl p-5 md:p-6 transition-shadow hover:shadow-lg"
-                style={{
-                  background: 'var(--card-bg)',
-                  borderColor: color.dim,
-                }}
-              >
-                {/* 头部 */}
-                <div className="flex items-baseline gap-3 mb-1 flex-wrap">
-                  <StepIcon className="w-5 h-5 shrink-0" style={{ color: color.accent }} />
-                  <span className="text-[13px] tracking-[2px] uppercase opacity-60 shrink-0"
-                    style={{ color: 'var(--text-primary)' }}>Step {step.step}</span>
-                  <span className="text-xl md:text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{step.title}</span>
-                  <span className="text-[14px] md:text-[15px] font-semibold" style={{ color: color.accent }}>
-                    （{step.titleShort}）
+            <div>
+              <div className="flex items-center gap-1.5 mb-2">
+                <User className="w-3.5 h-3.5" style={{ color: color.accent }} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-primary)' }}>责任岗位</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {step.responsible.split(' / ').map((role, i) => (
+                  <span key={i} className="px-2.5 py-1 rounded-full text-xs border"
+                    style={{ borderColor: color.dim, color: 'var(--text-primary)', background: color.dim }}>
+                    {role.trim()}
                   </span>
-                </div>
-
-                {/* 摘要 */}
-                <p className="text-[15px] leading-relaxed mb-5 opacity-75"
-                  style={{ color: 'var(--text-primary)' }}>{step.description}</p>
-
-                {/* 内容网格 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* 步骤说明 */}
-                  <div>
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <FileText className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                      <span className="text-[13px] font-semibold uppercase tracking-wider"
-                        style={{ color: 'var(--text-primary)' }}>步骤说明</span>
-                    </div>
-                    <p className="text-[15px] leading-relaxed opacity-70"
-                      style={{ color: 'var(--text-primary)' }}>{step.description}</p>
-                  </div>
-
-                  {/* 责任岗位 */}
-                  <div className="md:col-start-2 md:row-start-1">
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <User className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                      <span className="text-[13px] font-semibold uppercase tracking-wider"
-                        style={{ color: 'var(--text-primary)' }}>责任岗位</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {step.responsible.split(' / ').map((role, i) => (
-                        <span key={i} className="px-2.5 py-1 rounded-full text-[14px] border"
-                          style={{
-                            borderColor: color.dim,
-                            color: 'var(--text-primary)',
-                            background: color.dim,
-                          }}>
-                          {role.trim()}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 系统操作要点 */}
-                  <div>
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <Monitor className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                      <span className="text-[13px] font-semibold uppercase tracking-wider"
-                        style={{ color: 'var(--text-primary)' }}>系统操作要点</span>
-                    </div>
-                    <p className="text-[15px] leading-relaxed opacity-70"
-                      style={{ color: 'var(--text-primary)' }}>{step.systemOps}</p>
-                  </div>
-
-                  {/* 时限要求 */}
-                  <div>
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <Clock className="w-3.5 h-3.5" style={{ color: color.accent }} />
-                      <span className="text-[13px] font-semibold uppercase tracking-wider"
-                        style={{ color: color.accent }}>时限要求</span>
-                    </div>
-                    <p className="text-[16px] font-semibold leading-relaxed" style={{ color: color.accent }}>
-                      {step.deadline}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 4 专属：隐患分级三分支 */}
-                {step.step === 4 && (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
-                    {hazardLevels.map((h) => (
-                      <div key={h.level} className="rounded-lg p-3.5 border border-l-[3px]"
-                        style={{ background: h.dim, borderColor: h.dim, borderLeftColor: h.accent }}>
-                        <div className="text-[14px] font-bold mb-1.5 flex items-center gap-1.5" style={{ color: h.accent }}>
-                          <AlertTriangle className="w-3.5 h-3.5" />
-                          {h.level}级 · {h.label}
-                        </div>
-                        <p className="text-[15px] leading-relaxed mb-2 opacity-70"
-                          style={{ color: 'var(--text-primary)' }}>{h.desc}</p>
-                        <p className="text-[14px] font-semibold" style={{ color: h.accent }}>⏱ {h.time}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <p className="text-[12px] mt-4 italic opacity-40"
-                  style={{ color: 'var(--text-primary)' }}>
-                  来源：《客户服务部管理制度》V2.0 第三章 工单管理制度 第{step.step}条
-                </p>
+                ))}
               </div>
+            </div>
 
-              {/* 步骤间箭头 */}
-              {idx < workSteps.length - 1 && (
-                <div className="flex justify-center py-1" style={{ marginLeft: '-52px' }}>
-                  <ArrowDown className="w-6 h-6 opacity-25" style={{ color: 'var(--text-primary)' }} />
+            <div>
+              <div className="flex items-center gap-1.5 mb-2">
+                <Monitor className="w-3.5 h-3.5" style={{ color: color.accent }} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-primary)' }}>系统操作要点</span>
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{step.systemOps}</p>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-1.5 mb-2">
+                <Clock className="w-3.5 h-3.5" style={{ color: color.accent }} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: color.accent }}>时限要求</span>
+              </div>
+              <p className="text-sm font-semibold" style={{ color: color.accent }}>
+                {step.deadline}
+              </p>
+            </div>
+          </div>
+
+          {step.step === 4 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5 pt-4" style={{ borderTop: '1px solid var(--score-divider)' }}>
+              {hazardLevels.map((h) => (
+                <div key={h.level} className="rounded-lg p-3.5 border border-l-[3px]"
+                  style={{ background: h.dim, borderColor: h.dim, borderLeftColor: h.accent }}>
+                  <div className="text-xs font-bold mb-1.5 flex items-center gap-1.5" style={{ color: h.accent }}>
+                    <AlertTriangle className="w-3.5 h-3.5" />
+                    {h.level}级 · {h.label}
+                  </div>
+                  <p className="text-sm leading-relaxed mb-2" style={{ color: 'var(--text-secondary)' }}>{h.desc}</p>
+                  <p className="text-xs font-semibold" style={{ color: h.accent }}>⏱ {h.time}</p>
                 </div>
-              )}
-            </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExpertTipPanel({ tip }: { tip: typeof expertTips[0] }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className="rounded-2xl border overflow-hidden transition-all duration-300 glass-shimmer"
+      style={{
+        background: 'var(--score-gradient-panel)',
+        borderColor: 'var(--score-panel-border)',
+      }}
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full px-5 py-4 flex items-center justify-between text-left transition-colors"
+        style={{ background: open ? 'var(--score-panel-hover)' : 'transparent' }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--score-panel-hover)'; }}
+        onMouseLeave={(e) => { if (!open) e.currentTarget.style.background = 'transparent'; }}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-lg font-bold"
+            style={{ background: 'rgba(217,119,6,0.10)', color: '#d97706' }}
+          >
+            {String(tip.id).padStart(2, '0')}
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{tip.scene}</h3>
+          </div>
+        </div>
+        {open ? <ChevronUp className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} /> : <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />}
+      </button>
+
+      <div
+        className="overflow-hidden transition-all duration-500 ease-in-out"
+        style={{ maxHeight: open ? '2000px' : '0px', opacity: open ? 1 : 0 }}
+      >
+        <div className="px-5 pb-5 pt-1" style={{ borderTop: '1px solid var(--score-divider)' }}>
+          <div className="space-y-3 mt-4">
+            <div className="rounded-lg p-3" style={{ background: 'rgba(245,158,11,0.06)' }}>
+              <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#b45309' }}>土办法 / 实操技巧</span>
+              <p className="text-sm mt-1.5 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{tip.trick}</p>
+            </div>
+            <div className="rounded-lg p-3" style={{ background: 'rgba(99,102,241,0.06)' }}>
+              <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#4f46e5' }}>制度依据</span>
+              <p className="text-sm mt-1.5 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{tip.regulation}</p>
+            </div>
+            <div className="rounded-lg p-3" style={{ background: 'rgba(239,68,68,0.06)' }}>
+              <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#dc2626' }}>风险提示</span>
+              <p className="text-sm mt-1.5 leading-relaxed" style={{ color: '#b45309' }}>{tip.risk}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function WorkFlowSection() {
+  return (
+    <div className="space-y-8">
+
+      {/* ===== 统计卡片 ===== */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {statCards.map((stat, i) => {
+          const StatIcon = stat.icon;
+          return (
+            <div
+              key={i}
+              className="relative overflow-hidden rounded-2xl border p-5 transition-all duration-500 glass-shimmer"
+              style={{
+                background: 'var(--score-gradient-stat-' + (i + 1) + ')',
+                borderColor: 'var(--score-panel-border)',
+              }}
+            >
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: stat.bg }}>
+                <StatIcon className="w-4 h-4" style={{ color: stat.color }} />
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{stat.value}</span>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{stat.unit}</span>
+              </div>
+              <p className="text-xs mt-1 font-medium" style={{ color: 'var(--text-primary)' }}>{stat.label}</p>
+              <p className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{stat.desc}</p>
+            </div>
           );
         })}
       </div>
 
-      {/* ===== 专家经验 ===== */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
-        className="mt-12"
-      >
-        <div className="text-center mb-7">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Lightbulb className="w-5 h-5" style={{ color: '#d97706' }} />
-            <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>专家经验 · 老师傅传帮带</h2>
-          </div>
-          <p className="text-[14px] opacity-70" style={{ color: 'var(--text-primary)' }}>
-            3条实操经验 —— 场景 + 土办法 + 制度依据 + 风险提示
-          </p>
+      {/* ===== 工单流转步骤 ===== */}
+      <div>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, var(--score-critical), transparent)' }} />
+          <span
+            className="text-xs font-bold uppercase tracking-widest shrink-0 px-3 py-1 rounded-full border"
+            style={{
+              color: 'var(--score-critical)',
+              borderColor: 'var(--score-critical-border)',
+              background: 'var(--score-critical-soft)',
+            }}
+          >
+            五步闭环流程
+          </span>
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, var(--score-critical), transparent)' }} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {expertTips.map((tip) => (
-            <div key={tip.id} className="workflow-step-card border rounded-xl p-5 transition-shadow hover:shadow-lg"
-              style={{ background: 'var(--card-bg)', borderColor: 'var(--border-light)' }}>
-              <div className="text-[40px] font-bold mb-2 leading-none opacity-25" style={{ color: '#d97706' }}>
-                {String(tip.id).padStart(2, '0')}
-              </div>
-              <h3 className="text-[16px] font-bold mb-4" style={{ color: 'var(--text-primary)' }}>{tip.scene}</h3>
-
-              <div className="space-y-3">
-                <div className="rounded-lg p-3" style={{ background: 'rgba(245,158,11,0.06)' }}>
-                  <span className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: '#b45309' }}>土办法 / 实操技巧</span>
-                  <p className="text-[14px] mt-1.5 leading-relaxed opacity-75"
-                    style={{ color: 'var(--text-primary)' }}>{tip.trick}</p>
-                </div>
-                <div className="rounded-lg p-3" style={{ background: 'rgba(99,102,241,0.06)' }}>
-                  <span className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: '#4f46e5' }}>制度依据</span>
-                  <p className="text-[14px] mt-1.5 leading-relaxed opacity-75"
-                    style={{ color: 'var(--text-primary)' }}>{tip.regulation}</p>
-                </div>
-                <div className="rounded-lg p-3" style={{ background: 'rgba(239,68,68,0.06)' }}>
-                  <span className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: '#dc2626' }}>风险提示</span>
-                  <p className="text-[14px] mt-1.5 leading-relaxed" style={{ color: '#b45309' }}>{tip.risk}</p>
-                </div>
-              </div>
-            </div>
+        <div className="space-y-3">
+          {workSteps.map((step, idx) => (
+            <WorkStepPanel key={step.step} step={step} idx={idx} />
           ))}
         </div>
-      </motion.div>
+      </div>
 
+      {/* ===== 专家经验 ===== */}
+      <div>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, #d97706, transparent)' }} />
+          <span
+            className="text-xs font-bold uppercase tracking-widest shrink-0 px-3 py-1 rounded-full border flex items-center gap-1.5"
+            style={{
+              color: '#d97706',
+              borderColor: 'rgba(217,119,6,0.3)',
+              background: 'rgba(217,119,6,0.08)',
+            }}
+          >
+            <Lightbulb className="w-3 h-3" />
+            专家经验 · 老师傅传帮带
+          </span>
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, #d97706, transparent)' }} />
+        </div>
+
+        <div className="space-y-3">
+          {expertTips.map((tip) => (
+            <ExpertTipPanel key={tip.id} tip={tip} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

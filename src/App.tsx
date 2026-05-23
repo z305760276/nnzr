@@ -5,6 +5,7 @@ import DetailPage from './pages/DetailPage';
 import GlobalSearchPanel from './components/GlobalSearch';
 import TopNav from './components/TopNav';
 import AiAssistantDrawer from './components/AiAssistantDrawer';
+import BusinessGraphSection from './sections/BusinessGraphSection';
 import { createContext, useContext } from 'react';
 
 const SECTION_ROUTE_MAP: Record<string, string> = {
@@ -95,16 +96,29 @@ function SearchWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
+function BusinessContent() {
+  return (
+    <>
+      <TopNav />
+      <main className="pt-14">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-8">
+          <BusinessGraphSection />
+        </div>
+      </main>
+      <AiAssistantDrawer />
+    </>
+  );
+}
+
 function App() {
   return (
     <HashRouter>
       <div className="min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] overflow-x-hidden">
-        <SearchWrapper>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/detail/:moduleId" element={<DetailPage />} />
-          </Routes>
-        </SearchWrapper>
+        <Routes>
+          <Route path="/business-graph" element={<BusinessContent />} />
+          <Route path="/" element={<SearchWrapper><HomePage /></SearchWrapper>} />
+          <Route path="/detail/:moduleId" element={<SearchWrapper><DetailPage /></SearchWrapper>} />
+        </Routes>
       </div>
     </HashRouter>
   );

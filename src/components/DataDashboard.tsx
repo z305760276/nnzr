@@ -1,6 +1,7 @@
 import { Gauge, ShieldAlert, ClipboardCheck, BookOpen, AlertTriangle, CheckCircle2, type LucideIcon } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export interface DashboardTab {
   id: string;
@@ -67,6 +68,7 @@ export default function DataDashboard({
   className = '',
 }: DataDashboardProps) {
   const activeTab = defaultTab ?? tabs[0]?.id;
+  const navigate = useNavigate();
 
   return (
     <motion.section
@@ -155,13 +157,38 @@ export default function DataDashboard({
                   />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center gap-4" style={{ color: 'var(--text-muted)' }}>
-                    <BookOpen className="w-12 h-12 opacity-30" />
-                    <div className="text-center">
-                      <p className="text-sm font-medium">数据暂缺</p>
-                      <p className="text-xs mt-1 opacity-60">
-                        暂无数据，请后续关注
-                      </p>
-                    </div>
+                    {tab.id === 'kpi' ? (
+                      <>
+                        <Gauge className="w-12 h-12 opacity-30" />
+                        <div className="text-center">
+                          <p className="text-sm font-medium">业务图谱加载中</p>
+                          <p className="text-xs mt-1 opacity-60">
+                            交互式业务图谱需要单独打开
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => navigate('/business-graph')}
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105"
+                          style={{
+                            background: 'var(--brand-primary)',
+                            color: 'white',
+                          }}
+                        >
+                          <Gauge className="w-4 h-4" />
+                          查看完整业务图谱
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <BookOpen className="w-12 h-12 opacity-30" />
+                        <div className="text-center">
+                          <p className="text-sm font-medium">数据暂缺</p>
+                          <p className="text-xs mt-1 opacity-60">
+                            暂无数据，请后续关注
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
