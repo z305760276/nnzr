@@ -4,7 +4,6 @@ import { Target, Briefcase, GitBranch, UserCheck, BarChart3, Database, X, Maximi
 import { motion, AnimatePresence } from 'framer-motion'
 import { businessNodes, businessRelations, type BusinessNode } from '../data/businessGraph'
 import { orgHierarchy } from '../data/orgHierarchy'
-import { Tooltip, TooltipTrigger, TooltipContent } from '../components/ui/tooltip'
 
 const LAYER_CONFIG = {
   1: { label: '战略目标', icon: Target, gradient: 'linear-gradient(135deg, #FFD700, #FF6B6B)', shape: 'diamond' as const },
@@ -44,19 +43,6 @@ interface Connection {
   label?: string
 }
 
-function getRedYellowCount(node: BusinessNode): { red: number; yellow: number } {
-  if (!node.redYellowLine) return { red: 0, yellow: 0 }
-  return {
-    red: node.redYellowLine.hasRedLine ? 1 : 0,
-    yellow: node.redYellowLine.hasYellowLine ? 1 : 0,
-  }
-}
-
-const RED_YELLOW_SUMMARIES: Record<string, string> = {
-  red: '红线：安检入户造假、通气点火未做严密性试验、抄表不到位（少抄/估抄/漏抄）、偷盗气查处不力、违规记分超12分',
-  yellow: '黄线：隐患整改超期未闭环、安检质量抽查不达标、抄表准确率未达目标、服务投诉未及时处理、违规记分达6分',
-}
-
 function BusinessNodeCard({
   node,
   layer,
@@ -78,7 +64,6 @@ function BusinessNodeCard({
   onHover: (id: string) => void
   onHoverEnd: () => void
 }) {
-  const { red, yellow } = useMemo(() => getRedYellowCount(node), [node])
   const Icon = layer.icon
   const isDiamond = layer.shape === 'diamond'
   const isCircle = layer.shape === 'circle'
@@ -135,36 +120,6 @@ function BusinessNodeCard({
           {node.label}
         </p>
       </div>
-      {(red > 0 || yellow > 0) && (
-        <div className="absolute -top-1.5 -right-1.5 flex gap-0.5" style={{ transform: isDiamond ? 'rotate(-45deg)' : undefined }}>
-          {red > 0 && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="px-1 py-0.5 rounded text-[8px] font-bold text-white leading-none shadow-lg cursor-help"
-                  style={{ background: 'linear-gradient(135deg, #DC2626, #B91C1C)' }}>
-                  红线{red}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top" align="center" className="max-w-[280px] text-[11px] leading-relaxed">
-                {RED_YELLOW_SUMMARIES.red}
-              </TooltipContent>
-            </Tooltip>
-          )}
-          {yellow > 0 && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="px-1 py-0.5 rounded text-[8px] font-bold leading-none shadow-lg cursor-help"
-                  style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', color: '#fff' }}>
-                  黄线{yellow}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top" align="center" className="max-w-[280px] text-[11px] leading-relaxed">
-                {RED_YELLOW_SUMMARIES.yellow}
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </div>
-      )}
     </motion.div>
   )
 }

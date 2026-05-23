@@ -188,12 +188,12 @@ export default function HomePage() {
             {CARDS.map((card) => {
               const Icon = card.icon;
               return (
-                <motion.div key={card.id} variants={cardVariants}>
+                <motion.div key={card.id} variants={cardVariants} className="h-full">
                   <button
                     onClick={() => navigate(card.id === 'business-graph' ? '/business-graph' : `/detail/${card.id}`)}
                     onMouseMove={handleCardMouseMove}
                     onMouseLeave={handleCardMouseLeave}
-                    className="group relative overflow-hidden rounded-[20px] border text-left w-full will-change-transform glass-shimmer"
+                    className="group relative overflow-hidden rounded-[20px] border text-left w-full will-change-transform glass-shimmer h-full flex flex-col"
                     style={{
                       background: 'var(--card-nvidia-bg)',
                       borderColor: 'var(--card-nvidia-border)',
@@ -209,7 +209,7 @@ export default function HomePage() {
                       }}
                     />
 
-                    <div className="relative z-10 p-7 pb-0">
+                    <div className="relative z-10 p-7 pb-0 flex-1">
                       <div className="flex items-start justify-between mb-4">
                         <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center"
