@@ -136,7 +136,7 @@ function WorkStepPanel({ step, idx }: { step: typeof workSteps[0]; idx: number }
           </div>
 
           {step.step === 4 && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5 pt-4" style={{ borderTop: '1px solid var(--score-divider)' }}>
+            <div id="workflow-hazards" className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5 pt-4 scroll-mt-20" style={{ borderTop: '1px solid var(--score-divider)' }}>
               {hazardLevels.map((h) => (
                 <div key={h.level} className="rounded-lg p-3.5 border border-l-[3px]"
                   style={{ background: h.dim, borderColor: h.dim, borderLeftColor: h.accent }}>
@@ -218,7 +218,7 @@ export default function WorkFlowSection() {
     <div className="space-y-8">
 
       {/* ===== 统计卡片 ===== */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div id="workflow-stats" className="grid grid-cols-2 md:grid-cols-4 gap-4 scroll-mt-20">
         {statCards.map((stat, i) => {
           const StatIcon = stat.icon;
           return (
@@ -245,7 +245,7 @@ export default function WorkFlowSection() {
       </div>
 
       {/* ===== 工单流转步骤 ===== */}
-      <div>
+      <div id="workflow-steps" className="scroll-mt-20">
         <div className="flex items-center gap-3 mb-6">
           <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, var(--score-critical), transparent)' }} />
           <span
@@ -269,7 +269,7 @@ export default function WorkFlowSection() {
       </div>
 
       {/* ===== 专家经验 ===== */}
-      <div>
+      <div id="workflow-experience" className="scroll-mt-20">
         <div className="flex items-center gap-3 mb-6">
           <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, #d97706, transparent)' }} />
           <span

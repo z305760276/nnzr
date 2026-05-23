@@ -1,13 +1,12 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Users, Cpu, ShieldAlert, Gauge, BookOpen, Skull, AlertOctagon, AlertCircle, Info, Eye, FileText, Gavel, Scale, ChevronDown, ChevronUp, ExternalLink, Bookmark, Layers, FileWarning, Library, Search } from 'lucide-react';
+import { Users, Cpu, ShieldAlert, Gauge, BookOpen, Skull, AlertOctagon, AlertCircle, Info, Eye, FileText, Gavel, Scale, ChevronDown, ChevronUp, ExternalLink, Bookmark, Layers, FileWarning, Library, Search, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
 import TopNav from '../components/TopNav';
 import { useSearch } from '../App';
-import OrgHierarchySection from '../sections/OrgHierarchySection';
-import WorkFlowSection from '../sections/WorkFlowSection';
-import SafetyCheckSection from '../sections/SafetyCheckSection';
-import KpiDashboardSection from '../sections/KpiDashboardSection';
 import FilePreview from '../components/FilePreview';
+import ModuleSidebar from '../components/ModuleSidebar';
+import SkeletonLoader from '../components/SkeletonLoader';
+import TableOfContents from '../components/TableOfContents';
 
 const MODULE_META: Record<string, { title: string; subtitle: string; icon: React.FC<{className?: string; style?: React.CSSProperties}> }> = {
   org: { title: '组织架构全景图谱', subtitle: '基于《管理组织架构及岗位职责》V2.0', icon: Users },
@@ -18,14 +17,42 @@ const MODULE_META: Record<string, { title: string; subtitle: string; icon: React
 };
 
 const COMPONENT_MAP: Record<string, React.FC> = {
-  org: OrgHierarchySection,
-  workflow: WorkFlowSection,
-  safety: SafetyCheckSection,
-  kpi: KpiDashboardSection,
+  org: lazy(() => import('../sections/OrgHierarchySection')),
+  workflow: lazy(() => import('../sections/WorkFlowSection')),
+  safety: lazy(() => import('../sections/SafetyCheckSection')),
+  kpi: lazy(() => import('../sections/KpiDashboardSection')),
   standards: StandardsCombined,
 };
 
-export { StandardsCombined };
+const MODULE_ORDER = ['org', 'workflow', 'safety', 'kpi', 'standards'] as const;
+
+const MODULE_TOC: Record<string, { id: string; label: string }[]> = {
+  workflow: [
+    { id: 'workflow-steps', label: '工单流转步骤' },
+    { id: 'workflow-stats', label: '流程概览' },
+    { id: 'workflow-experience', label: '老师傅经验' },
+    { id: 'workflow-hazards', label: '隐患分级' },
+  ],
+  safety: [
+    { id: 'safety-hazards', label: '三级隐患体系' },
+    { id: 'safety-hazard-fix', label: '隐患整改对照' },
+    { id: 'safety-check-items', label: '安检24项检查' },
+    { id: 'safety-rust-levels', label: '锈蚀6级判定' },
+  ],
+  kpi: [
+    { id: 'kpi-overview', label: '指标概览' },
+    { id: 'kpi-details', label: '指标详情' },
+    { id: 'kpi-rules', label: '记分规则' },
+  ],
+  org: [
+    { id: 'org-chart', label: '组织架构图' },
+  ],
+  standards: [
+    { id: 'standards-stats', label: '数据概览' },
+    { id: 'standards-scoring', label: '记分执行标准' },
+    { id: 'standards-files', label: '规范制度文件' },
+  ],
+};
 
 // ===== 数据层 =====
 
@@ -407,7 +434,7 @@ function StandardsCombined() {
   return (
     <div className="space-y-12">
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div id="standards-stats" style={{ scrollMarginTop: 80 }} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statCards.map((stat, i) => {
           const Icon = stat.icon;
           return (
@@ -435,7 +462,7 @@ function StandardsCombined() {
         })}
       </div>
 
-      <div>
+      <div id="standards-scoring" style={{ scrollMarginTop: 80 }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, var(--score-critical), transparent)' }} />
           <span
@@ -458,7 +485,7 @@ function StandardsCombined() {
         </div>
       </div>
 
-      <div>
+      <div id="standards-files" style={{ scrollMarginTop: 80 }}>
         <div className="flex items-center gap-3 mb-6">
           <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, var(--score-general), transparent)' }} />
           <span
@@ -492,9 +519,34 @@ export default function DetailPage() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
   const searchCtx = useSearch();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [prevModuleId, setPrevModuleId] = useState(moduleId);
 
   const meta = moduleId ? MODULE_META[moduleId] : null;
   const Component = moduleId ? COMPONENT_MAP[moduleId] : null;
+  const tocItems = moduleId ? MODULE_TOC[moduleId] ?? [] : [];
+
+  const currentIdx = moduleId ? MODULE_ORDER.indexOf(moduleId as typeof MODULE_ORDER[number]) : -1;
+  const prevModule = currentIdx > 0 ? MODULE_ORDER[currentIdx - 1] : null;
+  const nextModule = currentIdx >= 0 && currentIdx < MODULE_ORDER.length - 1 ? MODULE_ORDER[currentIdx + 1] : null;
+  const prevMeta = prevModule ? MODULE_META[prevModule] : null;
+  const nextMeta = nextModule ? MODULE_META[nextModule] : null;
+
+  if (moduleId !== prevModuleId) {
+    setPrevModuleId(moduleId);
+    setIsTransitioning(true);
+    window.scrollTo(0, 0);
+    setTimeout(() => setIsTransitioning(false), 300);
+  }
+
+  const handleNav = (id: string) => {
+    if (id === 'standards') {
+      navigate('/detail/standards');
+    } else {
+      navigate(`/detail/${id}`);
+    }
+  };
 
   if (!meta || !Component) {
     return (
@@ -537,27 +589,164 @@ export default function DetailPage() {
             backdropFilter: 'blur(16px)',
           }}
         >
-          <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-8">
-            <div className="flex items-center gap-3 mb-2">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{
-                  background: 'var(--brand-bg)',
-                  border: '1px solid var(--border-accent)',
-                }}
-              >
-                <Icon className="w-5 h-5" style={{ color: 'var(--brand-primary)' }} />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>{meta.title}</h1>
+          <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-6 md:py-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 min-w-0">
+                <button
+                  onClick={() => setMobileMenuOpen(true)}
+                  className="lg:hidden size-9 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+                  style={{
+                    background: 'var(--card-inner-bg)',
+                    border: '1px solid var(--border-subtle)',
+                  }}
+                >
+                  <Menu className="size-4" style={{ color: 'var(--text-secondary)' }} />
+                </button>
+                <div
+                  className="size-9 md:size-10 rounded-xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: 'var(--brand-bg)',
+                    border: '1px solid var(--border-accent)',
+                  }}
+                >
+                  <Icon className="size-4 md:size-5" style={{ color: 'var(--brand-primary)' }} />
+                </div>
+                <div className="min-w-0">
+                  <h1 className="text-xl md:text-2xl lg:text-3xl font-bold truncate" style={{ color: 'var(--text-primary)' }}>{meta.title}</h1>
+                  <p className="text-[11px] md:text-sm truncate mt-0.5" style={{ color: 'var(--text-secondary)' }}>{meta.subtitle}</p>
+                </div>
               </div>
             </div>
-            <p className="text-sm ml-[52px]" style={{ color: 'var(--text-secondary)' }}>{meta.subtitle}</p>
           </div>
         </div>
 
         <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-8">
-          <Component />
+          {/* Desktop: module nav + TOC separate rows */}
+          <div className="hidden lg:block mb-6 space-y-2">
+            <div className="flex items-center gap-1 flex-wrap">
+              {MODULE_ORDER.map((id) => {
+                const mod = MODULE_META[id];
+                if (!mod) return null;
+                const ModIcon = mod.icon;
+                const isActive = moduleId === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => handleNav(id)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200"
+                    style={{
+                      background: isActive
+                        ? `linear-gradient(135deg, ${['#6366F1','#0891B2','#DC2626','#D97706','#10B981'][MODULE_ORDER.indexOf(id)]}12, ${['#6366F1','#0891B2','#DC2626','#D97706','#10B981'][MODULE_ORDER.indexOf(id)]}06)`
+                        : 'transparent',
+                      border: isActive
+                        ? `1px solid ${['#6366F1','#0891B2','#DC2626','#D97706','#10B981'][MODULE_ORDER.indexOf(id)]}18`
+                        : '1px solid transparent',
+                      color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) e.currentTarget.style.background = 'var(--card-inner-bg)';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <ModIcon className="size-3.5" style={{ color: isActive ? ['#6366F1','#0891B2','#DC2626','#D97706','#10B981'][MODULE_ORDER.indexOf(id)] : 'var(--text-muted)' }} />
+                    {mod.title}
+                    {isActive && <span className="size-1.5 rounded-full ml-0.5" style={{ background: ['#6366F1','#0891B2','#DC2626','#D97706','#10B981'][MODULE_ORDER.indexOf(id)] }} />}
+                  </button>
+                );
+              })}
+            </div>
+            {tocItems.length > 0 && (
+              <div className="flex items-center gap-1 flex-wrap">
+                {tocItems.map(({ id: tocId, label }) => (
+                  <button
+                    key={tocId}
+                    onClick={() => {
+                      const el = document.getElementById(tocId);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="text-[11px] px-2.5 py-1.5 rounded-lg transition-all duration-200"
+                    style={{
+                      color: 'var(--text-muted)',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--card-inner-bg)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile: TOC only */}
+          {tocItems.length > 0 && (
+            <div className="mb-6 lg:hidden">
+              <TableOfContents sectionIds={tocItems} />
+            </div>
+          )}
+
+            <div className="lg:hidden">
+              <ModuleSidebar
+                currentId={moduleId}
+                isOpen={mobileMenuOpen}
+                onClose={() => setMobileMenuOpen(false)}
+              />
+            </div>
+
+            <div className="min-w-0">
+
+              {isTransitioning ? (
+                <SkeletonLoader />
+              ) : (
+                <Suspense fallback={<SkeletonLoader />}>
+                  <Component key={moduleId} />
+                </Suspense>
+              )}
+
+              {/* Bottom prev/next navigation */}
+              <div className="mt-10 pt-6 border-t flex items-center justify-between gap-4"
+                style={{ borderColor: 'var(--glass-border)' }}>
+                {prevMeta ? (
+                  <button
+                    onClick={() => handleNav(prevModule!)}
+                    className="flex items-center gap-2.5 px-4 py-3 rounded-xl transition-all duration-200 group text-left"
+                    style={{
+                      background: 'var(--card-inner-bg)',
+                      border: '1px solid var(--border-subtle)',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--card-inner-bg-strong)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--card-inner-bg)'; }}
+                  >
+                    <ChevronLeft className="size-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-medium" style={{ color: 'var(--text-muted)' }}>上一个</div>
+                      <div className="text-xs font-semibold truncate mt-0.5" style={{ color: 'var(--text-primary)' }}>{prevMeta.title}</div>
+                    </div>
+                  </button>
+                ) : <div />}
+
+                {nextMeta ? (
+                  <button
+                    onClick={() => handleNav(nextModule!)}
+                    className="flex items-center gap-2.5 px-4 py-3 rounded-xl transition-all duration-200 group text-right"
+                    style={{
+                      background: 'var(--card-inner-bg)',
+                      border: '1px solid var(--border-subtle)',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--card-inner-bg-strong)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--card-inner-bg)'; }}
+                  >
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-medium" style={{ color: 'var(--text-muted)' }}>下一个</div>
+                      <div className="text-xs font-semibold truncate mt-0.5" style={{ color: 'var(--text-primary)' }}>{nextMeta.title}</div>
+                    </div>
+                    <ChevronRight className="size-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                  </button>
+                ) : <div />}
+              </div>
+          </div>
         </div>
       </main>
     </div>

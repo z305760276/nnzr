@@ -38,7 +38,7 @@ export default function HeroSection() {
 
           <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight" style={{ color: 'var(--text-primary)', textShadow: '0 0 30px var(--glow-primary-strong)' }}>
             管理图谱
-            <span className="block text-2xl md:text-3xl font-light mt-2 tracking-wide" style={{ color: 'var(--text-primary)' }}>Management Graph v3.2</span>
+            <span className="block text-2xl md:text-3xl font-light mt-2 tracking-wide" style={{ color: 'var(--text-primary)' }}>Management Graph v4.0</span>
           </h1>
 
           <p className="text-base md:text-lg mb-8 max-w-xl leading-relaxed" style={{ color: 'var(--text-primary)' }}>

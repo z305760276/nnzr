@@ -122,7 +122,7 @@ export default function SafetyCheckSection() {
       </div>
 
       {/* ===== 1. 三级隐患分级体系 ===== */}
-      <div>
+      <div id="safety-hazards" style={{ scrollMarginTop: 80 }}>
         <SectionDivider label="三级隐患分级体系" color="var(--score-critical)" icon={AlertTriangle} />
         <div className="space-y-3">
           {hazardDetails.map((h) => (
@@ -132,7 +132,7 @@ export default function SafetyCheckSection() {
       </div>
 
       {/* ===== 2. 隐患整改标准对照表 ===== */}
-      <div>
+      <div id="safety-hazard-fix" style={{ scrollMarginTop: 80 }}>
         <SectionDivider label={`隐患整改标准对照表（${hazardFixList.length}项）`} color="var(--score-major)" icon={Wrench} />
         <div className="overflow-x-auto rounded-2xl border" style={{ borderColor: 'var(--score-panel-border)' }}>
           <table className="w-full text-sm">
@@ -172,7 +172,7 @@ export default function SafetyCheckSection() {
       </div>
 
       {/* ===== 3. 管道锈蚀等级判定标准 ===== */}
-      <div>
+      <div id="safety-rust-levels" style={{ scrollMarginTop: 80 }}>
         <SectionDivider label="管道锈蚀等级判定标准（6级）" color="#10B981" icon={ShieldAlert} />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {rustLevels.map((r) => (
@@ -191,7 +191,7 @@ export default function SafetyCheckSection() {
       </div>
 
       {/* ===== 4. 安检检查内容 ===== */}
-      <div>
+      <div id="safety-check-items" style={{ scrollMarginTop: 80 }}>
         <SectionDivider label={`安检检查内容（6大类 · ${totalCheckItems}项）`} color="var(--score-general)" icon={CheckCircle} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {safetyCheckItems.map((cat, i) => (

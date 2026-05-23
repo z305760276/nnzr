@@ -113,7 +113,7 @@ export default function KpiDashboardSection() {
   return (
     <div className="space-y-8">
       {/* ===== KPI 指标概览卡片 ===== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+      <div id="kpi-overview" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5" style={{ scrollMarginTop: 80 }}>
         {KPI_CARDS.map((card, i) => {
           const Icon = card.icon;
           const pct = card.unit === '%' ? parseInt(card.value)
@@ -157,6 +157,7 @@ export default function KpiDashboardSection() {
       </div>
 
       {/* ===== KPI 详情手风琴 ===== */}
+      <div id="kpi-details" style={{ scrollMarginTop: 80 }}>
       <section>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-1 h-7 rounded-full" style={{ background: 'var(--kpi-gradient-blue)', backgroundSize: '200% 200%', animation: 'kpi-gradient-shift 3s ease infinite' }} />
@@ -285,6 +286,7 @@ export default function KpiDashboardSection() {
           <AccordionItem id="penalty-table" title="考核标准"
             summary="6项违规行为及处罚金额"
             icon={<AlertCircle className="w-5 h-5" />}>
+            <div id="kpi-rules" style={{ scrollMarginTop: 80 }}>
             <div className="overflow-x-auto mt-2 rounded-xl" style={{ border: '1px solid var(--kpi-glass-border)' }}>
               <table className="w-full text-sm">
                 <thead>
@@ -317,9 +319,11 @@ export default function KpiDashboardSection() {
                 </tbody>
               </table>
             </div>
+            </div>
           </AccordionItem>
         </AccordionGroup>
       </section>
+      </div>
 
       {selectedModule && <RegulationModal module={selectedModule} onClose={() => setSelectedModule(null)} />}
     </div>
