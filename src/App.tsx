@@ -97,9 +97,35 @@ function SearchWrapper({ children }: { children: React.ReactNode }) {
 }
 
 function BusinessContent() {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setShowSearchResults(query.length > 0);
+  };
+
+  const handleSelect = (section: string) => {
+    setShowSearchResults(false);
+    setSearchQuery('');
+    const route = SECTION_ROUTE_MAP[section] || section;
+    navigate(`/detail/${route}`);
+  };
+
   return (
     <>
-      <TopNav />
+      <TopNav
+        searchQuery={searchQuery}
+        onSearchChange={handleSearch}
+      />
+      {showSearchResults && (
+        <GlobalSearchPanel
+          query={searchQuery}
+          onClose={() => { setShowSearchResults(false); setSearchQuery(''); }}
+          onSelect={handleSelect}
+        />
+      )}
       <main className="pt-14">
         <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-8">
           <BusinessGraphSection />

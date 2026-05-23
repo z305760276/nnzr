@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useLayoutEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Target, Briefcase, GitBranch, UserCheck, BarChart3, Database, X, Maximize2, Minimize2, ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { businessNodes, businessRelations, type BusinessNode, type BusinessRelation } from '../data/businessGraph'
+import { businessNodes, businessRelations, type BusinessNode } from '../data/businessGraph'
 import { orgHierarchy } from '../data/orgHierarchy'
 import { Tooltip, TooltipTrigger, TooltipContent } from '../components/ui/tooltip'
 
@@ -31,13 +31,6 @@ const RELATION_LABELS: Record<string, string> = {
   sources_from: '来源于',
   impacts: '影响',
   assesses: '考核',
-}
-
-interface Position {
-  x: number
-  y: number
-  w: number
-  h: number
 }
 
 interface Connection {
@@ -76,7 +69,7 @@ function BusinessNodeCard({
   onHoverEnd,
 }: {
   node: BusinessNode
-  layer: typeof LAYER_CONFIG[1]
+  layer: (typeof LAYER_CONFIG)[keyof typeof LAYER_CONFIG]
   onSelect: (node: BusinessNode) => void
   isSelected: boolean
   setNodeRef: (id: string) => (el: HTMLDivElement | null) => void
@@ -441,7 +434,6 @@ function BusinessGraphSection() {
                 ))}
               </defs>
               {connections.map((conn, i) => {
-                const dx = conn.x2 - conn.x1
                 const dy = conn.y2 - conn.y1
                 const midX = (conn.x1 + conn.x2) / 2
                 const midY = (conn.y1 + conn.y2) / 2
@@ -752,7 +744,7 @@ function BusinessGraphSection() {
                   </div>
                 )}
 
-                {(selectedDetails?.upstreamNodes.length > 0 || selectedDetails?.downstreamNodes.length > 0) && (
+                {selectedDetails && (selectedDetails.upstreamNodes.length > 0 || selectedDetails.downstreamNodes.length > 0) && (
                   <div>
                     <p className="text-xs font-semibold mb-2 flex items-center gap-1.5"
                       style={{ color: 'var(--brand-primary)' }}>
