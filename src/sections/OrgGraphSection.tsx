@@ -59,8 +59,8 @@ function OrgChartNode({ data, level, onNodeClick }: { data: any; level: number; 
           backgroundColor: colors.bg,
           borderColor: colors.border,
           color: colors.text,
-          minWidth: childCount > 2 ? 'auto' : '100px',
-          padding: childCount > 0 ? '6px 16px' : '4px 12px',
+          width: '160px',
+          padding: '6px 16px',
         }}
       >
         <span className="level-badge" style={{ backgroundColor: colors.badge, color: '#fff' }}>
@@ -325,11 +325,11 @@ function OrgGraphSection() {
         .org-tree li::before {
           content: '';
           position: absolute;
-          top: 0;
+          top: -28px;
           left: 50%;
           border-left: 2px solid var(--line-color, #A7F3D0);
           width: 0;
-          height: 28px;
+          height: 56px;
           z-index: 0;
         }
         .org-tree ul::before {
@@ -369,7 +369,8 @@ function OrgGraphSection() {
           border-radius: 8px;
           border: 1.5px solid;
           text-align: center;
-          min-height: 44px;
+          height: 58px;
+          box-sizing: border-box;
           transition: transform 0.2s, box-shadow 0.2s;
           cursor: pointer;
         }
