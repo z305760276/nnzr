@@ -389,12 +389,9 @@ function BusinessGraphSection() {
                 ))}
               </defs>
               {connections.map((conn, i) => {
-                const dy = conn.y2 - conn.y1
                 const midX = (conn.x1 + conn.x2) / 2
                 const midY = (conn.y1 + conn.y2) / 2
-                const controlY1 = conn.y1 + dy * 0.15
-                const controlY2 = conn.y2 - dy * 0.15
-                const pathD = `M${conn.x1},${conn.y1} C${conn.x1},${controlY1} ${conn.x2},${controlY2} ${conn.x2},${conn.y2}`
+                const pathD = `M${conn.x1},${conn.y1} L${conn.x1},${midY} L${conn.x2},${midY} L${conn.x2},${conn.y2}`
                 const color = RELATION_COLORS[conn.type] || '#6366F1'
                 const isHovered = hoveredNodeId !== null
                 const isConnected = hoveredNodeId !== null && (
