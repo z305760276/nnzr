@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# 南宁中燃客户服务部管理图谱
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+基于四份真实管理制度文件构建的企业管理体系全景透视系统。
 
-Currently, two official plugins are available:
+**目标：新人来了也能看懂、会用、能查。**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 技术栈
 
-## React Compiler
+- **框架：** React 18 + TypeScript
+- **构建：** Vite 7
+- **样式：** Tailwind CSS + shadcn/ui
+- **动画：** Framer Motion
+- **路由：** React Router DOM (HashRouter)
+- **AI 助手：** Coze API（豆包大模型）
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 功能模块
 
-## Expanding the ESLint configuration
+| 模块 | 路径 | 说明 |
+|------|------|------|
+| 首页 | `/` | Hero 品牌展示 + 数据看板 + 六大模块导航 |
+| 业务能力图谱 | `/business-graph` | 6层 83节点交互网络图，支持缩放/平移/责任穿刺 |
+| 组织架构 | `/detail/org` | 5级 15岗位树形图，点击查看职责详情 |
+| CRM 工单流转 | `/detail/workflow` | 5步闭环流程含责任岗位、时限、系统操作要点 |
+| 安检隐患管理 | `/detail/safety` | 三级隐患体系 + 24项检查项 + 锈蚀6级判定 |
+| 财年指标 | `/detail/kpi` | 4项核心KPI含目标值/权重/公式 |
+| 规范记分标准 | `/detail/standards` | 国标/地方规范/法规/记分标准制度文件库 |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 特色功能
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **全局搜索** — 跨 Section 搜索 + PDF 文档全文检索
+- **AI 助手** — 智能问答，可回答安全规范、岗位职责等问题
+- **亮暗主题** — 双主题切换，localStorage 持久化
+- **模块导航** — 桌面端顶部横条导航 + 底部上/下翻页
+- **锚点目录** — Section 内目录导航，自动高亮当前区域
+- **骨架屏** — 模块切换时平滑加载过渡
+- **文件预览** — 内嵌 PDF 预览 + Excel 多 sheet 解析
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 快速开始
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+
+# 本地预览构建产物
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 版本
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**v4.0_20260524**
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+详见 `结构.txt`（目录结构）和 `依赖.md`（组件依赖树）。
