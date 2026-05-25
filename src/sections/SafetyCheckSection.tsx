@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { safetyCheckItems } from '../data/orgData';
 import {
   AlertTriangle, Wrench, ShieldAlert, CheckCircle,
-  Lightbulb, Clock, Target, Video, ChevronDown, ChevronUp,
+  Lightbulb, Clock, Target, Video, ChevronDown, ChevronUp, X,
 } from 'lucide-react';
 
 const hazardDetails = [
@@ -91,6 +91,8 @@ function SectionDivider({ label, color = 'var(--score-critical)', icon: Icon }: 
 }
 
 export default function SafetyCheckSection() {
+  const [fixDrawerOpen, setFixDrawerOpen] = useState(false);
+
   return (
     <div className="space-y-8">
 
@@ -134,42 +136,121 @@ export default function SafetyCheckSection() {
       {/* ===== 2. 隐患整改标准对照表 ===== */}
       <div id="safety-hazard-fix" style={{ scrollMarginTop: 80 }}>
         <SectionDivider label={`隐患整改标准对照表（${hazardFixList.length}项）`} color="var(--score-major)" icon={Wrench} />
-        <div className="overflow-x-auto rounded-2xl border" style={{ borderColor: 'var(--score-panel-border)' }}>
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: '1px solid var(--score-divider)', background: 'var(--score-panel-hover)' }}>
-                <th className="text-left text-xs font-semibold px-4 py-3" style={{ color: 'var(--text-muted)' }}>设备/部位</th>
-                <th className="text-left text-xs font-semibold px-4 py-3" style={{ color: 'var(--text-muted)' }}>隐患内容</th>
-                <th className="text-left text-xs font-semibold px-4 py-3" style={{ color: 'var(--text-muted)' }}>整改标准</th>
-                <th className="text-center text-xs font-semibold px-4 py-3 w-20" style={{ color: 'var(--text-muted)' }}>等级</th>
-              </tr>
-            </thead>
-            <tbody>
-              {hazardFixList.map((h, i) => {
-                const lvlColor = h.level === 1 ? 'var(--score-critical)' : h.level === 2 ? 'var(--score-major)' : 'var(--score-general)';
-                const lvlBg = h.level === 1 ? 'var(--score-critical-bg)' : h.level === 2 ? 'var(--score-major-bg)' : 'var(--score-general-bg)';
-                return (
-                  <tr key={i} className="transition-colors"
-                    style={{ borderBottom: '1px solid var(--score-divider)' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--score-panel-hover)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = ''; }}
-                  >
-                    <td className="px-4 py-2.5 text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{h.item}</td>
-                    <td className="px-4 py-2.5 text-xs" style={{ color: 'var(--text-secondary)' }}>{h.hazard}</td>
-                    <td className="px-4 py-2.5 text-xs" style={{ color: 'var(--text-secondary)' }}>{h.fix}</td>
-                    <td className="px-4 py-2.5 text-center">
-                      <span className="text-[10px] px-2 py-1 rounded-full font-bold inline-block min-w-[36px]"
-                        style={{ background: lvlBg, color: lvlColor }}>
-                        {h.level}级
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <button
+          onClick={() => setFixDrawerOpen(true)}
+          className="w-full rounded-2xl border p-5 text-left transition-all duration-300 hover:brightness-110"
+          style={{ borderColor: 'var(--score-panel-border)', background: 'var(--score-gradient-panel)' }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: 'var(--score-major-bg)' }}>
+                <Wrench className="w-5 h-5" style={{ color: 'var(--score-major)' }} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>点击查看完整对照表</h3>
+                <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                  覆盖{hazardFixList.length}项隐患类型，含设备部位、隐患内容、整改标准、等级
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[10px] px-2 py-1 rounded-full font-medium"
+                style={{ background: 'var(--score-critical-bg)', color: 'var(--score-critical)' }}>
+                一级 {level1Count}项
+              </span>
+              <span className="text-[10px] px-2 py-1 rounded-full font-medium"
+                style={{ background: 'var(--score-major-bg)', color: 'var(--score-major)' }}>
+                二级 {level2Count}项
+              </span>
+              <span className="text-[10px] px-2 py-1 rounded-full font-medium"
+                style={{ background: 'var(--score-general-bg)', color: 'var(--score-general)' }}>
+                三级 {level3Count}项
+              </span>
+              <span className="text-lg" style={{ color: 'var(--text-muted)' }}>→</span>
+            </div>
+          </div>
+        </button>
       </div>
+      {fixDrawerOpen && (
+        <div className="fixed inset-0 z-[100] flex justify-end" onClick={() => setFixDrawerOpen(false)}>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-2xl h-full overflow-y-auto"
+            style={{
+              background: 'var(--kpi-glass-bg-strong, #1a1a2e)',
+              backdropFilter: 'blur(24px) saturate(180%)',
+              borderLeft: '1px solid var(--kpi-glass-border, rgba(255,255,255,0.08))',
+              boxShadow: '0 0 64px rgba(0,0,0,0.4)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4"
+              style={{
+                background: 'var(--kpi-glass-bg-strong, #1a1a2e)',
+                backdropFilter: 'blur(24px) saturate(180%)',
+                borderBottom: '1px solid var(--kpi-divider, rgba(255,255,255,0.06))',
+              }}>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                  style={{ background: 'var(--score-major-bg)' }}>
+                  <Wrench className="w-4.5 h-4.5" style={{ color: 'var(--score-major)' }} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold" style={{ color: 'var(--kpi-text-primary, var(--text-primary))' }}>
+                    隐患整改标准对照表
+                  </h3>
+                  <p className="text-[10px]" style={{ color: 'var(--kpi-text-muted, var(--text-muted))' }}>
+                    {hazardFixList.length}项 · 覆盖燃气表/立管/灶具/热水器/软管等
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setFixDrawerOpen(false)}
+                className="p-1.5 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            <div className="p-5">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--kpi-divider, rgba(255,255,255,0.06))' }}>
+                    <th className="text-left text-[11px] font-semibold px-3 py-3" style={{ color: 'var(--kpi-text-muted, var(--text-muted))' }}>设备/部位</th>
+                    <th className="text-left text-[11px] font-semibold px-3 py-3" style={{ color: 'var(--kpi-text-muted, var(--text-muted))' }}>隐患内容</th>
+                    <th className="text-left text-[11px] font-semibold px-3 py-3" style={{ color: 'var(--kpi-text-muted, var(--text-muted))' }}>整改标准</th>
+                    <th className="text-center text-[11px] font-semibold px-3 py-3 w-16" style={{ color: 'var(--kpi-text-muted, var(--text-muted))' }}>等级</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {hazardFixList.map((h, i) => {
+                    const lvlColor = h.level === 1 ? 'var(--score-critical)' : h.level === 2 ? 'var(--score-major)' : 'var(--score-general)';
+                    const lvlBg = h.level === 1 ? 'var(--score-critical-bg)' : h.level === 2 ? 'var(--score-major-bg)' : 'var(--score-general-bg)';
+                    const rowBg = i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent';
+                    return (
+                      <tr key={i} className="transition-colors"
+                        style={{ background: rowBg }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = rowBg; }}
+                      >
+                        <td className="px-3 py-2.5 text-xs font-medium" style={{ color: 'var(--kpi-text-primary, var(--text-primary))' }}>{h.item}</td>
+                        <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--kpi-text-secondary, var(--text-secondary))' }}>{h.hazard}</td>
+                        <td className="px-3 py-2.5 text-xs" style={{ color: 'var(--kpi-text-secondary, var(--text-secondary))' }}>{h.fix}</td>
+                        <td className="px-3 py-2.5 text-center">
+                          <span className="text-[10px] px-2 py-1 rounded-full font-bold inline-block min-w-[36px]"
+                            style={{ background: lvlBg, color: lvlColor }}>
+                            {h.level}级
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ===== 3. 管道锈蚀等级判定标准 ===== */}
       <div id="safety-rust-levels" style={{ scrollMarginTop: 80 }}>
