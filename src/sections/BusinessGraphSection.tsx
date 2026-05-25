@@ -245,6 +245,85 @@ function BusinessGraphSection() {
     return () => observer.disconnect()
   }, [recalculateConnections])
 
+  const processedLabels = useMemo(() => {
+    type RawEntry = { x: number; y: number; text: string; color: string; fromId: string; toId: string }
+    const raw: RawEntry[] = []
+    connections.forEach((conn) => {
+      if (!conn.label) return
+      raw.push({
+        x: (conn.x1 + conn.x2) / 2,
+        y: (conn.y1 + conn.y2) / 2,
+        text: conn.label,
+        color: RELATION_COLORS[conn.type] || '#6366F1',
+        fromId: conn.fromId,
+        toId: conn.toId,
+      })
+    })
+
+    if (raw.length === 0) return { labels: [] }
+
+    const MERGE_RADIUS = 80
+    const SPREAD_OFFSET = 36
+
+    const textGroups = new Map<string, RawEntry[]>()
+    raw.forEach((e) => {
+      const g = textGroups.get(e.text)
+      if (g) g.push(e)
+      else textGroups.set(e.text, [e])
+    })
+
+    const result: { x: number; y: number; text: string; color: string; mergedCount: number; connectionPairs: { fromId: string; toId: string }[] }[] = []
+
+    textGroups.forEach((group) => {
+      const clustered: RawEntry[][] = []
+      const used = new Set<number>()
+
+      for (let i = 0; i < group.length; i++) {
+        if (used.has(i)) continue
+        const cluster: RawEntry[] = [group[i]]
+        used.add(i)
+        for (let j = i + 1; j < group.length; j++) {
+          if (used.has(j)) continue
+          const dx = Math.abs(group[j].x - group[i].x)
+          const dy = Math.abs(group[j].y - group[i].y)
+          if (dx < MERGE_RADIUS && dy < MERGE_RADIUS) {
+            cluster.push(group[j])
+            used.add(j)
+          }
+        }
+        clustered.push(cluster)
+      }
+
+      clustered.forEach((cluster) => {
+        result.push({
+          x: cluster.reduce((s, e) => s + e.x, 0) / cluster.length,
+          y: cluster.reduce((s, e) => s + e.y, 0) / cluster.length,
+          text: cluster[0].text,
+          color: cluster[0].color,
+          mergedCount: cluster.length,
+          connectionPairs: cluster.map((e) => ({ fromId: e.fromId, toId: e.toId })),
+        })
+      })
+    })
+
+    result.sort((a, b) => a.y - b.y || a.x - b.x)
+
+    for (let i = 0; i < result.length; i++) {
+      for (let j = i + 1; j < result.length; j++) {
+        if (result[i].text === result[j].text) continue
+        const dy = Math.abs(result[j].y - result[i].y)
+        if (dy < 16) {
+          const dx = result[j].x - result[i].x
+          if (Math.abs(dx) < SPREAD_OFFSET) {
+            result[j].x = result[i].x + SPREAD_OFFSET * (1 + Math.floor(Math.abs(dx) / SPREAD_OFFSET))
+          }
+        }
+      }
+    }
+
+    return { labels: result }
+  }, [connections])
+
   const selectedNodeResults = selectedDetails?.relatedNodes ?? []
 
   return (
@@ -393,36 +472,47 @@ function BusinessGraphSection() {
                 const midY = (conn.y1 + conn.y2) / 2
                 const pathD = `M${conn.x1},${conn.y1} L${conn.x1},${midY} L${conn.x2},${midY} L${conn.x2},${conn.y2}`
                 const color = RELATION_COLORS[conn.type] || '#6366F1'
-                const isHovered = hoveredNodeId !== null
-                const isConnected = hoveredNodeId !== null && (
-                  (conn as any).fromId === hoveredNodeId || (conn as any).toId === hoveredNodeId
+                const activeNodeId = hoveredNodeId || selectedNode?.id
+                const isActive = activeNodeId != null
+                const isConnected = isActive && (
+                  (conn as any).fromId === activeNodeId || (conn as any).toId === activeNodeId
                 )
-                const svgOpacity = isHovered ? (isConnected ? 0.7 : 0.08) : 0.35
-                const textOpacity = isHovered ? (isConnected ? 0.8 : 0.08) : 0.5
+                const svgOpacity = isActive ? (isConnected ? 0.7 : 0.06) : 0
                 return (
-                  <g key={i}>
-                    <path
-                      d={pathD}
-                      fill="none"
-                      stroke={color}
-                      strokeWidth={isConnected ? 2 : 1.2}
-                      strokeOpacity={svgOpacity}
-                      markerEnd={`url(#arrow-${conn.type})`}
-                    />
-                    {conn.label && (
-                      <text
-                        x={midX}
-                        y={midY - 4}
-                        textAnchor="middle"
-                        fontSize="8"
-                        fill={color}
-                        fillOpacity={textOpacity}
-                        style={{ pointerEvents: 'none' }}
-                      >
-                        {conn.label.length > 6 ? conn.label.slice(0, 6) + '..' : conn.label}
-                      </text>
-                    )}
-                  </g>
+                  <path
+                    key={i}
+                    d={pathD}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={isConnected ? 2 : 1.2}
+                    strokeOpacity={svgOpacity}
+                    markerEnd={isActive ? `url(#arrow-${conn.type})` : undefined}
+                  />
+                )
+              })}
+              {processedLabels.labels.map((label, i) => {
+                const activeNodeId = hoveredNodeId || selectedNode?.id
+                const isActive = activeNodeId != null
+                const isConnected = isActive && label.connectionPairs.some(
+                  (p) => p.fromId === activeNodeId || p.toId === activeNodeId
+                )
+                const textOpacity = isActive ? (isConnected ? 0.8 : 0.06) : 0
+                const displayText = label.mergedCount > 1
+                  ? `${label.text} ×${label.mergedCount}`
+                  : label.text
+                return (
+                  <text
+                    key={`label-${i}`}
+                    x={label.x}
+                    y={label.y - 4}
+                    textAnchor="middle"
+                    fontSize="8"
+                    fill={label.color}
+                    fillOpacity={textOpacity}
+                    style={{ pointerEvents: 'none' }}
+                  >
+                    {displayText.length > 10 ? displayText.slice(0, 10) + '..' : displayText}
+                  </text>
                 )
               })}
             </svg>
