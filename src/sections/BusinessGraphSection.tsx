@@ -468,7 +468,6 @@ function BusinessGraphSection() {
                 ))}
               </defs>
               {connections.map((conn, i) => {
-                const midX = (conn.x1 + conn.x2) / 2
                 const midY = (conn.y1 + conn.y2) / 2
                 const pathD = `M${conn.x1},${conn.y1} L${conn.x1},${midY} L${conn.x2},${midY} L${conn.x2},${conn.y2}`
                 const color = RELATION_COLORS[conn.type] || '#6366F1'
