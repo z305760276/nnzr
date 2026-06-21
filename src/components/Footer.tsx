@@ -30,7 +30,7 @@ export default function Footer() {
               <span className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>南宁中燃 客户服务部</span>
             </div>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              南宁中燃客户服务部管理图谱 v4.0<br />
+              南宁中燃客户服务部管理图谱 v4.5<br />
               基于四份真实管理制度文件构建<br />
               目标：新人来了也能看懂、会用、能查
             </p>
@@ -96,7 +96,7 @@ export default function Footer() {
                 border: '1px solid var(--border-accent)',
               }}
             >
-              v4.0_20260524
+              v4.5_20260608
             </span>
             <span className="text-xs" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
               南宁中燃城市燃气发展有限公司

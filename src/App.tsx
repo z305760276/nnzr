@@ -6,6 +6,7 @@ import GlobalSearchPanel from './components/GlobalSearch';
 import TopNav from './components/TopNav';
 import AiAssistantDrawer from './components/AiAssistantDrawer';
 import BusinessGraphSection from './sections/BusinessGraphSection';
+import ScrollToTop from './components/ScrollToTop';
 import { createContext, useContext } from 'react';
 
 const SECTION_ROUTE_MAP: Record<string, string> = {
@@ -139,6 +140,7 @@ function BusinessContent() {
 function App() {
   return (
     <HashRouter>
+      <ScrollToTop />
       <div className="min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] overflow-x-hidden">
         <Routes>
           <Route path="/business-graph" element={<BusinessContent />} />

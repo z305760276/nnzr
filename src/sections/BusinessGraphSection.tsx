@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useLayoutEffect, useCallback } from 'react'
+import { useState, useMemo, useRef, useLayoutEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { Target, Briefcase, GitBranch, UserCheck, BarChart3, Database, X, Maximize2, Minimize2, ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'

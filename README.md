@@ -6,12 +6,15 @@
 
 ## 技术栈
 
-- **框架：** React 18 + TypeScript
-- **构建：** Vite 7
-- **样式：** Tailwind CSS + shadcn/ui
-- **动画：** Framer Motion
-- **路由：** React Router DOM (HashRouter)
-- **AI 助手：** Coze API（豆包大模型）
+- **框架：** React 19.2 + TypeScript 5.9
+- **构建：** Vite 7.2
+- **样式：** Tailwind CSS 3.4 + shadcn/ui（Radix UI）
+- **动画：** Framer Motion 12
+- **路由：** React Router 7（HashRouter）
+- **可视化：** ECharts 6
+- **AI 助手：** Coze API 1.3（豆包大模型）
+- **表单校验：** React Hook Form 7 + Zod 4
+- **Markdown：** react-markdown 10 + remark-gfm + rehype-raw
 
 ## 功能模块
 
@@ -53,6 +56,6 @@ npm run preview
 
 ## 版本
 
-**v4.0_20260524**
+**v4.5_20260608**
 
 详见 `结构.txt`（目录结构）和 `依赖.md`（组件依赖树）。

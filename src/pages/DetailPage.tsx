@@ -1,12 +1,13 @@
-import { useState, lazy, Suspense } from 'react';
+import { useMemo, useState, lazy, Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Users, Cpu, ShieldAlert, Gauge, BookOpen, Skull, AlertOctagon, AlertCircle, Info, Eye, FileText, Gavel, Scale, ChevronDown, ChevronUp, ExternalLink, Bookmark, Layers, FileWarning, Library, Search, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Users, Cpu, ShieldAlert, Gauge, BookOpen, Skull, AlertOctagon, AlertCircle, Info, Eye, FileText, FileSpreadsheet, FileType, Gavel, Scale, ChevronDown, ChevronUp, ExternalLink, Bookmark, Layers, FileWarning, Library, Search, Menu, ChevronLeft, ChevronRight, Trophy, Cloud, FolderOpen, X } from 'lucide-react';
 import TopNav from '../components/TopNav';
 import { useSearch } from '../App';
 import FilePreview from '../components/FilePreview';
 import ModuleSidebar from '../components/ModuleSidebar';
 import SkeletonLoader from '../components/SkeletonLoader';
 import TableOfContents from '../components/TableOfContents';
+import { REWARDS_GROUPS, type RewardsFile, type RewardsFileType } from '../data/rewardsFiles';
 
 const MODULE_META: Record<string, { title: string; subtitle: string; icon: React.FC<{className?: string; style?: React.CSSProperties}> }> = {
   org: { title: '组织架构全景图谱', subtitle: '基于《管理组织架构及岗位职责》V2.0', icon: Users },
@@ -51,6 +52,7 @@ const MODULE_TOC: Record<string, { id: string; label: string }[]> = {
     { id: 'standards-stats', label: '数据概览' },
     { id: 'standards-scoring', label: '记分执行标准' },
     { id: 'standards-files', label: '规范制度文件' },
+    { id: 'standards-rewards', label: '奖惩文件' },
   ],
 };
 
@@ -180,6 +182,248 @@ const statCards = [
 ];
 
 // ===== 子组件 =====
+
+// 钉钉云盘文件夹链接常量（仅作为外部入口兜底，不再嵌入预览面板）
+const DINGTALK_FOLDER_URL = 'https://qr.dingtalk.com/page/yunpan?route=previewDentry&spaceId=7645425089&fileId=224184622698&type=folder';
+
+// 文件类型 → 显示信息
+const TYPE_META: Record<RewardsFileType, { label: string; color: string; icon: React.FC<{ className?: string; style?: React.CSSProperties }> }> = {
+  pdf:  { label: 'PDF',   color: '#EF4444', icon: FileText },
+  docx: { label: 'Word',  color: '#3B82F6', icon: FileType },
+  xlsx: { label: 'Excel', color: '#10B981', icon: FileSpreadsheet },
+  xls:  { label: 'Excel', color: '#10B981', icon: FileSpreadsheet },
+};
+
+// 触发浏览器下载（a[download] 兼容 Chrome/Edge，Safari 需 download 属性 + 同源/CORS）
+function triggerDownload(path: string, fileName: string) {
+  const a = document.createElement('a');
+  a.href = path;
+  a.download = fileName;
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// 奖惩文件浏览：搜索 + 类型筛选 + 分组列表 + 预览/下载
+// 筛选胶囊的 UI 标识（Excel 胶囊统一表示 .xlsx 和 .xls 两种格式）
+type ChipKey = 'all' | 'pdf' | 'docx' | 'xlsx';
+function RewardsBrowser({ onPreview }: { onPreview: (f: RewardsFile) => void }) {
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState<ChipKey>('all');
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({ company: true, dept: true });
+
+  // 筛选胶囊：UI 标识 → 实际匹配的文件类型集合
+  // Excel 胶囊同时匹配 .xlsx 与 .xls 两种新旧格式
+  // ⚠️ 必须声明在 filteredGroups useMemo 之前，否则触发 TDZ ReferenceError
+  const FILTER_TYPES: Record<ChipKey, RewardsFileType[]> = {
+    all:  ['pdf', 'docx', 'xlsx', 'xls'],
+    pdf:  ['pdf'],
+    docx: ['docx'],
+    xlsx: ['xlsx', 'xls'],
+  };
+
+  // 全量数据只算一次
+  const allFiles = useMemo(() => REWARDS_GROUPS.flatMap(g => g.files), []);
+  const totalCount = allFiles.length;
+
+  // 按搜索词 + 类型筛选每个分组
+  const filteredGroups = useMemo(() => {
+    const kw = search.trim().toLowerCase();
+    const matchedTypes = new Set(FILTER_TYPES[typeFilter]);
+    return REWARDS_GROUPS.map(g => ({
+      ...g,
+      files: g.files.filter(f => {
+        if (!matchedTypes.has(f.fileType)) return false;
+        if (kw && !f.name.toLowerCase().includes(kw)) return false;
+        return true;
+      }),
+    })).filter(g => g.files.length > 0);
+  }, [search, typeFilter]);
+
+  const matchedCount = filteredGroups.reduce((s, g) => s + g.files.length, 0);
+
+  // 按类型统计（用于筛选胶囊的角标）
+  const typeStats = useMemo(() => {
+    const stats: Record<RewardsFileType, number> = { pdf: 0, docx: 0, xlsx: 0, xls: 0 };
+    for (const f of allFiles) stats[f.fileType]++;
+    return stats;
+  }, [allFiles]);
+
+  const chips: { key: ChipKey; label: string; count: number }[] = useMemo(() => [
+    { key: 'all',  label: '全部', count: totalCount },
+    { key: 'pdf',  label: 'PDF',  count: typeStats.pdf },
+    { key: 'docx', label: 'Word', count: typeStats.docx },
+    { key: 'xlsx', label: 'Excel', count: typeStats.xlsx + typeStats.xls },
+  ], [totalCount, typeStats]);
+
+  // 分组展开/折叠
+  const toggleGroup = (id: string) =>
+    setOpenGroups(prev => ({ ...prev, [id]: !prev[id] }));
+
+  return (
+    <div className="space-y-4">
+      {/* 搜索框 + 清除按钮 */}
+      <div className="flex flex-col md:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-muted)' }} />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="搜索文件名、文号或关键词…"
+            className="w-full pl-9 pr-9 py-2.5 rounded-xl text-xs outline-none transition-all"
+            style={{
+              background: 'rgba(168,85,247,0.06)',
+              border: '1px solid rgba(168,85,247,0.30)',
+              color: 'var(--text-primary)',
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = '#A855F7'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(168,85,247,0.15)'; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(168,85,247,0.30)'; e.currentTarget.style.boxShadow = 'none'; }}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-md transition-colors"
+              style={{ color: 'var(--text-muted)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.12)'; e.currentTarget.style.color = '#A855F7'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 类型筛选胶囊 */}
+      <div className="flex flex-wrap items-center gap-2">
+        {chips.map(chip => {
+          const active = typeFilter === chip.key;
+          return (
+            <button
+              key={chip.key}
+              onClick={() => setTypeFilter(chip.key)}
+              className="inline-flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full font-medium transition-all"
+              style={{
+                background: active ? 'linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)' : 'rgba(168,85,247,0.08)',
+                color: active ? '#FFFFFF' : '#A855F7',
+                border: active ? '1px solid transparent' : '1px solid rgba(168,85,247,0.30)',
+                boxShadow: active ? '0 2px 8px rgba(168,85,247,0.35)' : 'none',
+              }}
+            >
+              {chip.label}
+              <span
+                className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+                style={{
+                  background: active ? 'rgba(255,255,255,0.22)' : 'rgba(168,85,247,0.15)',
+                  color: active ? '#FFFFFF' : '#A855F7',
+                }}
+              >
+                {chip.count}
+              </span>
+            </button>
+          );
+        })}
+        <span className="text-[10px] ml-auto" style={{ color: 'var(--text-muted)' }}>
+          匹配 {matchedCount} / {totalCount} 份
+        </span>
+      </div>
+
+      {/* 列表 / 空状态 */}
+      {filteredGroups.length === 0 ? (
+        <div
+          className="rounded-xl py-10 flex flex-col items-center gap-2"
+          style={{ background: 'rgba(168,85,247,0.04)', border: '1px dashed rgba(168,85,247,0.30)' }}
+        >
+          <Search className="w-5 h-5" style={{ color: 'rgba(168,85,247,0.5)' }} />
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>未找到匹配文件，请调整搜索词或类型筛选</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {filteredGroups.map(group => {
+            const open = openGroups[group.id] !== false;
+            return (
+              <div
+                key={group.id}
+                className="rounded-xl border overflow-hidden"
+                style={{ background: 'rgba(168,85,247,0.04)', borderColor: 'rgba(168,85,247,0.18)' }}
+              >
+                <button
+                  onClick={() => toggleGroup(group.id)}
+                  className="w-full px-4 py-2.5 flex items-center justify-between transition-colors"
+                  style={{ background: open ? 'rgba(168,85,247,0.08)' : 'transparent' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.10)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = open ? 'rgba(168,85,247,0.08)' : 'transparent'; }}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <FolderOpen className="w-4 h-4 shrink-0" style={{ color: group.color }} />
+                    <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{group.label}</span>
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded-md font-medium"
+                      style={{ background: 'rgba(168,85,247,0.15)', color: '#A855F7' }}
+                    >
+                      {group.files.length}
+                    </span>
+                  </div>
+                  {open ? <ChevronUp className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-muted)' }} /> : <ChevronDown className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-muted)' }} />}
+                </button>
+                {open && (
+                  <ul className="px-3 pb-2 pt-1 space-y-1 max-h-[420px] overflow-y-auto">
+                    {group.files.map((f, j) => {
+                      const meta = TYPE_META[f.fileType];
+                      const Icon = meta.icon;
+                      const ext = f.fileType;
+                      return (
+                        <li
+                          key={j}
+                          className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 group transition-colors"
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.08)'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                        >
+                          <div
+                            className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+                            style={{ background: meta.color + '18', border: '1px solid ' + meta.color + '30' }}
+                          >
+                            <Icon className="w-3.5 h-3.5" style={{ color: meta.color }} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-medium truncate" style={{ color: 'var(--text-primary)' }} title={f.name}>
+                              {f.name}
+                            </p>
+                            <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{meta.label}</p>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => onPreview(f)}
+                              className="text-[10px] px-2 py-1 rounded-md font-medium inline-flex items-center gap-1 transition-all"
+                              style={{ background: 'rgba(168,85,247,0.15)', color: '#A855F7' }}
+                              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.25)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.15)'; }}
+                            >
+                              <Eye className="w-3 h-3" />预览
+                            </button>
+                            <button
+                              onClick={() => triggerDownload(f.path, f.name + '.' + ext)}
+                              className="text-[10px] px-2 py-1 rounded-md font-medium inline-flex items-center gap-1 transition-all"
+                              style={{ background: 'var(--card-inner-bg)', color: 'var(--text-secondary)' }}
+                              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--border-light)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--card-inner-bg)'; }}
+                            >
+                              <ExternalLink className="w-3 h-3" />下载
+                            </button>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function SeverityBar({ item: s }: { item: ScoringItem }) {
   const cfg = SEV[s.severity];
@@ -372,31 +616,16 @@ function FileCard({ cat, onPreview }: { cat: FileCategory; onPreview: (f: FileRe
                   </span>
                 ) : (
                   <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 shrink-0">
-                    {f.fileType === 'docx' ? (
-                      <a
-                        href={f.path}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[10px] px-2 py-1 rounded-md font-medium inline-flex items-center gap-1"
-                        style={{
-                          background: 'var(--brand-bg)',
-                          color: 'var(--brand-primary)',
-                        }}
-                      >
-                        <Eye className="w-3 h-3" />预览
-                      </a>
-                    ) : (
-                      <button
-                        onClick={() => onPreview(f)}
-                        className="text-[10px] px-2 py-1 rounded-md font-medium inline-flex items-center gap-1"
-                        style={{
-                          background: 'var(--brand-bg)',
-                          color: 'var(--brand-primary)',
-                        }}
-                      >
-                        <Eye className="w-3 h-3" />预览
-                      </button>
-                    )}
+                    <button
+                      onClick={() => onPreview(f)}
+                      className="text-[10px] px-2 py-1 rounded-md font-medium inline-flex items-center gap-1"
+                      style={{
+                        background: 'var(--brand-bg)',
+                        color: 'var(--brand-primary)',
+                      }}
+                    >
+                      <Eye className="w-3 h-3" />预览
+                    </button>
                     <a
                       href={f.path}
                       target="_blank"
@@ -421,11 +650,19 @@ function FileCard({ cat, onPreview }: { cat: FileCategory; onPreview: (f: FileRe
 }
 
 function StandardsCombined() {
-  const [preview, setPreview] = useState<{ filePath: string; fileName: string; fileType: 'pdf' | 'xlsx' } | null>(null);
+  const [preview, setPreview] = useState<{ filePath: string; fileName: string; fileType: RewardsFileType } | null>(null);
 
   const handlePreview = (f: FileRef) => {
-    if (f.fileType === 'docx') return;
-    setPreview({ filePath: f.path, fileName: f.name + (f.fileType === 'xlsx' ? '.xlsx' : '.pdf'), fileType: f.fileType as 'pdf' | 'xlsx' });
+    // 所有格式统一走 FilePreview 模态框（docx 由 mammoth 渲染，xlsx 由 SheetJS 解析，pdf 走 iframe）
+    setPreview({
+      filePath: f.path,
+      fileName: f.name,
+      fileType: f.fileType as RewardsFileType,
+    });
+  };
+
+  const handleRewardsPreview = (f: RewardsFile) => {
+    setPreview({ filePath: f.path, fileName: f.name, fileType: f.fileType });
   };
 
   const hseRefs = fileCategories.find(c => c.id === 'group')!.files.filter(f => f.name.includes('红黄线') && f.fileType === 'pdf');
@@ -507,6 +744,68 @@ function StandardsCombined() {
         </div>
       </div>
 
+      <div id="standards-rewards" style={{ scrollMarginTop: 80 }}>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, #A855F7, transparent)' }} />
+          <span
+            className="text-xs font-bold uppercase tracking-widest shrink-0 px-3 py-1 rounded-full border inline-flex items-center gap-1.5"
+            style={{
+              color: '#A855F7',
+              borderColor: 'rgba(168,85,247,0.35)',
+              background: 'rgba(168,85,247,0.10)',
+            }}
+          >
+            <Trophy className="w-3.5 h-3.5" />
+            奖惩文件
+          </span>
+          <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, #A855F7, transparent)' }} />
+        </div>
+
+        <div
+          className="rounded-2xl border p-5 glass-shimmer"
+          style={{
+            background: 'var(--glass-bg)',
+            borderColor: 'rgba(168,85,247,0.25)',
+            backdropFilter: 'blur(16px) saturate(180%)',
+          }}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              style={{
+                background: 'rgba(168,85,247,0.12)',
+                border: '1px solid rgba(168,85,247,0.25)',
+              }}
+            >
+              <Trophy className="w-5 h-5" style={{ color: '#A855F7' }} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>奖惩文件管理</h3>
+              <p className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                支持 PDF / Word / Excel 在线预览与下载，文件名/文号可搜索
+              </p>
+            </div>
+            <a
+              href={DINGTALK_FOLDER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:inline-flex items-center gap-1.5 text-[10px] px-2.5 py-1.5 rounded-lg font-medium transition-all"
+              style={{
+                background: 'rgba(168,85,247,0.10)',
+                color: '#A855F7',
+                border: '1px solid rgba(168,85,247,0.30)',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.18)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(168,85,247,0.10)'; }}
+            >
+              <Cloud className="w-3 h-3" />钉钉云盘
+            </a>
+          </div>
+          <RewardsBrowser onPreview={handleRewardsPreview} />
+        </div>
+      </div>
+
+
       {preview && (
         <FilePreview open={!!preview} onClose={() => setPreview(null)}
           fileName={preview.fileName} filePath={preview.filePath} fileType={preview.fileType} />
@@ -520,8 +819,6 @@ export default function DetailPage() {
   const navigate = useNavigate();
   const searchCtx = useSearch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [prevModuleId, setPrevModuleId] = useState(moduleId);
 
   const meta = moduleId ? MODULE_META[moduleId] : null;
   const Component = moduleId ? COMPONENT_MAP[moduleId] : null;
@@ -533,12 +830,7 @@ export default function DetailPage() {
   const prevMeta = prevModule ? MODULE_META[prevModule] : null;
   const nextMeta = nextModule ? MODULE_META[nextModule] : null;
 
-  if (moduleId !== prevModuleId) {
-    setPrevModuleId(moduleId);
-    setIsTransitioning(true);
-    window.scrollTo(0, 0);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }
+  // 滚动归零已由 <ScrollToTop /> 组件统一处理，这里不再重复调用
 
   const handleNav = (id: string) => {
     if (id === 'standards') {
@@ -697,13 +989,9 @@ export default function DetailPage() {
 
             <div className="min-w-0">
 
-              {isTransitioning ? (
-                <SkeletonLoader />
-              ) : (
-                <Suspense fallback={<SkeletonLoader />}>
-                  <Component key={moduleId} />
-                </Suspense>
-              )}
+              <Suspense fallback={<SkeletonLoader />}>
+                <Component key={moduleId} />
+              </Suspense>
 
               {/* Bottom prev/next navigation */}
               <div className="mt-10 pt-6 border-t flex items-center justify-between gap-4"

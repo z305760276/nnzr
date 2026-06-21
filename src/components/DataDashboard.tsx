@@ -23,7 +23,7 @@ export const DEFAULT_TABS: DashboardTab[] = [
     id: 'safety',
     label: '服务管理',
     icon: ShieldAlert,
-    iframeSrc: 'https://alidocs.dingtalk.com/notable/share/dashboard/471f7ca52979ea12d31b18bcff4bc570_XNkOM5jAK3wv3OY7',
+    iframeSrc: 'https://alidocs.dingtalk.com/notable/share/dashboard/3b22435afa0700e57394e035afb4b92a_XNkOM5jAK3wv3OY7',
     description: '服务管理相关数据展示',
   },
   {

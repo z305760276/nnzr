@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
 const BOT_ID = '7640388142570684451'
-const TOKEN = 'pat_EA8ohczLvGSuWzoKT8Z1sFIzUGc1nq1czYbYeyn6VagbHjMJAUNKWbnEjh8tIyqM'
+const TOKEN = 'sat_xZH8yL274NDmvAMsVXh5nEmhqFI5Ztcqeyk5AFfSK0oXeTvHhXLpspSa7L6BZnoi'
 
 const STORAGE_KEY = 'ai_assistant_conv'
 
