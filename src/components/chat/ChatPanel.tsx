@@ -6,8 +6,8 @@ import type { ChatMessage as ChatMessageType, ChatStatus } from '../../types/cha
 
 interface Props {
   onClose: () => void
-  agentReady: boolean
-  agent: any
+  agentReady?: boolean
+  agent?: any
 }
 
 const STORAGE_KEY = 'ai_assistant_history'

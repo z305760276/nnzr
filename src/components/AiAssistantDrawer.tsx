@@ -2,32 +2,9 @@ import { useState, useRef } from 'react'
 import { ChatPanel } from './chat/ChatPanel'
 import { PageAgentCore } from '@page-agent/core'
 
-const BOT_ID = '7640388142570684451'
-const TOKEN = 'sat_xZH8yL274NDmvAMsVXh5nEmhqFI5Ztcqeyk5AFfSK0oXeTvHhXLpspSa7L6BZnoi'
-
-const STORAGE_KEY = 'ai_assistant_conv'
-
-const QUICK_QUESTION_POOL = [
-  '请解释安检隐患分级标准的具体内容',
-  'CRM工单的流转流程是怎样的？',
-  'HSE和客服质量记分标准在哪里查询',
-  '什么是暗厨房？',
-  '组织架构和岗位职责有哪些？',
-  '财年指标如何查询？',
-  '安全管理制度有哪些？',
-  '客户投诉处理流程是什么？',
-  '燃气管道巡检频次要求？',
-  '内部管理制度如何检索？',
-]
-
-const pickRandomQuestions = (pool: string[], count: number) => {
-  const shuffled = [...pool].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, count)
-}
-
 interface Props {
-  agentReady: boolean
-  agent: PageAgentCore | null
+  agentReady?: boolean
+  agent?: PageAgentCore | null
 }
 
 function AiAssistantDrawer({ agentReady, agent }: Props) {
