@@ -8,6 +8,9 @@ import AiAssistantDrawer from './components/AiAssistantDrawer';
 import BusinessGraphSection from './sections/BusinessGraphSection';
 import ScrollToTop from './components/ScrollToTop';
 import { createContext, useContext } from 'react';
+import { PageAgentCore } from '@page-agent/core'
+import { PageController } from '@page-agent/page-controller'
+import { AI_CONFIG } from './config/ai'
 
 const SECTION_ROUTE_MAP: Record<string, string> = {
   'org-hierarchy': 'org',
@@ -28,6 +31,8 @@ interface SearchContextType {
   showSearchResults: boolean;
   setShowSearchResults: (show: boolean) => void;
   handleSelect: (section: string) => void;
+  agent: PageAgentCore | null;
+  agentReady: boolean;
 }
 const SearchContext = createContext<SearchContextType | null>(null);
 export function useSearch() {
@@ -40,6 +45,8 @@ function SearchWrapper({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [agentStatus, setAgentStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [agent, setAgent] = useState<PageAgentCore | null>(null)
 
   useEffect(() => {
     const html = document.documentElement;
@@ -59,6 +66,27 @@ function SearchWrapper({ children }: { children: React.ReactNode }) {
       return () => observer.disconnect();
     }
   }, []);
+
+  // Initialize PageAgent in SearchWrapper so both search bar and drawer can use it
+  useEffect(() => {
+    try {
+      const pageController = new PageController({ enableMask: true })
+      const instance = new PageAgentCore({
+        baseURL: AI_CONFIG.deepseekBaseUrl,
+        apiKey: AI_CONFIG.deepseekApiKey,
+        model: AI_CONFIG.llmModel,
+        language: 'zh-CN',
+        pageController,
+        maxSteps: 30,
+      })
+      setAgent(instance)
+      setAgentStatus('ready')
+      console.log('[PageAgent] 本地引擎就绪')
+    } catch (err) {
+      console.error('[PageAgent] 初始化失败:', err)
+      setAgentStatus('error')
+    }
+  }, [])
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -87,11 +115,20 @@ function SearchWrapper({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      <SearchContext.Provider value={{ searchQuery, setSearchQuery, showSearchResults, setShowSearchResults, handleSelect }}>
+      <SearchContext.Provider value={{
+        searchQuery, setSearchQuery,
+        showSearchResults, setShowSearchResults,
+        handleSelect,
+        agent,
+        agentReady: agentStatus === 'ready',
+      }}>
         <main className="pt-14">
           {children}
         </main>
-        <AiAssistantDrawer />
+        <AiAssistantDrawer
+          agentReady={agentStatus === 'ready'}
+          agent={agent}
+        />
       </SearchContext.Provider>
     </>
   );

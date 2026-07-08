@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ArrowRight } from 'lucide-react';
+import { X, ArrowRight, Sparkles } from 'lucide-react';
 import { search, searchPdf } from '../data/searchIndex';
 import type { PdfSearchResult } from '../data/searchIndex';
 import PdfSearchResults from './PdfSearchResults';
+import { useSearch } from '../App';
 
 interface GlobalSearchPanelProps {
   query: string;
@@ -14,8 +15,10 @@ export default function GlobalSearchPanel({ query, onClose, onSelect }: GlobalSe
   const results = query.length >= 1 ? search(query) : [];
   const [pdfResults, setPdfResults] = useState<PdfSearchResult[]>([]);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [agentBusy, setAgentBusy] = useState(false);
   const lastQueryRef = useRef('');
   const timeoutIds = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const { agent, agentReady } = useSearch();
 
   useEffect(() => {
     timeoutIds.current.forEach(clearTimeout);
@@ -51,6 +54,19 @@ export default function GlobalSearchPanel({ query, onClose, onSelect }: GlobalSe
   // 只有当完全没有结果（包括系统搜索和PDF搜索都无结果）时才显示"未找到"
   const systemEmpty = results.length === 0;
   const pdfEmpty = pdfResults.length === 0 && !pdfLoading;
+
+  const handleAgentNav = async () => {
+    if (!agent || agentBusy) return;
+    setAgentBusy(true);
+    onClose();
+    try {
+      await agent.execute(query);
+    } catch (err) {
+      console.error('[GlobalSearch] AI 导航失败:', err);
+    } finally {
+      setAgentBusy(false);
+    }
+  };
 
   if (!query) return null;
 
@@ -123,6 +139,39 @@ export default function GlobalSearchPanel({ query, onClose, onSelect }: GlobalSe
                   <p className="text-[var(--text-secondary)]/40 text-xs mt-1">试试其他关键词，或直接在文档中搜索</p>
                 </div>
               )}
+            </>
+          )}
+
+          {/* AI 导航入口 — 仅在 agent 就绪且有查询时显示 */}
+          {agentReady && query && (
+            <>
+              <div className="px-4 py-1.5">
+                <div className="h-px bg-[var(--border-light)]" />
+              </div>
+              <div className="px-4 py-1.5">
+                <span className="text-[10px] text-[var(--text-secondary)]/40 uppercase tracking-wider">AI 能力</span>
+              </div>
+              <button
+                onClick={handleAgentNav}
+                disabled={agentBusy}
+                className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-[var(--brand-bg)] transition-colors group disabled:opacity-50"
+              >
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0">
+                  {agentBusy ? (
+                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <Sparkles className="w-3.5 h-3.5 text-white" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors font-medium">
+                    {agentBusy ? 'AI 执行中...' : `让 AI 导航到「${query}」`}
+                  </span>
+                  <p className="text-[11px] text-[var(--text-secondary)]/50 mt-0.5">
+                    {agentBusy ? '正在分析页面并执行操作' : '使用 AI 自动跳转到相关内容'}
+                  </p>
+                </div>
+              </button>
             </>
           )}
         </div>
