@@ -31,6 +31,13 @@ jobs:
       - run: npm install --legacy-peer-deps
 
       - run: npm run build
+        env:
+          VITE_DEEPSEEK_API_KEY: ${{ secrets.VITE_DEEPSEEK_API_KEY }}
+          VITE_DEEPSEEK_BASE_URL: ${{ secrets.VITE_DEEPSEEK_BASE_URL }}
+          VITE_LLM_MODEL: ${{ secrets.VITE_LLM_MODEL }}
+          VITE_COZE_API_KEY: ${{ secrets.VITE_COZE_API_KEY }}
+          VITE_COZE_DATASET_ID: ${{ secrets.VITE_COZE_DATASET_ID }}
+          VITE_COZE_BASE_URL: ${{ secrets.VITE_COZE_BASE_URL }}
 
       - uses: actions/configure-pages@v4
 
